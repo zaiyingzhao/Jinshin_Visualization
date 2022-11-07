@@ -35,4 +35,9 @@ TOP Page
 - 人身事故のデータは基本URL/IDになっているので簡単にスクレイピング出来る
     - curlで取得出来たのでseleniumもいらなさそう
     - https://jinshinjiko.com/accidents/14847
-    - 
+- 一覧については[https://jinshinjiko.com/accidents?limit=10&offset=0](https://jinshinjiko.com/accidents?limit=10&offset=0)のlimitを14898にすることで全件が一気に取得できた
+
+- サクッと[csv](data/jinshin.csv)作成
+    -  作成元は[このプログラム](nakamura/dataextract.ipynb)
+    -  各事故の詳細は追ってスクレイピングするで良さそう
+    -  駅間をどうするか、会社の表記ゆれをどう対応するか
