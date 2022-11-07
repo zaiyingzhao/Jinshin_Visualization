@@ -29,3 +29,10 @@
 
 TOP Page
 ![](/shinchoku_image/nakamura/CamScanner%2011-07-2022%2015.55.jpg)
+
+## どうやって情報を蓄積するかの案
+- 基本CSVでよさそう（RDB使いたいなら後から使えばいい）
+- 人身事故のデータは基本URL/IDになっているので簡単にスクレイピング出来る
+    - curlで取得出来たのでseleniumもいらなさそう
+    - https://jinshinjiko.com/accidents/14847
+    - 
