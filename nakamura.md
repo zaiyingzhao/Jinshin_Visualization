@@ -28,4 +28,4 @@
     - web archiveに過去7年くらいのデータがある
 
 TOP Page
-![](/pastani/shinchoku_image/nakamura/CamScanner%2011-07-2022%2015.55.jpg)
+![](/shinchoku_image/nakamura/CamScanner%2011-07-2022%2015.55.jpg)
