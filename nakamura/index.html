@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>D3 Test</title>
+    <script src="./d3.js" charset="utf-8"></script>
+    <script src="./topojson.js" charset="utf-8"></script>
+    <script src="./datalist.js" charset="utf-8"></script>
+</head>
+<style>
+    .tooltip {
+        position: absolute;
+        width: auto;
+        height: auto;
+        padding: 4px;
+        font: 10px sans-serif;
+        color: #fff;
+        background: #333;
+        -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        -moz-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        border-radius: 4px;
+        visibility: hidden;
+        text-align: center;
+    }
+</style>
+
+<body>
+    <script type="text/javascript">
+        var colorScale = d3.scaleOrdinal(d3.schemeSet1);
+        var width = 10000;
+        var height = 20000;
+        var scale = 10000;
+        var svg = d3.select("body").append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        let projection = d3.geoMercator()
+            .center([139, 35])
+            .translate([width / 2, height / 2])
+            .scale(scale);
+        let square = d3.symbol().type("diamond");
+        let geoGenerator = d3.geoPath().pointRadius(0).projection(projection);
+        let wait = []
+        datalist.forEach((path) => {
+            wait.push(d3.json(path));
+        })
+        Promise.all(wait).then(function (values) {
+            var japangeo = topojson.feature(values[0], values[0].objects.japan);
+            svg.selectAll("path")
+                .data(japangeo.features)
+                .enter()
+                .append("path")
+                .attr("d", geoGenerator)
+                .attr("stroke", "black")
+                .attr("stroke-width", 1)
+                .attr("fill", "#646464");
+            values.shift();
+            values.forEach((d) => {
+                svg.selectAll("path2")
+                    .data(d.features)
+                    .enter()
+                    .append("path")
+                    .attr("d", geoGenerator)
+                    .attr("stroke", "white")
+                    .attr("fill", "none")
+                    .attr("stroke-width", 1);
+                svg.selectAll("path2")
+                    .data(d.features.filter(d => d.geometry.type == "Point"))
+                    .join("rect")
+                    .attr("x", d => {return projection(d.geometry.coordinates)[0]-1.5;})
+                    .attr("y", d => {return projection(d.geometry.coordinates)[1]-1.5;})
+                    .attr("height", 3)
+                    .attr("width", 3)
+                    .attr("stroke", "white")
+                    .attr("stroke-widht", 0.1)
+                    .attr("fill", "none")
+            })
+        })
+
+    </script>
+</body>
+
+</html>
