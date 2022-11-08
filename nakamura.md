@@ -56,3 +56,6 @@ https://uedayou.net/jrslod-geojson-downloader/
 
 d3.jsで路線図のデータを描画するようにした。基本はjapan.htmlを参考にした。
 ![](shinchoku_image/nakamura/image%20(1).png)
+
+全路線図のデータを描画することに成功した。駅のポイントの点も任意の形に変えられるようになった。
+![](shinchoku_image/nakamura/rosenzu.png)
