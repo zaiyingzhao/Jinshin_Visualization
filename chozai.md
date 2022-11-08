@@ -26,7 +26,7 @@ tweepyを用いるにはTwitter APIのElevated access権限を取得する必要
 
 **[追記]  
 twitter APIでキーワードを含むツイート検索をしても取得できるツイート数に制限があるらしい（100件）  
-また特定キーワードを含むツイート数を取得するにはacademic research accessが必要らしいがこれは一般学生には付与されない模様**  
+また特定キーワードを含むツイート数を取得するにはacademic research accessが必要らしいがこれは一般学生には付与されない模様（[aquire_tweets.py](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/acquire_tweets.py)のコメント参照）**  
 
 ## 第4回（11/08）
 ### 方針について  
