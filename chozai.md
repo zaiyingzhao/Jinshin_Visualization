@@ -35,9 +35,9 @@ twitter APIでキーワードを含むツイート検索をしても取得でき
 [^1]: 正確にはtwitter API v2が公開されてからGetOldTweetsモジュールもほとんど使えない状態になっており、今回はtwitter API v2に対応した改良版GetOldTweets（OMGOT）を使う  
 
 ### 人身事故関連のツイート取得
-- choディレクトリにGOTをクローンし、cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/cli.pyを修正することで過去のツイート取得が可能であることを確認した  
-- 続いてGetOldTweets3-0.0.10ディレクトリにget_size.pyを追加し、中村くんがスクレイピングした人身事故データのcsvファイル(jinshin.csv)から必要な情報を取得/整形して人身事故関連ツイートを取得できるようにした 
-- 試しに人身事故データcsvの頭10行を抽出したcsvファイル(jinshin2.csv)にツイート件数取得を行った結果をtweets.csvに格納した（元ファイルに'tweets'カラムを追加した形式）
+- choディレクトリにGOTをクローンし、[cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/cli.py](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/cli.py)を修正することで過去のツイート取得が可能であることを確認した  
+- 続いてGetOldTweets3-0.0.10ディレクトリに[get_size.py](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/get_size.py)を追加し、中村くんがスクレイピングした人身事故データのcsvファイル([jinshin.csv](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/jinshin.csv))から必要な情報を取得/整形して人身事故関連ツイートを取得できるようにした 
+- 試しに人身事故データcsvの頭10行を抽出したcsvファイル([jinshin2.csv](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/jinshin2.csv))にツイート件数取得を行った結果を[tweets.csv](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/tweets.csv)に格納した（元ファイルに'tweets'カラムを追加した形式）
 - 現在は全データ（約15000件）に対してツイート件数取得を行っているが、ツイート数取得に人身事故1件あたり2秒ほどかかるため、実行に10時間ほどかかる計算になる（現在実行中）
 
 ### 今後の流れ
