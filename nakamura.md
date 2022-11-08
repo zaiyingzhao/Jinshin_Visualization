@@ -53,3 +53,6 @@ csvに
 https://uedayou.net/jrslod-geojson-downloader/
 
 ダウンロード自動化をしようと思ったが、複雑そうなので一旦断念してJR東日本までダウンロードしたところで加賀谷くんに頼む。
+
+d3.jsで路線図のデータを描画するようにした。基本はjapan.htmlを参考にした。
+![](shinchoku_image/nakamura/image%20(1).png)
