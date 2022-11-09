@@ -7,7 +7,7 @@ import datetime
 import time
 
 start = time.time()
-jinshin = pd.read_csv("jinshin2.csv")
+jinshin = pd.read_csv("jinshin.csv")
 tweets = []
 
 for i in range(len(jinshin)):
