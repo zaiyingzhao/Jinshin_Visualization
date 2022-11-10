@@ -106,9 +106,6 @@
                 balance: secondHandBalance
             }
         ];
-        let data = [100, 20, 203, 132, 450, 100, 222, 200, 203, 101, 120, 142];
-        let data2 = [{ "time": "2022/11/07 02:55", "number": 100 }, { "time": "2022/11/07 00:13", "number": 12 }]
-        console.log(new Date(data2[0].time))
         let datascale = d3.scaleLinear().domain([0, 500]).range([0, clockRadius]);
         function drawClock() { //create all the clock elements
             updateData();	//draw them in the correct starting position
@@ -119,31 +116,37 @@
             var face = svg.append('g')
                 .attr('id', 'clock-face')
                 .attr('transform', 'translate(' + (clockRadius + margin) + ',' + (clockRadius + margin) + ')');
-            for (let i = 0; i < 12; i++) {
-                let x1 = datascale(data[((i - 1) % 12 + 12) % 12]) * Math.cos(((i - 1) % 12) * 30 / 180 * Math.PI);
-                let x2 = datascale(data[i]) * Math.cos(i * 30 / 180 * Math.PI);
-                let y1 = datascale(data[((i - 1) % 12 + 12) % 12]) * Math.sin(((i - 1) % 12) * 30 / 180 * Math.PI);
-                let y2 = datascale(data[i]) * Math.sin(i * 30 / 180 * Math.PI);
-                face.append("line")
-                    .attr("x1", x1)
-                    .attr("x2", x2)
-                    .attr("y1", y1)
-                    .attr("y2", y2)
-                    .attr("stroke", "black")
-                    .attr("stroke-widht", 1)
-                    .attr("class", i);
-            }
-            for (let i = 0; i < data2.length; i++) {
-                const date = new Date(data2[i].time);
-                const hour = date.getHours();
-                const minute = date.getMinutes();
-                const rad = (hour * 30 + minute * 30 / 60) * Math.PI / 180;
-                face.append("circle")
-                    .attr("cx", 100 * Math.cos(rad))
-                    .attr("cy", 100 * Math.sin(rad))
-                    .attr("r", data2[i].number/10)
-                    .attr("fill", "red");
-            }
+
+            d3.json("./timeonly.json").then((data) => {
+                console.log(Object.keys(data).length);
+                let prenum = data["23:59"]
+                let prehour = 23
+                let premin = 59
+                let prerad = (prehour * 15 * premin * 15 / 60 - 90) * Math.PI / 180;
+                Object.keys(data).forEach((key) => {
+                    let num = data[key];
+                    let hour = Number(key.substr(0, 2));
+                    let minute = Number(key.substr(3, 2));
+                    let rad = (hour * 15 + minute * 15 / 60 - 90) * Math.PI / 180;
+                    face.append("circle")
+                        .attr("cx", num * 5 * Math.cos(rad))
+                        .attr("cy", num * 5 * Math.sin(rad))
+                        .attr("r", 2)
+                        .attr("fill", "red");
+                    face.append("line")
+                        .attr("x1", num * 5 * Math.cos(rad))
+                        .attr("x2", prenum * 5 * Math.cos(prerad))
+                        .attr("y1", num * 5 * Math.sin(rad))
+                        .attr("y2", prenum * 5 * Math.sin(prerad))
+                        .attr("stroke", "black")
+                        .attr("stroke-width", 1)
+                    prenum = num;
+                    prehour = hour;
+                    premin = minute;
+                    prerad = rad; 
+                })
+            })
+
             //add marks for seconds
             face.selectAll('.second-tick')
                 .data(d3.range(0, 60)).enter()
@@ -200,7 +203,7 @@
                     return -hourLabelRadius * Math.cos(hourScale(d) * radians) + hourLabelYOffset;
                 })
                 .text(function (d) {
-                    return d;
+                    return d * 2;
                 });
 
 
