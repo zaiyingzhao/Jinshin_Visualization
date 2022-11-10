@@ -73,13 +73,13 @@
             secondHandLength = clockRadius - 12,
             secondHandBalance = 30,
             secondTickStart = clockRadius;
-        secondTickLength = -10,
+            secondTickLength = -10,
             hourTickStart = clockRadius,
             hourTickLength = -18
-        secondLabelRadius = clockRadius + 16;
-        secondLabelYOffset = 5
-        hourLabelRadius = clockRadius - 40
-        hourLabelYOffset = 7;
+            secondLabelRadius = clockRadius + 16;
+            secondLabelYOffset = 5
+            hourLabelRadius = clockRadius - 40
+            hourLabelYOffset = 7;
 
 
         var hourScale = d3.scaleLinear()
@@ -91,25 +91,25 @@
             .domain([0, 59]);
 
         var handData = [
-            {
-                type: 'hour',
-                value: 0,
-                length: -hourHandLength,
-                scale: hourScale
-            },
+            // {
+            //     type: 'hour',
+            //     value: 0,
+            //     length: -hourHandLength,
+            //     scale: hourScale
+            // },
             {
                 type: 'minute',
                 value: 0,
                 length: -minuteHandLength,
                 scale: minuteScale
             },
-            {
-                type: 'second',
-                value: 0,
-                length: -secondHandLength,
-                scale: secondScale,
-                balance: secondHandBalance
-            }
+            // {
+            //     type: 'second',
+            //     value: 0,
+            //     length: -secondHandLength,
+            //     scale: secondScale,
+            //     balance: secondHandBalance
+            // }
         ];
         let datascale = d3.scaleLinear().domain([0, 500]).range([0, clockRadius]);
         function drawClock() { //create all the clock elements
@@ -123,31 +123,11 @@
                 .attr('id', 'clock-face')
                 .attr('transform', 'translate(' + (clockRadius + margin) + ',' + (clockRadius + margin) + ')');
 
-            // d3.json("./timeonly.json").then((data) => {
-            //     Object.keys(data).forEach((key) => {
-            //         let num = data[key];
-            //         let hour = Number(key.substr(0, 2));
-            //         let minute = Number(key.substr(3, 2));
-            //         let rad = (hour * 15 + minute * 15 / 60 - 90) * Math.PI / 180;
-            //         let premin = ((minute - 1) % 60 + 60 )% 60;
-            //         let prehour = premin == 59 ? hour-1 : hour;
-            //         let prekey = prehour.toString().padStart(2,"0") + ":" + premin.toString().padStart(2,"0");
-            //         let prenum = data[prekey]
-            //         let prerad = (prehour * 15 + premin * 15 / 60 - 90) * Math.PI / 180;
-            //         console.log(key, prekey)
-            //         face.append("line")
-            //             .attr("x1", num * 5 * Math.cos(rad))
-            //             .attr("x2", prenum * 5 * Math.cos(prerad))
-            //             .attr("y1", num * 5 * Math.sin(rad))
-            //             .attr("y2", prenum * 5 * Math.sin(prerad))
-            //             .attr("stroke", "black")
-            //             .attr("stroke-width", 1)
-            //             .attr("class", hour + " " + num + prehour + " " + premin);
-            //     })
-            // })
-
             d3.json("./jinshin4.json").then((data) => {
 
+                var start = d3.line()
+                    .x(0)
+                    .y(0)
                 var medline = d3.line()
                     .x((d, i) => { return d.median * 5 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
                     .y((d, i) => { return d.median * 5 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
@@ -155,6 +135,9 @@
                 var minline = d3.line()
                     .x((d, i) => { return d.min * 5 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
                     .y((d, i) => { return d.min * 5 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                var minline2 = d3.line()
+                    .x((d, i) => { return d.min * 1 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.min * 1 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
 
                 var maxline = d3.line()
                     .x((d, i) => { return d.max * 5 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
@@ -168,67 +151,92 @@
                     .x((d, i) => { return d.quarter3 * 5 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
                     .y((d, i) => { return d.quarter3 * 5 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
 
-                face.append("path")
-                    .attr("d", maxline(data))
+                var linegroup = face.append("g").attr("id", "graph")
+
+                linegroup.append("path")
+                    .attr("d", start(data))
                     .attr("stroke", "black")
                     .attr("stroke-width", 0)
                     .attr("fill", "#D6E4E5")
                     .attr("class", "max")
-                face.append("path")
-                    .attr("d", quarter3line(data))
+                    .transition()
+                    .delay(400)
+                    .duration(200)
+                    .attr("d", maxline(data));
+                linegroup.append("path")
+                    .attr("d", start(data))
                     .attr("stroke", "black")
                     .attr("stroke-width", 0)
                     .attr("fill", "#497174")
                     .attr("class", "quarter3")
-                face.append("path")
-                    .attr("d", medline(data))
+                    .transition()
+                    .delay(300)
+                    .duration(200)
+                    .attr("d", quarter3line(data));
+                linegroup.append("path")
+                    .attr("d", start(data))
                     .attr("stroke", "black")
                     .attr("stroke-width", 0)
                     .attr("fill", "#EB6440")
                     .attr("class", "median")
-                face.append("path")
-                    .attr("d", quarterline(data))
+                    .transition()
+                    .delay(200)
+                    .duration(200)
+                    .attr("d", medline(data));
+                linegroup.append("path")
+                    .attr("d", start(data))
                     .attr("stroke", "black")
                     .attr("stroke-width", 0)
                     .attr("fill", "#0E5E6F")
                     .attr("class", "quarter")
-                face.append("path")
-                    .attr("d", minline(data))
+                    .transition()
+                    .delay(100)
+                    .duration(200)
+                    .attr("d", quarterline(data));
+                linegroup.append("path")
+                    .attr("d", start(data))
                     .attr("stroke", "black")
                     .attr("stroke-width", 0)
-                    .attr("fill", "white")
+                    .attr("fill", "#EFF5F5")
                     .attr("class", "min")
+                    .transition()
+                    .delay(0)
+                    .duration(200)
+                    .attr("d", minline(data));
+
+
 
             })
-            //add marks for seconds
-            face.selectAll('.second-tick')
-                .data(d3.range(0, 60)).enter()
-                .append('line')
-                .attr('class', 'second-tick')
-                .attr('x1', 0)
-                .attr('x2', 0)
-                .attr('y1', secondTickStart)
-                .attr('y2', secondTickStart + secondTickLength)
-                .attr('transform', function (d) {
-                    return 'rotate(' + secondScale(d) + ')';
-                });
-            //and labels
 
-            face.selectAll('.second-label')
-                .data(d3.range(5, 61, 5))
-                .enter()
-                .append('text')
-                .attr('class', 'second-label')
-                .attr('text-anchor', 'middle')
-                .attr('x', function (d) {
-                    return secondLabelRadius * Math.sin(secondScale(d) * radians);
-                })
-                .attr('y', function (d) {
-                    return -secondLabelRadius * Math.cos(secondScale(d) * radians) + secondLabelYOffset;
-                })
-                .text(function (d) {
-                    return d;
-                });
+            //add marks for seconds
+            // face.selectAll('.second-tick')
+            //     .data(d3.range(0, 60)).enter()
+            //     .append('line')
+            //     .attr('class', 'second-tick')
+            //     .attr('x1', 0)
+            //     .attr('x2', 0)
+            //     .attr('y1', secondTickStart)
+            //     .attr('y2', secondTickStart + secondTickLength)
+            //     .attr('transform', function (d) {
+            //         return 'rotate(' + secondScale(d) + ')';
+            //     });
+            // //and labels
+
+            // face.selectAll('.second-label')
+            //     .data(d3.range(5, 61, 5))
+            //     .enter()
+            //     .append('text')
+            //     .attr('class', 'second-label')
+            //     .attr('text-anchor', 'middle')
+            //     .attr('x', function (d) {
+            //         return secondLabelRadius * Math.sin(secondScale(d) * radians);
+            //     })
+            //     .attr('y', function (d) {
+            //         return -secondLabelRadius * Math.cos(secondScale(d) * radians) + secondLabelYOffset;
+            //     })
+            //     .text(function (d) {
+            //         return d;
+            //     });
 
             //... and hours
             face.selectAll('.hour-tick')
@@ -304,8 +312,8 @@
         function updateData() {
             var t = new Date();
             handData[0].value = (t.getHours() % 12) + t.getMinutes() / 60;
-            handData[1].value = t.getMinutes();
-            handData[2].value = t.getSeconds();
+            // handData[1].value = t.getMinutes();
+            // handData[2].value = t.getSeconds();
         }
 
         function dragstart(event, d) {
