@@ -52,6 +52,11 @@
     .hour-label {
         font-size: 24px;
     }
+
+    .svgframe {
+        background-color: #EFF5F5;
+        border: solid 1px #EFF5F5;
+    }
 </style>
 
 <body>
@@ -111,42 +116,90 @@
             updateData();	//draw them in the correct starting position
             var svg = d3.select("body").append("svg")
                 .attr("width", width)
-                .attr("height", height);
+                .attr("height", height)
+                .attr("class", "svgframe");
 
             var face = svg.append('g')
                 .attr('id', 'clock-face')
                 .attr('transform', 'translate(' + (clockRadius + margin) + ',' + (clockRadius + margin) + ')');
 
-            d3.json("./timeonly.json").then((data) => {
-                console.log(Object.keys(data).length);
-                let prenum = data["23:59"]
-                let prehour = 23
-                let premin = 59
-                let prerad = (prehour * 15 * premin * 15 / 60 - 90) * Math.PI / 180;
-                Object.keys(data).forEach((key) => {
-                    let num = data[key];
-                    let hour = Number(key.substr(0, 2));
-                    let minute = Number(key.substr(3, 2));
-                    let rad = (hour * 15 + minute * 15 / 60 - 90) * Math.PI / 180;
-                    face.append("circle")
-                        .attr("cx", num * 5 * Math.cos(rad))
-                        .attr("cy", num * 5 * Math.sin(rad))
-                        .attr("r", 2)
-                        .attr("fill", "red");
-                    face.append("line")
-                        .attr("x1", num * 5 * Math.cos(rad))
-                        .attr("x2", prenum * 5 * Math.cos(prerad))
-                        .attr("y1", num * 5 * Math.sin(rad))
-                        .attr("y2", prenum * 5 * Math.sin(prerad))
-                        .attr("stroke", "black")
-                        .attr("stroke-width", 1)
-                    prenum = num;
-                    prehour = hour;
-                    premin = minute;
-                    prerad = rad; 
-                })
-            })
+            // d3.json("./timeonly.json").then((data) => {
+            //     Object.keys(data).forEach((key) => {
+            //         let num = data[key];
+            //         let hour = Number(key.substr(0, 2));
+            //         let minute = Number(key.substr(3, 2));
+            //         let rad = (hour * 15 + minute * 15 / 60 - 90) * Math.PI / 180;
+            //         let premin = ((minute - 1) % 60 + 60 )% 60;
+            //         let prehour = premin == 59 ? hour-1 : hour;
+            //         let prekey = prehour.toString().padStart(2,"0") + ":" + premin.toString().padStart(2,"0");
+            //         let prenum = data[prekey]
+            //         let prerad = (prehour * 15 + premin * 15 / 60 - 90) * Math.PI / 180;
+            //         console.log(key, prekey)
+            //         face.append("line")
+            //             .attr("x1", num * 5 * Math.cos(rad))
+            //             .attr("x2", prenum * 5 * Math.cos(prerad))
+            //             .attr("y1", num * 5 * Math.sin(rad))
+            //             .attr("y2", prenum * 5 * Math.sin(prerad))
+            //             .attr("stroke", "black")
+            //             .attr("stroke-width", 1)
+            //             .attr("class", hour + " " + num + prehour + " " + premin);
+            //     })
+            // })
 
+            d3.json("./jinshin4.json").then((data) => {
+
+                var medline = d3.line()
+                    .x((d, i) => { return d.median * 5 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.median * 5 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+
+                var minline = d3.line()
+                    .x((d, i) => { return d.min * 5 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.min * 5 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+
+                var maxline = d3.line()
+                    .x((d, i) => { return d.max * 5 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.max * 5 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+
+                var quarterline = d3.line()
+                    .x((d, i) => { return d.quarter * 5 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.quarter * 5 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+
+                var quarter3line = d3.line()
+                    .x((d, i) => { return d.quarter3 * 5 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.quarter3 * 5 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+
+                face.append("path")
+                    .attr("d", maxline(data))
+                    .attr("stroke", "black")
+                    .attr("stroke-width", 0)
+                    .attr("fill", "#D6E4E5")
+                    .attr("class", "max")
+                face.append("path")
+                    .attr("d", quarter3line(data))
+                    .attr("stroke", "black")
+                    .attr("stroke-width", 0)
+                    .attr("fill", "#497174")
+                    .attr("class", "quarter3")
+                face.append("path")
+                    .attr("d", medline(data))
+                    .attr("stroke", "black")
+                    .attr("stroke-width", 0)
+                    .attr("fill", "#EB6440")
+                    .attr("class", "median")
+                face.append("path")
+                    .attr("d", quarterline(data))
+                    .attr("stroke", "black")
+                    .attr("stroke-width", 0)
+                    .attr("fill", "#0E5E6F")
+                    .attr("class", "quarter")
+                face.append("path")
+                    .attr("d", minline(data))
+                    .attr("stroke", "black")
+                    .attr("stroke-width", 0)
+                    .attr("fill", "white")
+                    .attr("class", "min")
+
+            })
             //add marks for seconds
             face.selectAll('.second-tick')
                 .data(d3.range(0, 60)).enter()
