@@ -128,6 +128,16 @@ propertiesには好きな情報を入れて良い。geometryのtypeで点なの�
     - jsonは[ここ](nakamura/timeonly.json)
 - d3.jsでjsonを読み込んで、実際のデータで描画出来るようにした。
 ![](shinchoku_image/nakamura/clock.png)
+18:36注：
+なんかバグってたので、2点を割り出すアルゴリズムと、元のデータを変更（事故の起こっていない時刻を0埋め）して、修正した。
+![](shinchoku_image/nakamura/clock2.png)
+
+見づらいので、15分か30分おきに4文意数を取って描画するほうがよさそう。
+0, 25, 25, 75, 100%点をjsonに保存して（例によってnotebookでpythonで行った）、描画するようにした。
+![](shinchoku_image/nakamura/clock3.png)
+
+TODO:曜日ごとに変更出来るようにする。
+- 曜日ごとのjsonを用意するところから必要
 
 ※前回の進捗で忘れてた分
 - [このjsファイル](nakamura/datalist.js)は、[このスクリプト](nakamura/find_geojson.py)でgeojsonを再帰的に探索し、そのパスをjsファイルとして保存するもので、これによって一括でデータを管理することが出来るようになった。
