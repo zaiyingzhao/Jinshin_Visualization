@@ -42,3 +42,21 @@ twitter APIでキーワードを含むツイート検索をしても取得でき
 
 ### 今後の流れ
 次回までに関連ツイート数の分析は終わると考えられるため、今後は他2人と合流して実際の可視化の部分に着手することになるはず
+
+## 第5回（11/10）
+### やったこと
+- ツイート数取得を完了した（[tweets.csv](https://github.com/InfovisHandsOn/A-Pastani/blob/main/data/tweets.csv)）
+- 同名の駅を区別するために全ての鉄道のgeojsonのpropertiesに路線名を追加した。
+  1. 中村くんが[全てのgeojsonパスのリスト](https://github.com/InfovisHandsOn/A-Pastani/blob/main/home/datalist.js)を作成してくれていたので、[getAbsolutePath.py](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/getAbsolutePath.py)でそのパスから路線名を抽出した上で自身の環境の絶対パスに整形した
+  2. [process_json.py](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/process_json.py)で先ほど整形した絶対パスのリストを用いて全てのgeojsonにアクセスし、propertiesに該当路線名を追加した([data](https://github.com/InfovisHandsOn/A-Pastani/tree/main/data)/各路線ディレクトリの"路線名_addRailname.geojson")
+  3. [路線名の情報](https://github.com/InfovisHandsOn/A-Pastani/blob/main/data/railname.pickle)は実際に同名駅の区別に使うと思われたのでpickleファイルの形で格納した
+- 後々必要になるかもしれないと思ったので[analyze_jinshindata.py](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/analyze_jinshindata.py)で人身事故データを分析し、[曜日別](https://github.com/InfovisHandsOn/A-Pastani/blob/main/data/jinshin-youbi.csv)/[月別](https://github.com/InfovisHandsOn/A-Pastani/blob/main/data/jinshin-month.csv)/[時間別](https://github.com/InfovisHandsOn/A-Pastani/blob/main/data/jinshin-hour.csv)の人身事故発生数をcsvファイルとして追加した
+- QRA#5で画面の移動やズームを担当することになったので、簡易的にこれらを実装した（GitHubにはまだ載せていません）
+
+### 次回までにやること
+- QRA#5の改善
+  - 現在ズームはマウス位置取得したうえでそのマウス位置を中心として画面拡大するという方法でやっているが、Capstone Projectでは駅をクリックしたときに駅に向かってズームするということをしたいので、少し実装を変える必要がある
+  - またtransition()を用いているもののまだクオリティが低い感じがするので、ズーム時のエフェクト/滑らかさにもう少しこだわりたい
+- 人身事故発生場所が線路上（踏切など）のときの対応
+  - チーム全体の課題にはなるが人身事故発生場所が曖昧なときにどのように可視化を行うか考えたい
+  - 個人的には線路上の踏切の情報を探してきて、該当駅間の踏切を事故現場とすればいいのではと思っている
