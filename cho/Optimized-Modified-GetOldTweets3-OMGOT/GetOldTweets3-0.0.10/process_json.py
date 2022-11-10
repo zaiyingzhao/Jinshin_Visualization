@@ -1,13 +1,20 @@
 import json
+import pickle
 
-json_open = open("sample.geojson", "r")
-rail_json = json.load(json_open)
+with open("datalist.pickle", "rb") as p:
+    datalist = pickle.load(p)
 
-# 型は辞書
-# print(type(rail_json))
+with open("railname.pickle", "rb") as q:
+    railname = pickle.load(q)
 
-for i in range(len(rail_json["features"])):
-    rail_json["features"][i]["properties"]["rail"] = "IGRいわて銀河鉄道"
+for i in range(len(datalist)):
+    json_open = open(datalist[i], "r")
+    rail_json = json.load(json_open)
 
-with open("result.geojson", "w") as f:
-    json.dump(rail_json, f, ensure_ascii=False)
+    for j in range(len(rail_json["features"])):
+        rail_json["features"][j]["properties"]["railname"] = railname[i]
+
+    filename = datalist[i][:-8] + "_addRailname.geojson"
+
+    with open(filename, "w") as f:
+        json.dump(rail_json, f, ensure_ascii=False)
