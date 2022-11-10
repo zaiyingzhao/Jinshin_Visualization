@@ -28,7 +28,7 @@
     - web archiveに過去7年くらいのデータがある
 
 TOP Page
-![](/shinchoku_image/nakamura/CamScanner%2011-07-2022%2015.55.jpg)
+![](shinchoku_image/nakamura/CamScanner%2011-07-2022%2015.55.jpg)
 
 ## どうやって情報を蓄積するかの案
 - 基本CSVでよさそう（RDB使いたいなら後から使えばいい）
@@ -59,3 +59,56 @@ d3.jsで路線図のデータを描画するようにした。基本はjapan.htm
 
 全路線図のデータを描画することに成功した。駅のポイントの点も任意の形に変えられるようになった。
 ![](shinchoku_image/nakamura/rosenzu.png)
+
+# 11/10
+geojsonの構造を見ると、以下のようになっている。
+propertiesには好きな情報を入れて良い。geometryのtypeで点なのか線なのか判別可能。
+ホームドア設置状況はpoitn側のpropertiesの中に`"door": "2016-04-01"`のようにして追加できれば追加でcsvを読み込まなくても良いのでこれを行う。
+```json
+        {
+            "properties": {
+                "name": "盛岡",
+                "uri": "https://uedayou.net/jrslod/IGRいわて銀河鉄道/いわて銀河鉄道線/盛岡",
+                "color": "0000CD"
+            },
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        141.13802,
+                        39.69969
+                    ],
+                    [
+                        141.13473,
+                        39.7027
+                    ]
+                ]
+            }
+        },
+        {
+            "properties": {
+                "name": "盛岡",
+                "uri": "https://uedayou.net/jrslod/IGRいわて銀河鉄道/いわて銀河鉄道線/盛岡"
+            },
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    141.13473,
+                    39.7027
+                ]
+            }
+        },
+```
+次に人身事故のデータと、駅データの結びつけ方を考える必要がある。
+
+- QAR
+    - 時系列シークバー
+    - ズームインアウト、移動
+    - 時計
+    - 時系列グラフ
+
+- 作業
+    - geojsonのpropertiesに路線とホームドア設置日時を追加
+    - 駅間で起きた人身事故の対処法を考える
