@@ -134,6 +134,7 @@ propertiesには好きな情報を入れて良い。geometryのtypeで点なの�
 
 見づらいので、15分か30分おきに4文意数を取って描画するほうがよさそう。
 0, 25, 25, 75, 100%点をjsonに保存して（例によってnotebookでpythonで行った）、描画するようにした。
+
 ![](shinchoku_image/nakamura/clock3.png)
 
 TODO:曜日ごとに変更出来るようにする。
