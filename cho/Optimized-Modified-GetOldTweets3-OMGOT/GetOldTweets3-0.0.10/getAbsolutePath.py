@@ -612,5 +612,5 @@ for i in range(len(datalist)):
 with open("datalist.pickle", "wb") as p:
     pickle.dump(datalist, p)
 
-with open("railname.pickle", "wb") as q:
+with open("/home/zaiying/A-Pastani/data/railname.pickle", "wb") as q:
     pickle.dump(railname, q)
