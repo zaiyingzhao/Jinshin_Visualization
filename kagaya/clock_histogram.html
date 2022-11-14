@@ -130,7 +130,7 @@
 
         var histogram = svg.append('g')
                 .attr('id', 'histogram')
-                .attr('transform', 'translate(' + 0 + ',' + 0 + ')');
+                .attr('transform', 'translate(' + 0 + ',' + 0 + ')')
 
         var face = svg.append('g')
                 .attr('id', 'clock-face')
@@ -168,48 +168,53 @@
                 .on("mouseover", function(event, d){tooltip.style("visibility", "visible").html(d.day + "<br>" + d.value);})
                 .on("mousemove", function(d){tooltip.style("left", event.pageX+ 20 + "px").style("top", event.pageY + "px");})
                 .on("mouseout", function(d){tooltip.style("visibility", "hidden");})
-                .on("click", function(event, d){drawClock(d.day)});
+                .on("click", function(event, d){
+                    histogram.selectAll("rect").attr("fill", "#497174");
+                    d3.select(this).attr("fill", "#EB6440")
+                    if (d.day == "all"){
+                        d3.json("../data/clockdata_all.json").then((data) => {
+                        drawGraph(data, face, d.day);
+                        })
+                    }else if (d.day == "mon"){
+                        d3.json("../data/clockdata_mon.json").then((data) => {
+                        drawGraph(data, face, d.day);
+                        })
+                    }else if (d.day == "tue"){
+                        d3.json("../data/clockdata_tue.json").then((data) => {
+                        drawGraph(data, face, d.day);
+                        })
+                    }else if (d.day == "wed"){
+                        d3.json("../data/clockdata_wed.json").then((data) => {
+                        drawGraph(data, face, d.day);
+                        })
+                    }else if (d.day == "thu"){
+                        d3.json("../data/clockdata_thu.json").then((data) => {
+                        drawGraph(data, face, d.day);
+                        })
+                    }else if (d.day == "fri"){
+                        d3.json("../data/clockdata_fri.json").then((data) => {
+                        drawGraph(data, face, d.day);
+                        })
+                    }else if (d.day == "sat"){
+                        d3.json("../data/clockdata_sat.json").then((data) => {
+                        drawGraph(data, face, d.day);
+                        })
+                    }else{
+                        d3.json("../data/clockdata_sun.json").then((data) => {
+                        drawGraph(data, face, d.day);
+                        })
+                    }
+                });
             });
         }
 
-        function drawClock(day) { //create all the clock elements
+        function drawClock() { //create all the clock elements
             updateData();	//draw them in the correct starting position
 
-            face.selectAll("#graph").remove();
+            d3.json("../data/clockdata_all.json").then((data) => {
+                drawGraph(data, face, "all");
+            })
 
-            if (day == "all"){
-                d3.json("../data/clockdata_all.json").then((data) => {
-                drawGraph(data, face, day);
-                })
-            }else if (day == "mon"){
-                d3.json("../data/clockdata_mon.json").then((data) => {
-                drawGraph(data, face, day);
-                })
-            }else if (day == "tue"){
-                d3.json("../data/clockdata_tue.json").then((data) => {
-                drawGraph(data, face, day);
-                })
-            }else if (day == "wed"){
-                d3.json("../data/clockdata_wed.json").then((data) => {
-                drawGraph(data, face, day);
-                })
-            }else if (day == "thu"){
-                d3.json("../data/clockdata_thu.json").then((data) => {
-                drawGraph(data, face, day);
-                })
-            }else if (day == "fri"){
-                d3.json("../data/clockdata_fri.json").then((data) => {
-                drawGraph(data, face, day);
-                })
-            }else if (day == "sat"){
-                d3.json("../data/clockdata_sat.json").then((data) => {
-                drawGraph(data, face, day);
-                })
-            }else{
-                d3.json("../data/clockdata_sun.json").then((data) => {
-                drawGraph(data, face, day);
-                })
-            }
 
             face.selectAll('.hour-tick')
                 .data(d3.range(0, 12)).enter()
@@ -274,12 +279,14 @@
         }
 
         function drawGraph(data, face, day) {
+            face.selectAll("#graph").remove();
+
             var start = d3.line()
                     .x(0)
                     .y(0)
 
             if (day == "all"){
-                var medline = d3.line()
+                var medline = d3.line(data)
                     .x((d, i) => { return d.median * 5 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
                     .y((d, i) => { return d.median * 5 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
                 var minline = d3.line()
