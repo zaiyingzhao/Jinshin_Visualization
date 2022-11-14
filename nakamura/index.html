@@ -53,6 +53,7 @@
         datalist.forEach((path) => {
             wait.push(d3.json(path));
         })
+        wait.push(d3.csv("../data/jinshin_archive_sentence.csv"));
         Promise.all(wait).then(function (values) {
             var japangeo = topojson.feature(values[0], values[0].objects.japan);
             svg.selectAll("path")
@@ -64,6 +65,9 @@
                 .attr("stroke-width", 1)
                 .attr("fill", "#646464");
             values.shift();
+            let csv = values.pop();
+            csv = csv.reverse();
+            console.log(csv);
             values.forEach((d) => {
                 svg.selectAll("path2")
                     .data(d.features)
@@ -83,97 +87,133 @@
                     .attr("stroke-widht", 0.1)
                     .attr("fill", "#a9ceec")
             })
-        })
-        const start_unixTime = 1262271600; //2010/01/01
-        const end_unixTime = 1668006000; //2022/11/10
-        let nowunix_seconds = start_unixTime;
+            const start_unixTime = 1262271600; //2010/01/01
+            const end_unixTime = 1668006000; //2022/11/10
+            let nowunix_seconds = start_unixTime;
 
-        var date = svg.append("text")
-            .text(`${new Date(nowunix_seconds * 1000)}`)
-            .attr("x", 500)
-            .attr("y", 830)
-            .attr("font-family", "Arial, Helvetica, sans-serif")
-            .attr("stroke", "black");
+            var date = svg.append("text")
+                .text(`${new Date(nowunix_seconds * 1000)}`)
+                .attr("x", 500)
+                .attr("y", 830)
+                .attr("font-family", "Arial, Helvetica, sans-serif")
+                .attr("stroke", "black");
 
-        var slider = svg.append("g")
-            .attr("class", "slider");
+            var slider = svg.append("g")
+                .attr("class", "slider");
 
-        slider.append("line")
-            .attr("x1", 10)
-            .attr("x2", width - 10)
-            .attr("y1", height - 50)
-            .attr("y2", height - 50)
-            .attr("stroke", "grey")
-            .attr("stroke-width", 5)
-            .attr("stroke-linecap", "round")
-            .attr("pointer-events", "stroke")
-            .attr("cursor", "crosshair")
-            .call(d3.drag()
-                .on("start", function () { })
-                .on("drag", function (event, d) {
-                    currentValue = event.sourceEvent.clientX;
-                    update(currentValue);
-                }));
+            slider.append("line")
+                .attr("x1", 10)
+                .attr("x2", width - 10)
+                .attr("y1", height - 50)
+                .attr("y2", height - 50)
+                .attr("stroke", "grey")
+                .attr("stroke-width", 5)
+                .attr("stroke-linecap", "round")
+                .attr("pointer-events", "stroke")
+                .attr("cursor", "crosshair")
+                .call(d3.drag()
+                    .on("start", function () { })
+                    .on("drag", function (event, d) {
+                        currentValue = event.sourceEvent.clientX;
+                        update(currentValue);
+                    }));
 
-        var handle = slider.insert("circle", ".track-overlay")
-            .attr("cx", 10)
-            .attr("cy", height - 50)
-            .attr("r", 7);
-        let interval = 50;
-        let timer;
-        var playButton = d3.select("#play-button")
-            .on("click", function () {
-                var button = d3.select(this);
-                if (button.text() == "Pause") {
+            var handle = slider.insert("circle", ".track-overlay")
+                .attr("cx", 10)
+                .attr("cy", height - 50)
+                .attr("r", 7);
+            let interval = 50;
+            let timer;
+            var playButton = d3.select("#play-button")
+                .on("click", function () {
+                    var button = d3.select(this);
+                    if (button.text() == "Pause") {
+                        clearInterval(timer);
+                        // timer = 0;
+                        button.text("Play");
+                    } else {
+                        //moving = true;
+                        timer = setInterval(step, interval);
+                        button.text("Pause");
+                    }
+                })
+
+            let step_time = 60 * 60 * 24;
+            let preunix_seconds = nowunix_seconds;
+
+            function step() {
+                let temp_seconds = nowunix_seconds + step_time;
+                if (now_to_value(temp_seconds) >= width - 10) {
                     clearInterval(timer);
-                    // timer = 0;
-                    button.text("Play");
-                } else {
-                    //moving = true;
-                    timer = setInterval(step, interval);
-                    button.text("Pause");
+                    playButton.text("Play");
                 }
-            })
-        
-        let step_time = 60*60*24;
-        let preunix_seconds = nowunix_seconds;
-
-        function step() {
-            update(now_to_value(nowunix_seconds));
-            nowunix_seconds = nowunix_seconds + step_time;
-            if (now_to_value(nowunix_seconds) >= width - 10) {
-                clearInterval(timer);
-                playButton.text("Play");
+                update(now_to_value(temp_seconds));
             }
-        }
 
-        var speedButton = d3.select("#speed-button")
-            .on("click", function () {
-                let button = d3.select(this);
-                if (button.text() == "x2") {
-                    step_time *= 2;
-                    button.text("1/2");
-                }
-                else {
-                    step_time /= 2;
-                    button.text("x2");
-                }
-            })
+            var speedButton = d3.select("#speed-button")
+                .on("click", function () {
+                    let button = d3.select(this);
+                    if (button.text() == "x2") {
+                        step_time *= 2;
+                        button.text("1/2");
+                    }
+                    else {
+                        step_time /= 2;
+                        button.text("x2");
+                    }
+                })
 
-        function now_to_value(now_seconds) {
-            return (now_seconds - start_unixTime) * (width - 20) / (end_unixTime - start_unixTime) + 10;
-        }
-        function update(now_position) {
-            // update position and text of label according to slider scale
-            console.log(interval);
-            if (now_position >= 10 && now_position <= width - 10) {
-                handle.attr("cx", now_position);
-                preunix_seconds = nowunix_seconds;
-                nowunix_seconds = (end_unixTime - start_unixTime) / (width - 10 - 10) * (now_position - 10) + start_unixTime;
-                date.text(`${new Date(nowunix_seconds * 1000)}`);
+            function now_to_value(now_seconds) {
+                return (now_seconds - start_unixTime) * (width - 20) / (end_unixTime - start_unixTime) + 10;
             }
-            //filter data set and redraw plot
-        }
+            function update(now_position) {
+                // update position and text of label according to slider scale
+                if (now_position >= 10 && now_position <= width - 10) {
+                    handle.attr("cx", now_position);
+                    preunix_seconds = nowunix_seconds;
+                    nowunix_seconds = (end_unixTime - start_unixTime) / (width - 10 - 10) * (now_position - 10) + start_unixTime;
+                    date.text(`${new Date(nowunix_seconds * 1000)}`);
+                    let viewer = binary_search();
+                    for (let i = viewer[0] + 1; i <= viewer[1]; i++){
+                        console.log(csv[i]["place"]);
+                    }
+                }
+                //filter data set and redraw plot
+            }
+
+            function binary_search() {
+                let wa = csv.length;
+                let ac = 0;
+                while( wa -ac > 1){
+                    let mid = parseInt((ac+wa)/2);
+                    if (new Date(csv[mid]["date"]).getTime() < nowunix_seconds*1000){
+                        ac = mid;
+                    }
+                    else {
+                        wa = mid;
+                    }
+                }
+                let most_new = ac;
+                wa = csv.length;
+                ac = 0;
+                while( wa -ac > 1){
+                    let mid = parseInt((ac+wa)/2);
+                    if (new Date(csv[mid]["date"]).getTime() < preunix_seconds*1000){
+                        ac = mid;
+                    }
+                    else {
+                        wa = mid;
+                    }
+                }
+                let most_old = ac;
+                return [most_old, most_new];
+            }
+
+            function update_draw(line, place) {
+                // console.log(place);
+            }
+        })
+
     </script>
 
 </body>
