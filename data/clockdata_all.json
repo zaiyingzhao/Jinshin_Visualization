@@ -1,0 +1,1298 @@
+[
+  {
+    "hour": 0,
+    "minute": 0,
+    "min": 8.0,
+    "quarter": 10.0,
+    "median": 10.5,
+    "quarter3": 12.75,
+    "max": 38.0
+  },
+  {
+    "hour": 0,
+    "minute": 10,
+    "min": 5.0,
+    "quarter": 8.0,
+    "median": 9.0,
+    "quarter3": 11.75,
+    "max": 27.0
+  },
+  {
+    "hour": 0,
+    "minute": 20,
+    "min": 5.0,
+    "quarter": 7.25,
+    "median": 9.0,
+    "quarter3": 11.75,
+    "max": 21.0
+  },
+  {
+    "hour": 0,
+    "minute": 30,
+    "min": 2.0,
+    "quarter": 3.5,
+    "median": 6.5,
+    "quarter3": 8.5,
+    "max": 27.0
+  },
+  {
+    "hour": 0,
+    "minute": 40,
+    "min": 3.0,
+    "quarter": 4.25,
+    "median": 5.5,
+    "quarter3": 8.0,
+    "max": 14.0
+  },
+  {
+    "hour": 0,
+    "minute": 50,
+    "min": 1.0,
+    "quarter": 2.25,
+    "median": 4.5,
+    "quarter3": 5.75,
+    "max": 12.0
+  },
+  {
+    "hour": 1,
+    "minute": 0,
+    "min": 0.0,
+    "quarter": 1.25,
+    "median": 2.0,
+    "quarter3": 2.75,
+    "max": 12.0
+  },
+  {
+    "hour": 1,
+    "minute": 10,
+    "min": 0.0,
+    "quarter": 1.0,
+    "median": 1.5,
+    "quarter3": 2.0,
+    "max": 4.0
+  },
+  {
+    "hour": 1,
+    "minute": 20,
+    "min": 0.0,
+    "quarter": 0.0,
+    "median": 1.0,
+    "quarter3": 1.75,
+    "max": 3.0
+  },
+  {
+    "hour": 1,
+    "minute": 30,
+    "min": 0.0,
+    "quarter": 1.0,
+    "median": 1.0,
+    "quarter3": 2.75,
+    "max": 4.0
+  },
+  {
+    "hour": 1,
+    "minute": 40,
+    "min": 0.0,
+    "quarter": 0.0,
+    "median": 0.0,
+    "quarter3": 1.0,
+    "max": 3.0
+  },
+  {
+    "hour": 1,
+    "minute": 50,
+    "min": 0.0,
+    "quarter": 0.0,
+    "median": 1.0,
+    "quarter3": 1.0,
+    "max": 4.0
+  },
+  {
+    "hour": 2,
+    "minute": 0,
+    "min": 0.0,
+    "quarter": 0.0,
+    "median": 1.0,
+    "quarter3": 1.75,
+    "max": 3.0
+  },
+  {
+    "hour": 2,
+    "minute": 10,
+    "min": 0.0,
+    "quarter": 0.0,
+    "median": 0.0,
+    "quarter3": 1.0,
+    "max": 2.0
+  },
+  {
+    "hour": 2,
+    "minute": 20,
+    "min": 0.0,
+    "quarter": 0.0,
+    "median": 0.0,
+    "quarter3": 0.75,
+    "max": 2.0
+  },
+  {
+    "hour": 2,
+    "minute": 30,
+    "min": 0.0,
+    "quarter": 0.0,
+    "median": 0.0,
+    "quarter3": 0.0,
+    "max": 1.0
+  },
+  {
+    "hour": 2,
+    "minute": 40,
+    "min": 0.0,
+    "quarter": 0.0,
+    "median": 1.0,
+    "quarter3": 1.0,
+    "max": 2.0
+  },
+  {
+    "hour": 2,
+    "minute": 50,
+    "min": 0.0,
+    "quarter": 0.0,
+    "median": 0.5,
+    "quarter3": 1.75,
+    "max": 3.0
+  },
+  {
+    "hour": 3,
+    "minute": 0,
+    "min": 0.0,
+    "quarter": 0.25,
+    "median": 1.0,
+    "quarter3": 1.0,
+    "max": 1.0
+  },
+  {
+    "hour": 3,
+    "minute": 10,
+    "min": 0.0,
+    "quarter": 0.0,
+    "median": 0.0,
+    "quarter3": 0.75,
+    "max": 1.0
+  },
+  {
+    "hour": 3,
+    "minute": 20,
+    "min": 0.0,
+    "quarter": 0.0,
+    "median": 0.0,
+    "quarter3": 0.75,
+    "max": 3.0
+  },
+  {
+    "hour": 3,
+    "minute": 30,
+    "min": 0.0,
+    "quarter": 0.0,
+    "median": 0.0,
+    "quarter3": 1.0,
+    "max": 6.0
+  },
+  {
+    "hour": 3,
+    "minute": 40,
+    "min": 0.0,
+    "quarter": 0.0,
+    "median": 0.0,
+    "quarter3": 0.75,
+    "max": 1.0
+  },
+  {
+    "hour": 3,
+    "minute": 50,
+    "min": 0.0,
+    "quarter": 0.0,
+    "median": 0.0,
+    "quarter3": 1.0,
+    "max": 1.0
+  },
+  {
+    "hour": 4,
+    "minute": 0,
+    "min": 0.0,
+    "quarter": 0.0,
+    "median": 0.0,
+    "quarter3": 1.0,
+    "max": 3.0
+  },
+  {
+    "hour": 4,
+    "minute": 10,
+    "min": 0.0,
+    "quarter": 0.0,
+    "median": 1.0,
+    "quarter3": 1.0,
+    "max": 2.0
+  },
+  {
+    "hour": 4,
+    "minute": 20,
+    "min": 0.0,
+    "quarter": 0.0,
+    "median": 0.0,
+    "quarter3": 1.0,
+    "max": 2.0
+  },
+  {
+    "hour": 4,
+    "minute": 30,
+    "min": 0.0,
+    "quarter": 1.0,
+    "median": 1.0,
+    "quarter3": 2.5,
+    "max": 5.0
+  },
+  {
+    "hour": 4,
+    "minute": 40,
+    "min": 1.0,
+    "quarter": 1.0,
+    "median": 3.0,
+    "quarter3": 3.0,
+    "max": 4.0
+  },
+  {
+    "hour": 4,
+    "minute": 50,
+    "min": 1.0,
+    "quarter": 2.0,
+    "median": 2.5,
+    "quarter3": 3.75,
+    "max": 4.0
+  },
+  {
+    "hour": 5,
+    "minute": 0,
+    "min": 3.0,
+    "quarter": 4.25,
+    "median": 5.5,
+    "quarter3": 6.0,
+    "max": 16.0
+  },
+  {
+    "hour": 5,
+    "minute": 10,
+    "min": 4.0,
+    "quarter": 5.25,
+    "median": 7.5,
+    "quarter3": 9.0,
+    "max": 13.0
+  },
+  {
+    "hour": 5,
+    "minute": 20,
+    "min": 3.0,
+    "quarter": 6.25,
+    "median": 7.5,
+    "quarter3": 9.5,
+    "max": 15.0
+  },
+  {
+    "hour": 5,
+    "minute": 30,
+    "min": 6.0,
+    "quarter": 8.0,
+    "median": 9.0,
+    "quarter3": 9.75,
+    "max": 18.0
+  },
+  {
+    "hour": 5,
+    "minute": 40,
+    "min": 6.0,
+    "quarter": 7.0,
+    "median": 8.5,
+    "quarter3": 10.0,
+    "max": 16.0
+  },
+  {
+    "hour": 5,
+    "minute": 50,
+    "min": 3.0,
+    "quarter": 5.5,
+    "median": 8.5,
+    "quarter3": 10.75,
+    "max": 13.0
+  },
+  {
+    "hour": 6,
+    "minute": 0,
+    "min": 4.0,
+    "quarter": 7.0,
+    "median": 8.5,
+    "quarter3": 10.0,
+    "max": 29.0
+  },
+  {
+    "hour": 6,
+    "minute": 10,
+    "min": 3.0,
+    "quarter": 7.25,
+    "median": 8.5,
+    "quarter3": 10.75,
+    "max": 20.0
+  },
+  {
+    "hour": 6,
+    "minute": 20,
+    "min": 4.0,
+    "quarter": 6.5,
+    "median": 9.0,
+    "quarter3": 11.5,
+    "max": 16.0
+  },
+  {
+    "hour": 6,
+    "minute": 30,
+    "min": 5.0,
+    "quarter": 7.0,
+    "median": 9.0,
+    "quarter3": 11.5,
+    "max": 21.0
+  },
+  {
+    "hour": 6,
+    "minute": 40,
+    "min": 4.0,
+    "quarter": 5.25,
+    "median": 8.5,
+    "quarter3": 10.75,
+    "max": 16.0
+  },
+  {
+    "hour": 6,
+    "minute": 50,
+    "min": 4.0,
+    "quarter": 5.75,
+    "median": 10.0,
+    "quarter3": 12.5,
+    "max": 16.0
+  },
+  {
+    "hour": 7,
+    "minute": 0,
+    "min": 5.0,
+    "quarter": 6.25,
+    "median": 10.0,
+    "quarter3": 12.25,
+    "max": 25.0
+  },
+  {
+    "hour": 7,
+    "minute": 10,
+    "min": 5.0,
+    "quarter": 7.0,
+    "median": 8.5,
+    "quarter3": 10.0,
+    "max": 18.0
+  },
+  {
+    "hour": 7,
+    "minute": 20,
+    "min": 4.0,
+    "quarter": 8.0,
+    "median": 9.0,
+    "quarter3": 10.75,
+    "max": 14.0
+  },
+  {
+    "hour": 7,
+    "minute": 30,
+    "min": 4.0,
+    "quarter": 7.0,
+    "median": 8.5,
+    "quarter3": 9.75,
+    "max": 24.0
+  },
+  {
+    "hour": 7,
+    "minute": 40,
+    "min": 4.0,
+    "quarter": 7.25,
+    "median": 9.0,
+    "quarter3": 9.75,
+    "max": 21.0
+  },
+  {
+    "hour": 7,
+    "minute": 50,
+    "min": 5.0,
+    "quarter": 8.25,
+    "median": 10.0,
+    "quarter3": 13.25,
+    "max": 19.0
+  },
+  {
+    "hour": 8,
+    "minute": 0,
+    "min": 4.0,
+    "quarter": 5.0,
+    "median": 8.0,
+    "quarter3": 12.25,
+    "max": 23.0
+  },
+  {
+    "hour": 8,
+    "minute": 10,
+    "min": 6.0,
+    "quarter": 8.0,
+    "median": 11.5,
+    "quarter3": 14.0,
+    "max": 21.0
+  },
+  {
+    "hour": 8,
+    "minute": 20,
+    "min": 3.0,
+    "quarter": 9.25,
+    "median": 11.0,
+    "quarter3": 12.75,
+    "max": 18.0
+  },
+  {
+    "hour": 8,
+    "minute": 30,
+    "min": 3.0,
+    "quarter": 6.0,
+    "median": 9.0,
+    "quarter3": 10.75,
+    "max": 28.0
+  },
+  {
+    "hour": 8,
+    "minute": 40,
+    "min": 3.0,
+    "quarter": 7.25,
+    "median": 10.0,
+    "quarter3": 11.75,
+    "max": 20.0
+  },
+  {
+    "hour": 8,
+    "minute": 50,
+    "min": 6.0,
+    "quarter": 6.25,
+    "median": 7.0,
+    "quarter3": 9.5,
+    "max": 21.0
+  },
+  {
+    "hour": 9,
+    "minute": 0,
+    "min": 4.0,
+    "quarter": 11.0,
+    "median": 14.5,
+    "quarter3": 15.75,
+    "max": 31.0
+  },
+  {
+    "hour": 9,
+    "minute": 10,
+    "min": 9.0,
+    "quarter": 10.25,
+    "median": 12.5,
+    "quarter3": 14.75,
+    "max": 20.0
+  },
+  {
+    "hour": 9,
+    "minute": 20,
+    "min": 7.0,
+    "quarter": 8.75,
+    "median": 12.0,
+    "quarter3": 14.5,
+    "max": 21.0
+  },
+  {
+    "hour": 9,
+    "minute": 30,
+    "min": 5.0,
+    "quarter": 7.0,
+    "median": 11.0,
+    "quarter3": 14.25,
+    "max": 32.0
+  },
+  {
+    "hour": 9,
+    "minute": 40,
+    "min": 3.0,
+    "quarter": 8.25,
+    "median": 11.0,
+    "quarter3": 17.25,
+    "max": 24.0
+  },
+  {
+    "hour": 9,
+    "minute": 50,
+    "min": 8.0,
+    "quarter": 9.25,
+    "median": 11.5,
+    "quarter3": 14.75,
+    "max": 21.0
+  },
+  {
+    "hour": 10,
+    "minute": 0,
+    "min": 8.0,
+    "quarter": 12.0,
+    "median": 13.5,
+    "quarter3": 15.75,
+    "max": 26.0
+  },
+  {
+    "hour": 10,
+    "minute": 10,
+    "min": 2.0,
+    "quarter": 10.5,
+    "median": 12.0,
+    "quarter3": 15.5,
+    "max": 23.0
+  },
+  {
+    "hour": 10,
+    "minute": 20,
+    "min": 5.0,
+    "quarter": 12.0,
+    "median": 13.0,
+    "quarter3": 15.5,
+    "max": 19.0
+  },
+  {
+    "hour": 10,
+    "minute": 30,
+    "min": 8.0,
+    "quarter": 10.25,
+    "median": 13.5,
+    "quarter3": 15.5,
+    "max": 29.0
+  },
+  {
+    "hour": 10,
+    "minute": 40,
+    "min": 5.0,
+    "quarter": 8.0,
+    "median": 11.5,
+    "quarter3": 15.25,
+    "max": 18.0
+  },
+  {
+    "hour": 10,
+    "minute": 50,
+    "min": 5.0,
+    "quarter": 7.5,
+    "median": 10.5,
+    "quarter3": 12.0,
+    "max": 21.0
+  },
+  {
+    "hour": 11,
+    "minute": 0,
+    "min": 9.0,
+    "quarter": 13.25,
+    "median": 14.5,
+    "quarter3": 16.75,
+    "max": 33.0
+  },
+  {
+    "hour": 11,
+    "minute": 10,
+    "min": 9.0,
+    "quarter": 9.5,
+    "median": 12.0,
+    "quarter3": 13.5,
+    "max": 26.0
+  },
+  {
+    "hour": 11,
+    "minute": 20,
+    "min": 6.0,
+    "quarter": 8.25,
+    "median": 12.0,
+    "quarter3": 14.75,
+    "max": 21.0
+  },
+  {
+    "hour": 11,
+    "minute": 30,
+    "min": 6.0,
+    "quarter": 7.5,
+    "median": 13.0,
+    "quarter3": 15.25,
+    "max": 32.0
+  },
+  {
+    "hour": 11,
+    "minute": 40,
+    "min": 6.0,
+    "quarter": 7.25,
+    "median": 13.5,
+    "quarter3": 17.25,
+    "max": 27.0
+  },
+  {
+    "hour": 11,
+    "minute": 50,
+    "min": 5.0,
+    "quarter": 10.0,
+    "median": 10.0,
+    "quarter3": 14.5,
+    "max": 31.0
+  },
+  {
+    "hour": 12,
+    "minute": 0,
+    "min": 6.0,
+    "quarter": 8.5,
+    "median": 11.5,
+    "quarter3": 13.75,
+    "max": 27.0
+  },
+  {
+    "hour": 12,
+    "minute": 10,
+    "min": 7.0,
+    "quarter": 9.0,
+    "median": 10.5,
+    "quarter3": 14.25,
+    "max": 16.0
+  },
+  {
+    "hour": 12,
+    "minute": 20,
+    "min": 4.0,
+    "quarter": 7.25,
+    "median": 10.5,
+    "quarter3": 14.5,
+    "max": 18.0
+  },
+  {
+    "hour": 12,
+    "minute": 30,
+    "min": 5.0,
+    "quarter": 9.25,
+    "median": 11.0,
+    "quarter3": 14.75,
+    "max": 26.0
+  },
+  {
+    "hour": 12,
+    "minute": 40,
+    "min": 7.0,
+    "quarter": 8.25,
+    "median": 12.0,
+    "quarter3": 14.75,
+    "max": 17.0
+  },
+  {
+    "hour": 12,
+    "minute": 50,
+    "min": 6.0,
+    "quarter": 8.25,
+    "median": 11.0,
+    "quarter3": 12.0,
+    "max": 17.0
+  },
+  {
+    "hour": 13,
+    "minute": 0,
+    "min": 5.0,
+    "quarter": 9.25,
+    "median": 11.5,
+    "quarter3": 13.75,
+    "max": 25.0
+  },
+  {
+    "hour": 13,
+    "minute": 10,
+    "min": 5.0,
+    "quarter": 7.25,
+    "median": 11.5,
+    "quarter3": 13.0,
+    "max": 21.0
+  },
+  {
+    "hour": 13,
+    "minute": 20,
+    "min": 7.0,
+    "quarter": 8.0,
+    "median": 11.5,
+    "quarter3": 15.75,
+    "max": 24.0
+  },
+  {
+    "hour": 13,
+    "minute": 30,
+    "min": 9.0,
+    "quarter": 11.0,
+    "median": 11.0,
+    "quarter3": 13.0,
+    "max": 24.0
+  },
+  {
+    "hour": 13,
+    "minute": 40,
+    "min": 5.0,
+    "quarter": 9.5,
+    "median": 12.0,
+    "quarter3": 14.75,
+    "max": 26.0
+  },
+  {
+    "hour": 13,
+    "minute": 50,
+    "min": 6.0,
+    "quarter": 7.5,
+    "median": 12.5,
+    "quarter3": 15.75,
+    "max": 24.0
+  },
+  {
+    "hour": 14,
+    "minute": 0,
+    "min": 6.0,
+    "quarter": 12.0,
+    "median": 13.0,
+    "quarter3": 16.5,
+    "max": 26.0
+  },
+  {
+    "hour": 14,
+    "minute": 10,
+    "min": 7.0,
+    "quarter": 9.0,
+    "median": 11.0,
+    "quarter3": 12.75,
+    "max": 21.0
+  },
+  {
+    "hour": 14,
+    "minute": 20,
+    "min": 7.0,
+    "quarter": 10.25,
+    "median": 11.0,
+    "quarter3": 12.75,
+    "max": 20.0
+  },
+  {
+    "hour": 14,
+    "minute": 30,
+    "min": 9.0,
+    "quarter": 10.0,
+    "median": 14.5,
+    "quarter3": 17.5,
+    "max": 26.0
+  },
+  {
+    "hour": 14,
+    "minute": 40,
+    "min": 7.0,
+    "quarter": 11.0,
+    "median": 12.5,
+    "quarter3": 16.25,
+    "max": 22.0
+  },
+  {
+    "hour": 14,
+    "minute": 50,
+    "min": 9.0,
+    "quarter": 10.25,
+    "median": 12.0,
+    "quarter3": 14.75,
+    "max": 18.0
+  },
+  {
+    "hour": 15,
+    "minute": 0,
+    "min": 6.0,
+    "quarter": 7.75,
+    "median": 12.0,
+    "quarter3": 13.0,
+    "max": 23.0
+  },
+  {
+    "hour": 15,
+    "minute": 10,
+    "min": 7.0,
+    "quarter": 11.25,
+    "median": 12.0,
+    "quarter3": 14.75,
+    "max": 27.0
+  },
+  {
+    "hour": 15,
+    "minute": 20,
+    "min": 6.0,
+    "quarter": 11.0,
+    "median": 12.0,
+    "quarter3": 13.0,
+    "max": 20.0
+  },
+  {
+    "hour": 15,
+    "minute": 30,
+    "min": 7.0,
+    "quarter": 9.0,
+    "median": 10.5,
+    "quarter3": 12.0,
+    "max": 31.0
+  },
+  {
+    "hour": 15,
+    "minute": 40,
+    "min": 5.0,
+    "quarter": 7.0,
+    "median": 9.0,
+    "quarter3": 10.5,
+    "max": 21.0
+  },
+  {
+    "hour": 15,
+    "minute": 50,
+    "min": 7.0,
+    "quarter": 9.25,
+    "median": 11.0,
+    "quarter3": 11.0,
+    "max": 19.0
+  },
+  {
+    "hour": 16,
+    "minute": 0,
+    "min": 5.0,
+    "quarter": 8.25,
+    "median": 13.0,
+    "quarter3": 17.25,
+    "max": 30.0
+  },
+  {
+    "hour": 16,
+    "minute": 10,
+    "min": 6.0,
+    "quarter": 10.25,
+    "median": 12.5,
+    "quarter3": 13.75,
+    "max": 18.0
+  },
+  {
+    "hour": 16,
+    "minute": 20,
+    "min": 8.0,
+    "quarter": 9.25,
+    "median": 11.5,
+    "quarter3": 14.0,
+    "max": 17.0
+  },
+  {
+    "hour": 16,
+    "minute": 30,
+    "min": 8.0,
+    "quarter": 10.25,
+    "median": 11.5,
+    "quarter3": 15.5,
+    "max": 19.0
+  },
+  {
+    "hour": 16,
+    "minute": 40,
+    "min": 4.0,
+    "quarter": 10.25,
+    "median": 12.0,
+    "quarter3": 16.5,
+    "max": 20.0
+  },
+  {
+    "hour": 16,
+    "minute": 50,
+    "min": 5.0,
+    "quarter": 10.25,
+    "median": 11.5,
+    "quarter3": 14.0,
+    "max": 16.0
+  },
+  {
+    "hour": 17,
+    "minute": 0,
+    "min": 7.0,
+    "quarter": 9.5,
+    "median": 11.5,
+    "quarter3": 13.0,
+    "max": 28.0
+  },
+  {
+    "hour": 17,
+    "minute": 10,
+    "min": 5.0,
+    "quarter": 8.0,
+    "median": 9.0,
+    "quarter3": 12.5,
+    "max": 22.0
+  },
+  {
+    "hour": 17,
+    "minute": 20,
+    "min": 9.0,
+    "quarter": 9.25,
+    "median": 11.0,
+    "quarter3": 13.0,
+    "max": 19.0
+  },
+  {
+    "hour": 17,
+    "minute": 30,
+    "min": 9.0,
+    "quarter": 9.5,
+    "median": 12.0,
+    "quarter3": 14.0,
+    "max": 21.0
+  },
+  {
+    "hour": 17,
+    "minute": 40,
+    "min": 7.0,
+    "quarter": 10.0,
+    "median": 11.0,
+    "quarter3": 14.75,
+    "max": 26.0
+  },
+  {
+    "hour": 17,
+    "minute": 50,
+    "min": 7.0,
+    "quarter": 10.75,
+    "median": 14.0,
+    "quarter3": 17.25,
+    "max": 22.0
+  },
+  {
+    "hour": 18,
+    "minute": 0,
+    "min": 4.0,
+    "quarter": 9.25,
+    "median": 11.0,
+    "quarter3": 17.75,
+    "max": 27.0
+  },
+  {
+    "hour": 18,
+    "minute": 10,
+    "min": 5.0,
+    "quarter": 6.25,
+    "median": 12.0,
+    "quarter3": 15.25,
+    "max": 27.0
+  },
+  {
+    "hour": 18,
+    "minute": 20,
+    "min": 6.0,
+    "quarter": 9.5,
+    "median": 11.5,
+    "quarter3": 13.5,
+    "max": 18.0
+  },
+  {
+    "hour": 18,
+    "minute": 30,
+    "min": 6.0,
+    "quarter": 9.25,
+    "median": 13.0,
+    "quarter3": 15.5,
+    "max": 33.0
+  },
+  {
+    "hour": 18,
+    "minute": 40,
+    "min": 4.0,
+    "quarter": 11.25,
+    "median": 13.0,
+    "quarter3": 16.5,
+    "max": 25.0
+  },
+  {
+    "hour": 18,
+    "minute": 50,
+    "min": 8.0,
+    "quarter": 11.5,
+    "median": 13.0,
+    "quarter3": 19.5,
+    "max": 24.0
+  },
+  {
+    "hour": 19,
+    "minute": 0,
+    "min": 8.0,
+    "quarter": 10.25,
+    "median": 14.5,
+    "quarter3": 17.75,
+    "max": 36.0
+  },
+  {
+    "hour": 19,
+    "minute": 10,
+    "min": 10.0,
+    "quarter": 12.25,
+    "median": 15.5,
+    "quarter3": 17.0,
+    "max": 19.0
+  },
+  {
+    "hour": 19,
+    "minute": 20,
+    "min": 7.0,
+    "quarter": 10.5,
+    "median": 13.0,
+    "quarter3": 17.25,
+    "max": 18.0
+  },
+  {
+    "hour": 19,
+    "minute": 30,
+    "min": 5.0,
+    "quarter": 9.5,
+    "median": 12.0,
+    "quarter3": 15.5,
+    "max": 39.0
+  },
+  {
+    "hour": 19,
+    "minute": 40,
+    "min": 8.0,
+    "quarter": 11.0,
+    "median": 12.5,
+    "quarter3": 16.75,
+    "max": 25.0
+  },
+  {
+    "hour": 19,
+    "minute": 50,
+    "min": 9.0,
+    "quarter": 11.25,
+    "median": 13.5,
+    "quarter3": 14.75,
+    "max": 17.0
+  },
+  {
+    "hour": 20,
+    "minute": 0,
+    "min": 9.0,
+    "quarter": 12.25,
+    "median": 14.0,
+    "quarter3": 19.25,
+    "max": 36.0
+  },
+  {
+    "hour": 20,
+    "minute": 10,
+    "min": 7.0,
+    "quarter": 10.25,
+    "median": 13.5,
+    "quarter3": 16.75,
+    "max": 24.0
+  },
+  {
+    "hour": 20,
+    "minute": 20,
+    "min": 8.0,
+    "quarter": 11.5,
+    "median": 13.0,
+    "quarter3": 13.75,
+    "max": 17.0
+  },
+  {
+    "hour": 20,
+    "minute": 30,
+    "min": 8.0,
+    "quarter": 11.25,
+    "median": 14.5,
+    "quarter3": 16.75,
+    "max": 19.0
+  },
+  {
+    "hour": 20,
+    "minute": 40,
+    "min": 11.0,
+    "quarter": 12.25,
+    "median": 15.0,
+    "quarter3": 16.75,
+    "max": 24.0
+  },
+  {
+    "hour": 20,
+    "minute": 50,
+    "min": 8.0,
+    "quarter": 10.0,
+    "median": 10.5,
+    "quarter3": 15.0,
+    "max": 16.0
+  },
+  {
+    "hour": 21,
+    "minute": 0,
+    "min": 11.0,
+    "quarter": 13.0,
+    "median": 14.0,
+    "quarter3": 15.75,
+    "max": 26.0
+  },
+  {
+    "hour": 21,
+    "minute": 10,
+    "min": 6.0,
+    "quarter": 10.75,
+    "median": 15.5,
+    "quarter3": 16.75,
+    "max": 19.0
+  },
+  {
+    "hour": 21,
+    "minute": 20,
+    "min": 7.0,
+    "quarter": 10.5,
+    "median": 13.0,
+    "quarter3": 17.75,
+    "max": 23.0
+  },
+  {
+    "hour": 21,
+    "minute": 30,
+    "min": 6.0,
+    "quarter": 11.0,
+    "median": 11.5,
+    "quarter3": 16.0,
+    "max": 23.0
+  },
+  {
+    "hour": 21,
+    "minute": 40,
+    "min": 7.0,
+    "quarter": 9.25,
+    "median": 12.0,
+    "quarter3": 15.0,
+    "max": 27.0
+  },
+  {
+    "hour": 21,
+    "minute": 50,
+    "min": 8.0,
+    "quarter": 14.0,
+    "median": 15.0,
+    "quarter3": 16.5,
+    "max": 22.0
+  },
+  {
+    "hour": 22,
+    "minute": 0,
+    "min": 6.0,
+    "quarter": 9.0,
+    "median": 12.5,
+    "quarter3": 14.75,
+    "max": 31.0
+  },
+  {
+    "hour": 22,
+    "minute": 10,
+    "min": 7.0,
+    "quarter": 8.25,
+    "median": 10.0,
+    "quarter3": 13.75,
+    "max": 26.0
+  },
+  {
+    "hour": 22,
+    "minute": 20,
+    "min": 9.0,
+    "quarter": 11.25,
+    "median": 14.5,
+    "quarter3": 17.0,
+    "max": 25.0
+  },
+  {
+    "hour": 22,
+    "minute": 30,
+    "min": 7.0,
+    "quarter": 14.0,
+    "median": 14.5,
+    "quarter3": 15.75,
+    "max": 24.0
+  },
+  {
+    "hour": 22,
+    "minute": 40,
+    "min": 9.0,
+    "quarter": 11.25,
+    "median": 16.5,
+    "quarter3": 18.75,
+    "max": 22.0
+  },
+  {
+    "hour": 22,
+    "minute": 50,
+    "min": 7.0,
+    "quarter": 10.25,
+    "median": 12.5,
+    "quarter3": 16.25,
+    "max": 20.0
+  },
+  {
+    "hour": 23,
+    "minute": 0,
+    "min": 5.0,
+    "quarter": 11.5,
+    "median": 13.5,
+    "quarter3": 17.5,
+    "max": 24.0
+  },
+  {
+    "hour": 23,
+    "minute": 10,
+    "min": 9.0,
+    "quarter": 9.25,
+    "median": 10.5,
+    "quarter3": 16.0,
+    "max": 21.0
+  },
+  {
+    "hour": 23,
+    "minute": 20,
+    "min": 8.0,
+    "quarter": 11.5,
+    "median": 16.0,
+    "quarter3": 19.75,
+    "max": 32.0
+  },
+  {
+    "hour": 23,
+    "minute": 30,
+    "min": 7.0,
+    "quarter": 8.25,
+    "median": 12.5,
+    "quarter3": 15.0,
+    "max": 33.0
+  },
+  {
+    "hour": 23,
+    "minute": 40,
+    "min": 7.0,
+    "quarter": 9.5,
+    "median": 12.0,
+    "quarter3": 15.5,
+    "max": 23.0
+  },
+  {
+    "hour": 23,
+    "minute": 50,
+    "min": 6.0,
+    "quarter": 9.75,
+    "median": 12.5,
+    "quarter3": 14.5,
+    "max": 26.0
+  }
+]
