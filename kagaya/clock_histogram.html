@@ -60,25 +60,14 @@
 </style>
 
 <body>
-    <select id = "select_box">
-    <option value = "all">All</option>
-    <option value = "mon">Monday</option>
-    <option value = "tue">Tuesday</option>
-    <option value = "wed">Wednesday</option>
-    <option value = "thu">Thursday</option>
-    <option value = "fri">Friday</option>
-    <option value = "sat">Saturday</option>
-    <option value = "sun">Sunday</option>
-    </select>
-
     <script src="./d3.js"></script>
     <script>
-
         var radians = 0.0174532925,
             clockRadius = 200,
             margin = 50,
+            histoheight = 300
             width = (clockRadius + margin) * 2,
-            height = (clockRadius + margin) * 2,
+            height = (clockRadius + margin) * 2 + histoheight,
             hourHandLength = 2 * clockRadius / 3,
             minuteHandLength = clockRadius,
             secondHandLength = clockRadius - 12,
@@ -139,9 +128,49 @@
                 .attr("height", height)
                 .attr("class", "svgframe");
 
+        var histogram = svg.append('g')
+                .attr('id', 'histogram')
+                .attr('transform', 'translate(' + 0 + ',' + 0 + ')');
+
         var face = svg.append('g')
                 .attr('id', 'clock-face')
-                .attr('transform', 'translate(' + (clockRadius + margin) + ',' + (clockRadius + margin) + ')');
+                .attr('transform', 'translate(' + (clockRadius + margin) + ',' + (clockRadius + margin + histoheight) + ')');
+
+        function drawHistogram() {
+            d3.csv("jinshin-youbi.csv").then(function(data){
+                var xScale = d3.scaleBand()
+                .rangeRound([margin, width - margin])
+                .padding(0.1)
+                .domain(data.map(function(d) { return d.day; }));
+            
+                var yScale = d3.scaleLinear()
+                .domain([2000, d3.max(data, function(d) { return d.value; })])
+                .range([histoheight - margin, margin]);
+            
+                histogram.append("g")
+                .attr("transform", "translate(" + 0 + "," + (histoheight - margin) + ")")
+                .call(d3.axisBottom(xScale));
+            
+                histogram.append("g")
+                .attr("transform", "translate(" + margin + "," + 0 + ")")
+                .call(d3.axisLeft(yScale));
+
+                histogram.append("g")
+                .selectAll("rect")
+                .data(data)
+                .enter()
+                .append("rect")
+                .attr("x", function(d) { return xScale(d.day); })
+                .attr("y", function(d) { return yScale(d.value); })
+                .attr("width", xScale.bandwidth())
+                .attr("height", function(d) { return histoheight - margin - yScale(d.value); })
+                .attr("fill", "#497174")
+                .on("mouseover", function(event, d){tooltip.style("visibility", "visible").html(d.day + "<br>" + d.value);})
+                .on("mousemove", function(d){tooltip.style("left", event.pageX+ 20 + "px").style("top", event.pageY + "px");})
+                .on("mouseout", function(d){tooltip.style("visibility", "hidden");})
+                .on("click", function(event, d){drawClock(d.day)});
+            });
+        }
 
         function drawClock(day) { //create all the clock elements
             updateData();	//draw them in the correct starting position
@@ -375,16 +404,9 @@
 
         }
 
+        drawHistogram();
         drawClock("all");
-
-        document.addEventListener('DOMContentLoaded', function(){
-            var elem = document.getElementById('select_box');
-            elem.addEventListener('change', function(){
-                var result = elem.value;
-                drawClock(result);
-            }, false);
-        }, false);
-
 
         d3.select(self.frameElement).style("height", height + "px");
     </script>
+</body>
