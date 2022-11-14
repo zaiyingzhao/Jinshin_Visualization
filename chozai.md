@@ -60,3 +60,16 @@ twitter APIでキーワードを含むツイート検索をしても取得でき
 - 人身事故発生場所が線路上（踏切など）のときの対応
   - チーム全体の課題にはなるが人身事故発生場所が曖昧なときにどのように可視化を行うか考えたい
   - 個人的には線路上の踏切の情報を探してきて、該当駅間の踏切を事故現場とすればいいのではと思っている
+
+## 第6回
+### やったこと
+- 取得した[ホームドア設置日時のcsv](https://github.com/InfovisHandsOn/A-Pastani/blob/main/data/doorR2_converted.csv)からすべてのgeojsonのpropertiesにホームドア設置日時を示す"door"プロパティを追加した。
+  1. ホームドア設置日時のcsvに表示されている事業所名/路線名のパスと実際にgeojsonにアクセスするために必要なパスが全く一致していなかったため、（力技にはなってしまうが）それぞれの対応を確認したうえで[get_correct_path.py](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/get_correct_path.py)において当該のgeojsonにアクセスできるように前処理した（[パスを加えたcsvファイル](https://github.com/InfovisHandsOn/A-Pastani/blob/main/data/doorR2_addPath.csv)） 
+  2. [add_doordate_to_geojson.py](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/add_doordate_to_geojson.py)実際にそれぞれのホームドア設置情報に関して該当geojsonにアクセスし、"door"プロパティを追加したうえで設置日時情報を追加した（ホームドアが現在設置されていない駅に関しては"NULL"埋めをした）
+  3. ホームドア設置日時の情報は前回追加した路線情報のadd_Railname.geojsonに上書きする形をとった
+- 実際に人身事故の情報と実際の場所を紐づけるときに人身事故が起こった路線名とgeojsonに追加した路線名が一致している必要があるが、実際にはまったく一致していない。よって人身事故発生路線を入力するとgeojsonに追加した正式な路線名を返す辞書の作成を行った
+  1. （とても力技になるが）人身事故発生路線名と対応する正式路線名を横並びにした[excelファイル](https://github.com/InfovisHandsOn/A-Pastani/blob/main/data/line.csv)を作成した（最低限sortをするなどの工夫は行った）
+  2. excelファイルを読み込み必要な形の辞書に整形して[pickleファイル](https://github.com/InfovisHandsOn/A-Pastani/blob/main/data/line_dict.pickle)として保存した
+- QRA#5の完成
+  - ズーム及びズームリセットを実装した
+  - [提出ファイル]()の県をクリックするとクリックした位置を中心としてズームが行われ、リセットボタンを押すと元の位置/縮尺に戻るようになっている
