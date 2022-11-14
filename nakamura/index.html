@@ -28,11 +28,17 @@
 </style>
 
 <body>
+    <div id="vis">
+        <button id="play-button">Play</button>
+    </div>
+    <div id="vis">
+        <button id="speed-button">x2</button>
+    </div>
     <script type="text/javascript">
         var colorScale = d3.scaleOrdinal(d3.schemeSet1);
-        var width = 4000;
-        var height = 4000;
-        var scale = 7500;
+        var width = 1000;
+        var height = 900;
+        var scale = 1500;
         var svg = d3.select("body").append("svg")
             .attr("width", width)
             .attr("height", height);
@@ -70,16 +76,106 @@
                 svg.selectAll("path2")
                     .data(d.features.filter(d => d.geometry.type == "Point"))
                     .join("circle")
-                    .attr("cx", d => {return projection(d.geometry.coordinates)[0];})
-                    .attr("cy", d => {return projection(d.geometry.coordinates)[1];})
+                    .attr("cx", d => { return projection(d.geometry.coordinates)[0]; })
+                    .attr("cy", d => { return projection(d.geometry.coordinates)[1]; })
                     .attr("r", 1)
                     .attr("stroke", "#a9ceec")
                     .attr("stroke-widht", 0.1)
                     .attr("fill", "#a9ceec")
             })
         })
+        const start_unixTime = 1262271600; //2010/01/01
+        const end_unixTime = 1668006000; //2022/11/10
+        let nowunix_seconds = start_unixTime;
 
+        var date = svg.append("text")
+            .text(`${new Date(nowunix_seconds * 1000)}`)
+            .attr("x", 500)
+            .attr("y", 830)
+            .attr("font-family", "Arial, Helvetica, sans-serif")
+            .attr("stroke", "black");
+
+        var slider = svg.append("g")
+            .attr("class", "slider");
+
+        slider.append("line")
+            .attr("x1", 10)
+            .attr("x2", width - 10)
+            .attr("y1", height - 50)
+            .attr("y2", height - 50)
+            .attr("stroke", "grey")
+            .attr("stroke-width", 5)
+            .attr("stroke-linecap", "round")
+            .attr("pointer-events", "stroke")
+            .attr("cursor", "crosshair")
+            .call(d3.drag()
+                .on("start", function () { })
+                .on("drag", function (event, d) {
+                    currentValue = event.sourceEvent.clientX;
+                    update(currentValue);
+                }));
+
+        var handle = slider.insert("circle", ".track-overlay")
+            .attr("cx", 10)
+            .attr("cy", height - 50)
+            .attr("r", 7);
+        let interval = 50;
+        let timer;
+        var playButton = d3.select("#play-button")
+            .on("click", function () {
+                var button = d3.select(this);
+                if (button.text() == "Pause") {
+                    clearInterval(timer);
+                    // timer = 0;
+                    button.text("Play");
+                } else {
+                    //moving = true;
+                    timer = setInterval(step, interval);
+                    button.text("Pause");
+                }
+            })
+        
+        let step_time = 60*60*24;
+        let preunix_seconds = nowunix_seconds;
+
+        function step() {
+            update(now_to_value(nowunix_seconds));
+            nowunix_seconds = nowunix_seconds + step_time;
+            if (now_to_value(nowunix_seconds) >= width - 10) {
+                clearInterval(timer);
+                playButton.text("Play");
+            }
+        }
+
+        var speedButton = d3.select("#speed-button")
+            .on("click", function () {
+                let button = d3.select(this);
+                if (button.text() == "x2") {
+                    step_time *= 2;
+                    button.text("1/2");
+                }
+                else {
+                    step_time /= 2;
+                    button.text("x2");
+                }
+            })
+
+        function now_to_value(now_seconds) {
+            return (now_seconds - start_unixTime) * (width - 20) / (end_unixTime - start_unixTime) + 10;
+        }
+        function update(now_position) {
+            // update position and text of label according to slider scale
+            console.log(interval);
+            if (now_position >= 10 && now_position <= width - 10) {
+                handle.attr("cx", now_position);
+                preunix_seconds = nowunix_seconds;
+                nowunix_seconds = (end_unixTime - start_unixTime) / (width - 10 - 10) * (now_position - 10) + start_unixTime;
+                date.text(`${new Date(nowunix_seconds * 1000)}`);
+            }
+            //filter data set and redraw plot
+        }
     </script>
+
 </body>
 
 </html>

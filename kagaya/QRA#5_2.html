@@ -136,16 +136,6 @@
       }
     }
   
-    // Add the area
-    // svg.append("path")
-    //   .datum(data)
-    //   .attr("fill", "#cce5df")
-    //   .attr("stroke", "#69b3a2")
-    //   .attr("stroke-width", 1.5)
-    //   .attr("d", d3.area()
-    //     .x(d => x(d.date))
-    //     .y0(y(0))
-    //     .y1(d => y(d.value)));
 
     drawline(data);
 
@@ -177,10 +167,6 @@
     function update(h) {
       // update position and text of label according to slider scale
       handle.attr("cx", x(h));
-      // label
-      //   .attr("x", x(h))
-      //   .text(formatDate(h));
-
       //filter data set and redraw plot
       var newData = data.filter(function(d) {
         return d.date < h;
@@ -189,16 +175,20 @@
     }
 
     function drawline(data){
-      var area = d3.area()
-                    .x(function(d){return x(d.date);})
-                    .y0(y(0))
-                    .y1(function(d){return y(d.value);});
+      var line = d3.line()
+                    .x(function(d) { return x(d.date); })
+                    .y(function(d) { return y(d.value); });
+                
+      // var area = d3.area()
+      //               .x(function(d){return x(d.date);})
+      //               .y0(y(0))
+      //               .y1(function(d){return y(d.value);});
 
       svg.selectAll("path")
         .attr("d", area(data))
         .attr("fill", "#cce5df")
         .attr("stroke", "#69b3a2")
-        .attr("stroke-width", 1.5);
+        .attr("stroke-width", 2);
 
   //     var locations = svg.selectAll(".location").data(data);
   //     console.log(locations);
