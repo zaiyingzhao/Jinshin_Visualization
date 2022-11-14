@@ -61,7 +61,7 @@ twitter APIでキーワードを含むツイート検索をしても取得でき
   - チーム全体の課題にはなるが人身事故発生場所が曖昧なときにどのように可視化を行うか考えたい
   - 個人的には線路上の踏切の情報を探してきて、該当駅間の踏切を事故現場とすればいいのではと思っている
 
-## 第6回
+## 第6回（11/15）
 ### やったこと
 - 取得した[ホームドア設置日時のcsv](https://github.com/InfovisHandsOn/A-Pastani/blob/main/data/doorR2_converted.csv)からすべてのgeojsonのpropertiesにホームドア設置日時を示す"door"プロパティを追加した。
   1. ホームドア設置日時のcsvに表示されている事業所名/路線名のパスと実際にgeojsonにアクセスするために必要なパスが全く一致していなかったため、（力技にはなってしまうが）それぞれの対応を確認したうえで[get_correct_path.py](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/get_correct_path.py)において当該のgeojsonにアクセスできるように前処理した（[パスを加えたcsvファイル](https://github.com/InfovisHandsOn/A-Pastani/blob/main/data/doorR2_addPath.csv)） 
@@ -73,3 +73,4 @@ twitter APIでキーワードを含むツイート検索をしても取得でき
 - QRA#5の完成
   - ズーム及びズームリセットを実装した
   - [提出ファイル](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/QRA5/index.html)の県をクリックするとクリックした位置を中心としてズームが行われ、リセットボタンを押すと元の位置/縮尺に戻るようになっている
+- **[路線辞書について追記]** 人身事故情報で路線名に愛称（地元で使われる正式ではない名称）が使われている場合についても1つ1つ調べて追加した。またpickleファイル形式だと使いづらい気がしたので[辞書を定義するだけのファイル](https://github.com/InfovisHandsOn/A-Pastani/blob/main/data/jinshin_to_geojson_linename_dic.py)を追加した。
