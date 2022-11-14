@@ -121,7 +121,7 @@
                 .attr("cx", 10)
                 .attr("cy", height - 50)
                 .attr("r", 7);
-            let interval = 50;
+            let interval = 100;
             let timer;
             var playButton = d3.select("#play-button")
                 .on("click", function () {
@@ -212,7 +212,7 @@
                 if (place.indexOf("〜") != -1) {
                     return;
                 }
-                else if (line == "東海道線_(JR東海)") {
+                else {
                     console.log(place);
                     values.forEach(d => {
                         svg.selectAll("path2")

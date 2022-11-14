@@ -69,7 +69,7 @@ twitter APIでキーワードを含むツイート検索をしても取得でき
   3. ホームドア設置日時の情報は前回追加した路線情報のadd_Railname.geojsonに上書きする形をとった
 - 実際に人身事故の情報と実際の場所を紐づけるときに人身事故が起こった路線名とgeojsonに追加した路線名が一致している必要があるが、実際にはまったく一致していない。よって人身事故発生路線を入力するとgeojsonに追加した正式な路線名を返す辞書の作成を行った
   1. （とても力技になるが）人身事故発生路線名と対応する正式路線名を横並びにした[excelファイル](https://github.com/InfovisHandsOn/A-Pastani/blob/main/data/line.csv)を作成した（最低限sortをするなどの工夫は行った）
-  2. excelファイルを読み込み必要な形の辞書に整形して[pickleファイル](https://github.com/InfovisHandsOn/A-Pastani/blob/main/data/line_dict.pickle)として保存した
+  2. [make_dict.py](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/make_dict.py)にてexcelファイルを読み込み必要な形の辞書に整形して[pickleファイル](https://github.com/InfovisHandsOn/A-Pastani/blob/main/data/line_dict.pickle)として保存した
 - QRA#5の完成
   - ズーム及びズームリセットを実装した
-  - [提出ファイル]()の県をクリックするとクリックした位置を中心としてズームが行われ、リセットボタンを押すと元の位置/縮尺に戻るようになっている
+  - [提出ファイル](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/QRA5/index.html)の県をクリックするとクリックした位置を中心としてズームが行われ、リセットボタンを押すと元の位置/縮尺に戻るようになっている
