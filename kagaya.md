@@ -24,9 +24,10 @@ QAR#5として時系列を操作するシークバーを折れ線グラフに対
 ![](shinchoku_image/kagaya/Screenshot%20from%202022-11-10%2022-55-42.png)
 
 - ver.2として自動再生機能とリアルタイムでのグラフの描画を実装した
+  - 参考：https://d3-graph-gallery.com/graph/area_basic.html, https://bl.ocks.org/officeofjane/47d2b0bfeecfcb41d2212d06d095c763
   - Capstone Projectで利用できるくらいのものにはなった
   - なぜかグラフが下にもう一つ表示されてしまう
 
-![](shinchoku_image/kagaya/Screenshot%20from%202022-11-11%2023-52-18.png)
+![](shinchoku_image/kagaya/Screenshot%20from%202022-11-14%2013-03-52.png)
 
 ホームドア設置状況のエクセルファイルをcsv化し、設置日の表記を"Hyy.m"などから”yyyy/mm/dd"に変換した

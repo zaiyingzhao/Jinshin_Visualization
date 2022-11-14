@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+ 
+<head>
+  <meta charset="utf-8">
+  <title>D3 Line Chart</title>
+  <script type="text/javascript" src="./d3.js"></script>
+</head>
+ 
+<body>
+<script>
+  var width = 500;
+  var height = 400;
+  var padding = 50;
+  
+  var svg = d3.select("body")
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+  var tooltip = d3.select("body")
+    .append("div")
+    .attr("class", "tooltip")
+    .style("position", "absolute")
+    .style("background-color", "white") 
+    .style("border", "solid")
+    .style("border-width", "2px")
+    .style("padding", "5px");
+
+  d3.csv("jinshin-youbi.csv").then(function(data){
+    var xScale = d3.scaleBand()
+      .rangeRound([padding, width - padding])
+      .padding(0.1)
+      .domain(data.map(function(d) { return d.day; }));
+ 
+    var yScale = d3.scaleLinear()
+      .domain([2000, d3.max(data, function(d) { return d.value; })])
+      .range([height - padding, padding]);
+  
+    svg.append("g")
+      .attr("transform", "translate(" + 0 + "," + (height - padding) + ")")
+      .call(d3.axisBottom(xScale));
+  
+    svg.append("g")
+      .attr("transform", "translate(" + padding + "," + 0 + ")")
+      .call(d3.axisLeft(yScale));
+
+    svg.append("g")
+      .selectAll("rect")
+      .data(data)
+      .enter()
+      .append("rect")
+      .attr("x", function(d) { return xScale(d.day); })
+      .attr("y", function(d) { return yScale(d.value); })
+      .attr("width", xScale.bandwidth())
+      .attr("height", function(d) { return height - padding - yScale(d.value); })
+      .attr("fill", "black")
+      .on("mouseover", function(event, d){tooltip.style("visibility", "visible").html(d.day + "曜日" + "<br>" + d.value + "件");})
+      .on("mousemove", function(d){tooltip.style("left", event.pageX+ 20 + "px").style("top", event.pageY + "px");})
+      .on("mouseout", function(d){tooltip.style("visibility", "hidden");});
+    });
+ 
+</script>
+</body>
+</html>

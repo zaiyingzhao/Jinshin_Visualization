@@ -208,37 +208,6 @@
 
             })
 
-            //add marks for seconds
-            // face.selectAll('.second-tick')
-            //     .data(d3.range(0, 60)).enter()
-            //     .append('line')
-            //     .attr('class', 'second-tick')
-            //     .attr('x1', 0)
-            //     .attr('x2', 0)
-            //     .attr('y1', secondTickStart)
-            //     .attr('y2', secondTickStart + secondTickLength)
-            //     .attr('transform', function (d) {
-            //         return 'rotate(' + secondScale(d) + ')';
-            //     });
-            // //and labels
-
-            // face.selectAll('.second-label')
-            //     .data(d3.range(5, 61, 5))
-            //     .enter()
-            //     .append('text')
-            //     .attr('class', 'second-label')
-            //     .attr('text-anchor', 'middle')
-            //     .attr('x', function (d) {
-            //         return secondLabelRadius * Math.sin(secondScale(d) * radians);
-            //     })
-            //     .attr('y', function (d) {
-            //         return -secondLabelRadius * Math.cos(secondScale(d) * radians) + secondLabelYOffset;
-            //     })
-            //     .text(function (d) {
-            //         return d;
-            //     });
-
-            //... and hours
             face.selectAll('.hour-tick')
                 .data(d3.range(0, 12)).enter()
                 .append('line')
