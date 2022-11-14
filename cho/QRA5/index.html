@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>D3 Test</title>
+    <script src="./d3.js" charset="utf-8"></script>
+    <script src="./topojson.js" charset="utf-8"></script>
+</head>
+
+<body>
+
+    <label for="datatype">データを選択してください</label>
+    <select id="datatype">
+        <option value="Population">Population</option>
+        <option value="FoodProduction">FoodProduction</option>
+        <option value="ClothingProduction">ClothingProduction</option>
+        <option value="FurnitureProduction">FurnitureProduction</option>
+    </select>
+
+    <div>
+        <input type="button" value="Show" id="checkButton" onclick="location.reload();">
+        <button id="reset">reset</button>
+        <p id="demo"></p>
+    </div>
+
+    <script type="text/javascript">
+        let dataselect = document.getElementById("datatype");
+        let checkButton = document.getElementById("checkButton");
+        let element = document.getElementById("datatype");
+
+        var width = 1490;
+        var height = 790;
+        var populationHash = {};
+        var ClothingProductionHash = {};
+        var FoodProductionHash = {};
+        var FurnitureProductionHash = {};
+        var projection = d3.geoMercator()
+            .center([137, 38])
+            .scale(1600)
+            .translate([width / 2, height / 2]);
+
+        var svg = d3.select("body").append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        var positionLabel = svg.append("text")
+            .attr("x", 10)
+            .attr("y", 20);
+
+        var color = d3.scaleLinear()
+            .domain([500, 14000])
+            .range([255, 0]);
+
+        d3.csv("./Japan2015Data.csv").then(function (data) {
+
+            data.forEach(function (d) {
+                populationHash[d.Prefecture] = d.Population;
+                ClothingProductionHash[d.Prefecture] = d.ClothingProduction;
+                FoodProductionHash[d.Prefecture] = d.FoodProduction;
+                FurnitureProductionHash[d.Prefecture] = d.FurnitureProduction;
+            });
+
+            showMap();
+        });
+
+        function showMap() {
+
+        };
+
+        d3.json("./japan.topojson").then(function (data) {
+
+            var japan = topojson.feature(data, data.objects.japan);
+
+            var path = d3.geoPath().projection(projection);
+
+            var tooltip = d3.select("body")
+                .append("div")
+                .attr("class", "tooltip")
+                .style("position", "absolute")
+                .style("top", "70px")
+                .style("left", "10px");
+
+            svg.selectAll("path")
+                .data(japan.features)
+                .enter()
+                .append("path")
+                .attr("d", path)
+                .attr("fill", function (d) {
+                    if (dataselect.value == "Population") {
+                        return "rgb(255," + Math.floor(color(populationHash[d.properties.nam_ja])) + ","
+                            + Math.floor(color(populationHash[d.properties.nam_ja])) + ")"
+                    }
+                    else if (dataselect.value == "ClothingProduction") {
+                        return "rgb(255," + Math.floor(color(ClothingProductionHash[d.properties.nam_ja] * 10)) + ","
+                            + Math.floor(color(ClothingProductionHash[d.properties.nam_ja] * 10)) + ")"
+                    }
+                    else if (dataselect.value == "FoodProduction") {
+                        return "rgb(255," + Math.floor(color(FoodProductionHash[d.properties.nam_ja] * 6)) + ","
+                            + Math.floor(color(FoodProductionHash[d.properties.nam_ja] * 6)) + ")"
+                    }
+                    else {
+                        return "rgb(255," + Math.floor(color(FurnitureProductionHash[d.properties.nam_ja] * 30)) + ","
+                            + Math.floor(color(FurnitureProductionHash[d.properties.nam_ja] * 30)) + ")"
+                    }
+                })
+                .attr("stroke", "#333333")
+                .attr("stroke-width", 0.5)
+                .on("mouseover", function (d, i) {
+                    if (dataselect.value == "Population") {
+                        tooltip.style("visibility", "visible").html(i.properties.nam_ja + "<br>" + populationHash[i.properties.nam_ja] + "000人");
+                    }
+                    else if (dataselect.value == "ClothingProduction") {
+                        tooltip.style("visibility", "visible").html(i.properties.nam_ja + "<br>" + "生産量：" + ClothingProductionHash[i.properties.nam_ja] + "000");
+                    }
+                    else if (dataselect.value == "FoodProduction") {
+                        tooltip.style("visibility", "visible").html(i.properties.nam_ja + "<br>" + "生産量：" + FoodProductionHash[i.properties.nam_ja] + "000");
+                    }
+                    else {
+                        tooltip.style("visibility", "visible").html(i.properties.nam_ja + "<br>" + "生産量：" + FurnitureProductionHash[i.properties.nam_ja] + "000");
+                    }
+                })
+                .on("mouseout", function () {
+                    tooltip.style("visibility", "hidden");
+                })
+                .on("click", clicked);
+
+
+            function clicked(event, d) {
+                // console.log(d3.pointer(event))
+                var zoomCenter = d3.pointer(event)
+                var zoom = 7.0;
+                svg.selectAll("path").transition()
+                    .duration(1000)
+                    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + zoom + ")translate(" + -zoomCenter[0] + "," + -zoomCenter[1] + ")");
+            }
+        });
+
+        d3.select("#reset")
+            .on("click", resetted);
+
+        function resetted(event, d) {
+            svg.selectAll("path").transition()
+                .duration(1000)
+                .attr("transform", "translate(0,0)")
+        }
+
+    </script>
+</body>
+
+</html>
