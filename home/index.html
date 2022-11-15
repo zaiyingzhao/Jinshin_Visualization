@@ -118,9 +118,6 @@
                 .attr('transform', d.transform);
         }
 
-        // function zoomin() {
-        //     zoom.scaleBy(map, 2);
-        // }
         d3.select("#reset")
               .on("click", resetted);
 
@@ -140,6 +137,10 @@
                 .duration(1000)
                 .attr("transform", "translate(0,0)");
         }
+
+        // function zoomin() {
+        //     zoom.scaleBy(map, 2);
+        // }
 
         // function zoomout() {
         //     zoom.scaleBy(map, 0.5);
