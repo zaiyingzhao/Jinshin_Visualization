@@ -295,7 +295,7 @@
                                     .attr("fill", "red")
                                     .transition()
                                     .duration(500)
-                                    .attr("r", Math.max(Math.log(tweets) * 5 , 1))
+                                    .attr("r", Math.max(Math.log(tweets) , 0.1))
                                     .transition()
                                     .delay(100)
                                     .duration(100)
