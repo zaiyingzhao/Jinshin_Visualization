@@ -7,7 +7,7 @@
     <title>D3 Test</title>
     <script src="./d3.js" charset="utf-8"></script>
     <script src="./topojson.js" charset="utf-8"></script>
-    <script src="./datalist.js" charset="utf-8"></script>
+    <script src="./dict.js" charset="utf-8"></script>
 </head>
 <style>
     .tooltip {
@@ -32,14 +32,21 @@
     <button type = "button" onclick = "zoomout()">zoom out</button>
     <button type = "button" onclick = "resetzoom()">reset zoom</button> -->
 
-  <div id="reset">
-    <button id="reset-button">reset</button>
-  </div>
+    <div id="reset">
+        <button id="reset-button">reset</button>
+    </div>
+    <div>
+        <button id="play-button">Play</button>
+    </div>
+    <div>
+        <button id="speed-button">x2</button>
+    </div>
     <script type="text/javascript">
         var colorScale = d3.scaleOrdinal(d3.schemeSet1);
         var width = 1000;
         var height = 900;
         var scale = 1500;
+        let expansion = 1;
         var svg = d3.select("body").append("svg")
             .attr("width", width)
             .attr("height", height);
@@ -49,23 +56,33 @@
             .attr('transform', 'translate(' + 0 + ',' + 0 + ')')
             .on("click", clicked)
 
+        function clicked(event, d) {
+            console.log("clicked")
+            var zoomCenter = d3.pointer(event)
+            var zoom = 10
+            svg.selectAll("#map")
+                .transition()
+                .duration(1000)
+                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + zoom + ")translate(" + -zoomCenter[0] + "," + -zoomCenter[1] + ")");
+        }
+
         var tooltip = d3.select("body")
-          .append("div")
-          .attr("class", "tooltip")
-          .style("position", "absolute")
-          .style("top", "70px")
-          .style("left", "10px");
+            .append("div")
+            .attr("class", "tooltip")
+            .style("position", "absolute")
+            .style("top", "70px")
+            .style("left", "10px");
 
         let projection = d3.geoMercator()
             .center([135, 35])
             .translate([width / 2, height / 2])
             .scale(scale);
-        let square = d3.symbol().type("diamond");
         let geoGenerator = d3.geoPath().pointRadius(0).projection(projection);
         let wait = []
-        datalist.forEach((path) => {
-            wait.push(d3.json(path));
-        })
+        wait.push(d3.json("./japan.topojson"))
+        wait.push(d3.json("../data/allcompanies.geojson"))
+        wait.push(d3.json("../data/station_only_addJinshindata.geojson"))
+        wait.push(d3.csv("../data/tweets.csv"))
         Promise.all(wait).then(function (values) {
             var japangeo = topojson.feature(values[0], values[0].objects.japan);
             map.selectAll("path")
@@ -74,9 +91,11 @@
                 .append("path")
                 .attr("d", geoGenerator)
                 .attr("stroke", "black")
-                .attr("stroke-width", 1)
+                .attr("stroke-width", 0.1)
                 .attr("fill", "#646464");
             values.shift();
+            let csv = values.pop();
+            csv = csv.reverse();
             values.forEach((d) => {
                 map.selectAll("path2")
                     .data(d.features)
@@ -85,70 +104,211 @@
                     .attr("d", geoGenerator)
                     .attr("stroke", "white")
                     .attr("fill", "none")
-                    .attr("stroke-width", 1);
+                    .attr("stroke-width", 0.3);
                 map.selectAll("path2")
                     .data(d.features.filter(d => d.geometry.type == "Point"))
                     .join("circle")
-                    .attr("cx", d => {return projection(d.geometry.coordinates)[0];})
-                    .attr("cy", d => {return projection(d.geometry.coordinates)[1];})
-                    .attr("r", 0.5)
+                    .attr("cx", d => { return projection(d.geometry.coordinates)[0]; })
+                    .attr("cy", d => { return projection(d.geometry.coordinates)[1]; })
+                    .attr("r", 0.2)
                     .attr("stroke", "#a9ceec")
                     .attr("stroke-width", 0.1)
                     .attr("fill", "#a9ceec")
-                    .on("mouseover", function(d,i){
-                      // ここで人身事故情報を表示できるようにする
-                      tooltip.style("visibility", "visible").html(i.properties.name);
+                    .on("mouseover", function (d, i) {
+                        // ここで人身事故情報を表示できるようにする
+                        tooltip.style("visibility", "visible").html(i.properties.name);
                     })
-                    .on("mouseout", function(){
-                      tooltip.style("visibility", "hidden");
+                    .on("mouseout", function () {
+                        tooltip.style("visibility", "hidden");
                     });
             })
+            let zoom = d3.zoom()
+                .scaleExtent([1, 10])
+                .translateExtent([[0, 0], [width, height]])
+                .on('zoom', handleZoom);
+
+            d3.select('svg').call(zoom);
+
+            function handleZoom(d) {
+                expansion = d.k;
+                d3.select('#map')
+                    .attr('transform', d.transform);
+            }
+
+            d3.select("#reset")
+                .on("click", resetted);
+
+            function resetted(event, d) {
+                svg.selectAll("#map")
+                    .transition()
+                    .duration(1000)
+                    .attr("transform", "translate(0,0)");
+            }
+
+            const start_unixTime = 1262271600; //2010/01/01
+            const end_unixTime = 1668006000; //2022/11/10
+            let nowunix_seconds = start_unixTime;
+            let step_time = 60 * 60 * 24;
+            let preunix_seconds = nowunix_seconds;
+
+            var date = svg.append("text")
+                .text(`${new Date(nowunix_seconds * 1000)}`)
+                .attr("x", 500)
+                .attr("y", 830)
+                .attr("font-family", "Arial, Helvetica, sans-serif")
+                .attr("stroke", "black");
+
+            var slider = svg.append("g")
+                .attr("class", "slider");
+
+            slider.append("line")
+                .attr("x1", 10)
+                .attr("x2", width - 10)
+                .attr("y1", height - 50)
+                .attr("y2", height - 50)
+                .attr("stroke", "grey")
+                .attr("stroke-width", 5)
+                .attr("stroke-linecap", "round")
+                .attr("pointer-events", "stroke")
+                .attr("cursor", "crosshair")
+                .call(d3.drag()
+                    .on("start", function () { })
+                    .on("drag", function (event, d) {
+                        currentValue = event.sourceEvent.clientX;
+                        update(currentValue);
+                    }));
+
+            var handle = slider.insert("circle", ".track-overlay")
+                .attr("cx", 10)
+                .attr("cy", height - 50)
+                .attr("r", 7);
+            let interval = 100;
+            let timer;
+            var playButton = d3.select("#play-button")
+                .on("click", function () {
+                    var button = d3.select(this);
+                    if (button.text() == "Pause") {
+                        clearInterval(timer);
+                        // timer = 0;
+                        button.text("Play");
+                    } else {
+                        //moving = true;
+                        timer = setInterval(step, interval);
+                        button.text("Pause");
+                    }
+                })
+
+            function step() {
+                let temp_seconds = nowunix_seconds + step_time;
+                if (now_to_value(temp_seconds) >= width - 10) {
+                    clearInterval(timer);
+                    playButton.text("Play");
+                }
+                update(now_to_value(temp_seconds));
+            }
+
+            var speedButton = d3.select("#speed-button")
+                .on("click", function () {
+                    let button = d3.select(this);
+                    if (button.text() == "x2") {
+                        step_time *= 2;
+                        button.text("1/2");
+                    }
+                    else {
+                        step_time /= 2;
+                        button.text("x2");
+                    }
+                })
+
+            function now_to_value(now_seconds) {
+                return (now_seconds - start_unixTime) * (width - 20) / (end_unixTime - start_unixTime) + 10;
+            }
+            function update(now_position) {
+                // update position and text of label according to slider scale
+                if (now_position >= 10 && now_position <= width - 10) {
+                    handle.attr("cx", now_position);
+                    preunix_seconds = nowunix_seconds;
+                    nowunix_seconds = (end_unixTime - start_unixTime) / (width - 10 - 10) * (now_position - 10) + start_unixTime;
+                    date.text(`${new Date(nowunix_seconds * 1000)}`);
+                    let viewer = binary_search();
+                    if (viewer[1] - viewer[0] >= 20) {
+                        console.log(viewer[0], viewer[1]);
+                    }
+                    for (let i = Math.max(viewer[0] + 1, viewer[1] - 20); i <= viewer[1]; i++) {
+                        update_draw(csv[i]["line"], csv[i]["place"], csv[i]["tweets"]);
+                    }
+                }
+                //filter data set and redraw plot
+            }
+
+            function binary_search() {
+                let wa = csv.length;
+                let ac = 0;
+                while (wa - ac > 1) {
+                    let mid = parseInt((ac + wa) / 2);
+                    if (new Date(csv[mid]["date"]).getTime() < nowunix_seconds * 1000) {
+                        ac = mid;
+                    }
+                    else {
+                        wa = mid;
+                    }
+                }
+                let most_new = ac;
+                wa = csv.length;
+                ac = 0;
+                while (wa - ac > 1) {
+                    let mid = parseInt((ac + wa) / 2);
+                    if (new Date(csv[mid]["date"]).getTime() < preunix_seconds * 1000) {
+                        ac = mid;
+                    }
+                    else {
+                        wa = mid;
+                    }
+                }
+                let most_old = ac;
+                return [most_old, most_new];
+            }
+
+            function update_draw(line, place, tweets) {
+                if (place.indexOf("〜") != -1) {
+                    let station1 = place.slice(0, place.indexOf("〜"));
+                    let station2 = place.slice(place.indexOf("〜") + 1, place.length)
+                    update_draw(line, station1, tweets);
+                    update_draw(line, station2, tweets);
+                }
+                else {
+                    if (dict[line] == undefined) {
+                        console.log(line);
+                        return;
+                    }
+                    dict[line].forEach((line) => {
+                        d3.json(line).then(
+                            function (d) {
+                                map.selectAll("path2")
+                                    .data(d.features.filter(d => (d.geometry.type == "Point" && d.properties.name == place.slice(0, -1))))
+                                    .join("circle")
+                                    .attr("cx", d => { return projection(d.geometry.coordinates)[0]; })
+                                    .attr("cy", d => { return projection(d.geometry.coordinates)[1]; })
+                                    .attr("r", 1)
+                                    .attr("stroke", "red")
+                                    .attr("stroke-widht", 0.1)
+                                    .attr("fill", "red")
+                                    .transition()
+                                    .duration(500)
+                                    .attr("r", Math.max(Math.log(tweets) * 5 , 1))
+                                    .transition()
+                                    .delay(100)
+                                    .duration(100)
+                                    .attr("r", 0)
+                            }
+                        )
+                    })
+                }
+            }
         })
 
 
-        let zoom = d3.zoom()
-            .scaleExtent([1, 10])
-            .translateExtent([[0, 0], [width, height]])
-            .on('zoom', handleZoom);
 
-        d3.select('svg').call(zoom);
-
-        function handleZoom(d) {
-            d3.select('#map')
-                .attr('transform', d.transform);
-        }
-
-        d3.select("#reset")
-              .on("click", resetted);
-
-        function clicked(event, d){
-              console.log("clicked")
-              var zoomCenter = d3.pointer(event)
-              var zoom = 10
-              svg.selectAll("#map")
-                .transition()
-                .duration(1000)
-                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + zoom + ")translate(" + -zoomCenter[0] + "," + -zoomCenter[1] + ")");
-        }
-
-        function resetted(event, d){
-              svg.selectAll("#map")
-                .transition()
-                .duration(1000)
-                .attr("transform", "translate(0,0)");
-        }
-
-        // function zoomin() {
-        //     zoom.scaleBy(map, 2);
-        // }
-
-        // function zoomout() {
-        //     zoom.scaleBy(map, 0.5);
-        // }
-        
-        // function resetzoom() {
-        //     map.call(zoom.transform, d3.zoomIdentity);
-        // }
 
     </script>
 </body>

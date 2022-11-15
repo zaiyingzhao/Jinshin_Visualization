@@ -7,7 +7,6 @@
     <title>D3 Test</title>
     <script src="./d3.js" charset="utf-8"></script>
     <script src="./topojson.js" charset="utf-8"></script>
-    <script src="./datalist.js" charset="utf-8"></script>
     <script src="./dict.js" charset="utf-8"></script>
 </head>
 <style>
@@ -48,7 +47,6 @@
             .center([135, 35])
             .translate([width / 2, height / 2])
             .scale(scale);
-        let square = d3.symbol().type("diamond");
         let geoGenerator = d3.geoPath().pointRadius(0).projection(projection);
         let wait = []
         wait.push(d3.json("./japan.topojson"))
@@ -91,6 +89,8 @@
             const start_unixTime = 1262271600; //2010/01/01
             const end_unixTime = 1668006000; //2022/11/10
             let nowunix_seconds = start_unixTime;
+            let step_time = 60 * 60 * 24;
+            let preunix_seconds = nowunix_seconds;
 
             var date = svg.append("text")
                 .text(`${new Date(nowunix_seconds * 1000)}`)
@@ -138,9 +138,6 @@
                         button.text("Pause");
                     }
                 })
-
-            let step_time = 60 * 60 * 24;
-            let preunix_seconds = nowunix_seconds;
 
             function step() {
                 let temp_seconds = nowunix_seconds + step_time;
