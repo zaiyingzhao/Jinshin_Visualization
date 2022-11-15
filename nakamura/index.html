@@ -175,7 +175,10 @@
                     nowunix_seconds = (end_unixTime - start_unixTime) / (width - 10 - 10) * (now_position - 10) + start_unixTime;
                     date.text(`${new Date(nowunix_seconds * 1000)}`);
                     let viewer = binary_search();
-                    for (let i = viewer[0] + 1; i <= viewer[1]; i++) {
+                    if (viewer[1] - viewer[0] >= 20){
+                        console.log(viewer[0],viewer[1]);
+                    }
+                    for (let i = Math.max(viewer[0] + 1, viewer[1]-20); i <= viewer[1]; i++) {
                         update_draw(csv[i]["line"], csv[i]["place"], csv[i]["tweets"]);
                     }
                 }
@@ -212,7 +215,10 @@
 
             function update_draw(line, place, tweets) {
                 if (place.indexOf("〜") != -1) {
-                    return;
+                    let station1 = place.slice(0,place.indexOf("〜"));
+                    let station2 = place.slice(place.indexOf("〜")+1, place.length)
+                    update_draw(line, station1, tweets);
+                    update_draw(line, station2, tweets);
                 }
                 else {
                     if (dict[line] == undefined) {
