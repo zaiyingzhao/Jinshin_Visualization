@@ -122,7 +122,7 @@
                     });
             })
             let zoom = d3.zoom()
-                .scaleExtent([1, 10])
+                .scaleExtent([1, 50])
                 .translateExtent([[0, 0], [width, height]])
                 .on('zoom', handleZoom);
 
@@ -134,7 +134,7 @@
                 d3.select('#map')
                     .attr('transform', d.transform);
                 d3.selectAll(".station")
-                    .attr("r", Math.max(0.2, 0.2 * expansion / 5));
+                    .attr("r", Math.min(1, 1/expansion));
             }
 
             d3.select("#reset")

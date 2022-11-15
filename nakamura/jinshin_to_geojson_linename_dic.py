@@ -527,20 +527,6 @@ dic = {
 
 dir_path = "../data/**/*addRailname.geojson"
 geojson = glob.glob(dir_path,recursive=True)
-# for elements in dic.values():
-#     if type(elements) == list:
-#         for element in elements:
-#             for file in geojson:
-#                 if element in file:
-#                     print(element, file)
-#     else :
-#         for file in geojson:
-#             if elements in file:
-#                 print(elements, file)
-#     # for element in elements:
-#         # for file in geojson:
-#         #     if element in file:
-#         #         print(element, file)
 new_dic = {}
 for key in dic:
     lines = dic[key]

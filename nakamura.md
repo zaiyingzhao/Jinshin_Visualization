@@ -158,3 +158,20 @@ TODO:曜日ごとに変更出来るようにする。
         1. おもすぎて使い物にならない
         2. 同名の駅が省くことが出来ていない
     - ちょざいが作成した辞書を利用することでずっと簡単に探索出来るようになるはず。
+
+# 11/15
+- 足りないgeojsonの追加
+- [辞書データ](data/jinshin_to_geojson_linename_dic.py)の中身を検査して、足りない部分をピックアップした。
+  - valueを直接ファイルの存在する部分へのpathへと変更した新たな[辞書](home/dict.js)を生成した
+  - 使用したプログラムは[これ](nakamura/jinshin_to_geojson_linename_dic.py)
+- 辞書データを使用して、ページの軽量化を行った。
+  - https://github.com/InfovisHandsOn/A-Pastani/commit/9b81f3a53e9c1b044d765460311f62326a4e2eed#diff-dfabdc08c38c171a9fad6493031f1f7312d76c8fda2056b973cc83707e163201
+- 人身事故発生時に出る円の大きさを、事故発生時の関連ツイートの多さに応じて大きくするようにした
+  - https://github.com/InfovisHandsOn/A-Pastani/commit/27c3eda9064ed4511ef540a8551cf49763042c63
+- 駅データのみのgeojsonを新たに生成し、これを使うことで駅の表示を残しながら大幅な軽量化をした
+  - https://github.com/InfovisHandsOn/A-Pastani/commit/a753014d76e87d7a6b978ef4e9f9066a248afcaa
+  - 作成したプログラムは[これ](nakamura/geojson_kairyo.ipynb)
+  - 作成したデータは[これ](data/station_only.geojson)
+- 時間を飛ばすと重くなる問題に対して、飛ばした後の時間から近いものから20個を表示する最大にすることで、軽量化した。
+  - https://github.com/InfovisHandsOn/A-Pastani/commit/ac020bf63027de9d851ec33e015134cec96102d9
+- zoomに対応して各種表示の調整を行った。
