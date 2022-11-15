@@ -18,13 +18,13 @@
 ## day5(11/10)
 - QAR#5として時系列を操作するシークバーを折れ線グラフに対して実装した
   - ver.1はグラフ上を点が移動するのみ
-  - ![](shinchoku_image/kagaya/Screenshot%20from%202022-11-10%2022-55-42.png)
+   ![](shinchoku_image/kagaya/Screenshot%20from%202022-11-10%2022-55-42.png)
 
 - ver.2として自動再生機能とリアルタイムでのグラフの描画を実装した
   - 参考：https://d3-graph-gallery.com/graph/area_basic.html, https://bl.ocks.org/officeofjane/47d2b0bfeecfcb41d2212d06d095c763
   - Capstone Projectで利用できるくらいのものにはなった
   - なぜかグラフが下にもう一つ表示されてしまう
-  - ![](shinchoku_image/kagaya/Screenshot%20from%202022-11-14%2013-03-52.png)
+  ![](shinchoku_image/kagaya/Screenshot%20from%202022-11-14%2013-03-52.png)
 
 - ホームドア設置状況のエクセルファイルをcsv化し、設置日の表記を"Hyy.m"などから”yyyy/mm/dd"に変換した
 
@@ -34,4 +34,9 @@
   - データ加工は中村くんの[dataextract.ipynb](https://github.com/InfovisHandsOn/A-Pastani/blob/main/nakamura/dataextract.ipynb)を参考にし、一部を書き換えて行った
 - 曜日を選択することで、時計に表示するデータを切り替えられるようにした
 - 時計とヒストグラムと連携できるようにした
-  - ![](shinchoku_image/kagaya/Screenshot%20from%202022-11-14%2023-04-04.png)
+   ![](shinchoku_image/kagaya/Screenshot%20from%202022-11-14%2023-04-04.png)
+
+## day7(11/15)
+- ズーム機能を実装した
+  - ボタンによるズームの実装を試みたが、ボタンでズームした後に地図を移動させようとするとズームが元に戻ってしまうバグが修正できず、断念した
+- ヒストグラムの何もないところをクリックすると全データの表示に戻る機能を実装した
