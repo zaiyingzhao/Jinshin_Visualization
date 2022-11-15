@@ -28,6 +28,10 @@
 </style>
 
 <body>
+    <!-- <button type = "button" onclick = "zoomin()">zoom in</button>
+    <button type = "button" onclick = "zoomout()">zoom out</button>
+    <button type = "button" onclick = "resetzoom()">reset zoom</button> -->
+
   <div id="reset">
     <button id="reset-button">reset</button>
   </div>
@@ -134,6 +138,17 @@
                 .attr("transform", "translate(0,0)");
         }
 
+        // function zoomin() {
+        //     zoom.scaleBy(map, 2);
+        // }
+
+        // function zoomout() {
+        //     zoom.scaleBy(map, 0.5);
+        // }
+        
+        // function resetzoom() {
+        //     map.call(zoom.transform, d3.zoomIdentity);
+        // }
 
     </script>
 </body>

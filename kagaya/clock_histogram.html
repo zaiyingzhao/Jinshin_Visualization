@@ -126,11 +126,20 @@
         var svg = d3.select("body").append("svg")
                 .attr("width", width)
                 .attr("height", height)
-                .attr("class", "svgframe");
+                .attr("class", "svgframe")
+                .on("click", function(event, d) {
+                    if (event.target.className.baseVal != "bar"){
+                        histogram.selectAll("rect").attr("fill", "#497174");
+                        d3.json("../data/clockdata_all.json").then((data) => {
+                            drawGraph(data, face, "all");
+                            })
+                    }
+                });
 
         var histogram = svg.append('g')
                 .attr('id', 'histogram')
-                .attr('transform', 'translate(' + 0 + ',' + 0 + ')')
+                .attr('transform', 'translate(' + 0 + ',' + 0 + ')');
+                
 
         var face = svg.append('g')
                 .attr('id', 'clock-face')
@@ -160,6 +169,7 @@
                 .data(data)
                 .enter()
                 .append("rect")
+                .attr("class", "bar")
                 .attr("x", function(d) { return xScale(d.day); })
                 .attr("y", function(d) { return yScale(d.value); })
                 .attr("width", xScale.bandwidth())
@@ -415,14 +425,5 @@
         drawClock("all");
 
         d3.select(self.frameElement).style("height", height + "px");
-
-        function handleZoom(d) {
-            d3.select('#histogram')
-                .attr('transform', d.transform);
-        }
-
-        let zoom = d3.zoom().on('zoom', handleZoom);
-
-        d3.select('.svgframe').call(zoom);
     </script>
 </body>

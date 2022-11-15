@@ -8,6 +8,7 @@
     <script src="./d3.js" charset="utf-8"></script>
     <script src="./topojson.js" charset="utf-8"></script>
     <script src="./datalist.js" charset="utf-8"></script>
+    <script src="./dict.js" charset="utf-8"></script>
 </head>
 <style>
     .tooltip {
@@ -50,10 +51,10 @@
         let square = d3.symbol().type("diamond");
         let geoGenerator = d3.geoPath().pointRadius(0).projection(projection);
         let wait = []
-        datalist.forEach((path) => {
-            wait.push(d3.json(path));
-        })
-        wait.push(d3.csv("../data/jinshin_archive_sentence.csv"));
+        wait.push(d3.json("./japan.topojson"))
+        wait.push(d3.json("../data/allcompanies.geojson"))
+        wait.push(d3.json("./station_only.geojson"))
+        wait.push(d3.csv("../data/tweets.csv"));
         Promise.all(wait).then(function (values) {
             var japangeo = topojson.feature(values[0], values[0].objects.japan);
             svg.selectAll("path")
@@ -85,6 +86,7 @@
                     .attr("stroke", "#a9ceec")
                     .attr("stroke-widht", 0.1)
                     .attr("fill", "#a9ceec")
+
             })
             const start_unixTime = 1262271600; //2010/01/01
             const end_unixTime = 1668006000; //2022/11/10
@@ -174,7 +176,7 @@
                     date.text(`${new Date(nowunix_seconds * 1000)}`);
                     let viewer = binary_search();
                     for (let i = viewer[0] + 1; i <= viewer[1]; i++) {
-                        update_draw(csv[i]["line"], csv[i]["place"]);
+                        update_draw(csv[i]["line"], csv[i]["place"], csv[i]["tweets"]);
                     }
                 }
                 //filter data set and redraw plot
@@ -208,29 +210,36 @@
                 return [most_old, most_new];
             }
 
-            function update_draw(line, place) {
+            function update_draw(line, place, tweets) {
                 if (place.indexOf("〜") != -1) {
                     return;
                 }
                 else {
-                    console.log(place);
-                    values.forEach(d => {
-                        svg.selectAll("path2")
-                            .data(d.features.filter(d => (d.geometry.type == "Point" && d.properties.name == place.slice(0, -1))))
-                            .join("circle")
-                            .attr("cx", d => { return projection(d.geometry.coordinates)[0]; })
-                            .attr("cy", d => { return projection(d.geometry.coordinates)[1]; })
-                            .attr("r", 1)
-                            .attr("stroke", "red")
-                            .attr("stroke-widht", 0.1)
-                            .attr("fill", "red")
-                            .transition()
-                            .duration(500)
-                            .attr("r", 20)
-                            .transition()
-                            .delay(100)
-                            .duration(100)
-                            .attr("r", 0)
+                    if (dict[line] == undefined) {
+                        console.log(line);
+                        return;
+                    }
+                    dict[line].forEach((line) => {
+                        d3.json(line).then(
+                            function (d) {
+                                svg.selectAll("path2")
+                                    .data(d.features.filter(d => (d.geometry.type == "Point" && d.properties.name == place.slice(0, -1))))
+                                    .join("circle")
+                                    .attr("cx", d => { return projection(d.geometry.coordinates)[0]; })
+                                    .attr("cy", d => { return projection(d.geometry.coordinates)[1]; })
+                                    .attr("r", 1)
+                                    .attr("stroke", "red")
+                                    .attr("stroke-widht", 0.1)
+                                    .attr("fill", "red")
+                                    .transition()
+                                    .duration(500)
+                                    .attr("r", Math.max(Math.log(tweets) * 5, 1))
+                                    .transition()
+                                    .delay(100)
+                                    .duration(100)
+                                    .attr("r", 0)
+                            }
+                        )
                     })
                 }
             }
