@@ -61,7 +61,7 @@ twitter APIでキーワードを含むツイート検索をしても取得でき
   - チーム全体の課題にはなるが人身事故発生場所が曖昧なときにどのように可視化を行うか考えたい
   - 個人的には線路上の踏切の情報を探してきて、該当駅間の踏切を事故現場とすればいいのではと思っている
 
-## 第6回（11/15）
+## 第6回（11/14）
 ### やったこと
 - 取得した[ホームドア設置日時のcsv](https://github.com/InfovisHandsOn/A-Pastani/blob/main/data/doorR2_converted.csv)からすべてのgeojsonのpropertiesにホームドア設置日時を示す"door"プロパティを追加した。
   1. ホームドア設置日時のcsvに表示されている事業所名/路線名のパスと実際にgeojsonにアクセスするために必要なパスが全く一致していなかったため、（力技にはなってしまうが）それぞれの対応を確認したうえで[get_correct_path.py](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/get_correct_path.py)において当該のgeojsonにアクセスできるように前処理した（[パスを加えたcsvファイル](https://github.com/InfovisHandsOn/A-Pastani/blob/main/data/doorR2_addPath.csv)） 
@@ -74,3 +74,14 @@ twitter APIでキーワードを含むツイート検索をしても取得でき
   - ズーム及びズームリセットを実装した
   - [提出ファイル](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/QRA5/index.html)の県をクリックするとクリックした位置を中心としてズームが行われ、リセットボタンを押すと元の位置/縮尺に戻るようになっている
 - **[路線辞書について追記]** 人身事故情報で路線名に愛称（地元で使われる正式ではない名称）が使われている場合についても1つ1つ調べて追加した。またpickleファイル形式だと使いづらい気がしたので[辞書を定義するだけのファイル](https://github.com/InfovisHandsOn/A-Pastani/blob/main/data/jinshin_to_geojson_linename_dic.py)を追加した。
+
+## 第7回（11/15）
+### やったこと
+- 前回追加した路線辞書を用いて地図上の駅と人身事故情報の紐づけを行うことで判明したデータ不足（[このコミット履歴](https://github.com/InfovisHandsOn/A-Pastani/commit/b07c35f88b27938d8dfa442c0da9f07510d62869)など）をふまえ辞書のキー追加を行った（これでほぼすべての人身事故情報の紐づけができることになる）
+- 新たに追加した4つのgeojsonに対して第5/6回に行った路線名/ホームドア設置日時プロパティを追加した
+- [index.html](https://github.com/InfovisHandsOn/A-Pastani/blob/main/home/index.html)にズーム機能と簡易的なツールチップ表示機能を追加した
+  - QRA#5の実装をcapstone projectに適用した形
+- geojsonから人身事故情報にアクセスできるようにした
+  1. [get_jinshin_information.py](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/get_jinshin_information.py)において、[人身事故データ](https://github.com/InfovisHandsOn/A-Pastani/blob/main/data/tweets.csv)と以前作成した[人身事故データの路線名から正式路線名を返す辞書](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/jinshin_to_geojson_dictionary.py)を用いて各駅の人身事故回数およびその人身事故のcsvデータにおけるインデックスを取得した（[accidents_per_station.csv](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/accidents_per_station.csv)）
+  2. [add_geojson_jinshin_information.py](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/add_geojson_jinshin_information.py)において中村くんが作成した[すべての駅情報をまとめたgeojson](https://github.com/InfovisHandsOn/A-Pastani/blob/main/data/station_only.geojson)の全ての駅に対して事故回数と該当インデックスのプロパティを追加した（[station_only_addJinshindata.geojson](https://github.com/InfovisHandsOn/A-Pastani/blob/main/data/station_only_addJinshindata.geojson)）
+  - これによってgeojsonから事故詳細をさんしょうできるようになり、tooltipに反映させる予定
