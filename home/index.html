@@ -30,12 +30,16 @@
 <body>
     <script type="text/javascript">
         var colorScale = d3.scaleOrdinal(d3.schemeSet1);
-        var width = 4000;
-        var height = 4000;
-        var scale = 7500;
+        var width = 1000;
+        var height = 900;
+        var scale = 1500;
         var svg = d3.select("body").append("svg")
             .attr("width", width)
             .attr("height", height);
+
+        var map = svg.append('g')
+            .attr('id', 'map')
+            .attr('transform', 'translate(' + 0 + ',' + 0 + ')')
 
         let projection = d3.geoMercator()
             .center([135, 35])
@@ -49,7 +53,7 @@
         })
         Promise.all(wait).then(function (values) {
             var japangeo = topojson.feature(values[0], values[0].objects.japan);
-            svg.selectAll("path")
+            map.selectAll("path")
                 .data(japangeo.features)
                 .enter()
                 .append("path")
@@ -59,7 +63,7 @@
                 .attr("fill", "#646464");
             values.shift();
             values.forEach((d) => {
-                svg.selectAll("path2")
+                map.selectAll("path2")
                     .data(d.features)
                     .enter()
                     .append("path")
@@ -67,7 +71,7 @@
                     .attr("stroke", "white")
                     .attr("fill", "none")
                     .attr("stroke-width", 1);
-                svg.selectAll("path2")
+                map.selectAll("path2")
                     .data(d.features.filter(d => d.geometry.type == "Point"))
                     .join("circle")
                     .attr("cx", d => {return projection(d.geometry.coordinates)[0];})
@@ -78,6 +82,21 @@
                     .attr("fill", "#a9ceec")
             })
         })
+
+
+        let zoom = d3.zoom()
+            .scaleExtent([1, 10])
+            .translateExtent([[0, 0], [width, height]])
+            .on('zoom', handleZoom);
+
+        d3.select('svg').call(zoom);
+
+        function handleZoom(d) {
+            d3.select('#map')
+                .attr('transform', d.transform);
+        }
+
+
 
     </script>
 </body>
