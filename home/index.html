@@ -28,6 +28,10 @@
 </style>
 
 <body>
+    <!-- <button type = "button" onclick = "zoomin()">zoom in</button>
+    <button type = "button" onclick = "zoomout()">zoom out</button>
+    <button type = "button" onclick = "resetzoom()">reset zoom</button> -->
+
     <script type="text/javascript">
         var colorScale = d3.scaleOrdinal(d3.schemeSet1);
         var width = 1000;
@@ -96,7 +100,17 @@
                 .attr('transform', d.transform);
         }
 
+        // function zoomin() {
+        //     zoom.scaleBy(map, 2);
+        // }
 
+        // function zoomout() {
+        //     zoom.scaleBy(map, 0.5);
+        // }
+        
+        // function resetzoom() {
+        //     map.call(zoom.transform, d3.zoomIdentity);
+        // }
 
     </script>
 </body>
