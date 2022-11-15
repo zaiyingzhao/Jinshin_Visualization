@@ -32,6 +32,9 @@
     <button type = "button" onclick = "zoomout()">zoom out</button>
     <button type = "button" onclick = "resetzoom()">reset zoom</button> -->
 
+  <div id="reset">
+    <button id="reset-button">reset</button>
+  </div>
     <script type="text/javascript">
         var colorScale = d3.scaleOrdinal(d3.schemeSet1);
         var width = 1000;
@@ -44,6 +47,14 @@
         var map = svg.append('g')
             .attr('id', 'map')
             .attr('transform', 'translate(' + 0 + ',' + 0 + ')')
+            .on("click", clicked)
+
+        var tooltip = d3.select("body")
+          .append("div")
+          .attr("class", "tooltip")
+          .style("position", "absolute")
+          .style("top", "70px")
+          .style("left", "10px");
 
         let projection = d3.geoMercator()
             .center([135, 35])
@@ -80,10 +91,17 @@
                     .join("circle")
                     .attr("cx", d => {return projection(d.geometry.coordinates)[0];})
                     .attr("cy", d => {return projection(d.geometry.coordinates)[1];})
-                    .attr("r", 1)
+                    .attr("r", 0.5)
                     .attr("stroke", "#a9ceec")
-                    .attr("stroke-widht", 0.1)
+                    .attr("stroke-width", 0.1)
                     .attr("fill", "#a9ceec")
+                    .on("mouseover", function(d,i){
+                      // ここで人身事故情報を表示できるようにする
+                      tooltip.style("visibility", "visible").html(i.properties.name);
+                    })
+                    .on("mouseout", function(){
+                      tooltip.style("visibility", "hidden");
+                    });
             })
         })
 
@@ -103,6 +121,25 @@
         // function zoomin() {
         //     zoom.scaleBy(map, 2);
         // }
+        d3.select("#reset")
+              .on("click", resetted);
+
+        function clicked(event, d){
+              console.log("clicked")
+              var zoomCenter = d3.pointer(event)
+              var zoom = 10
+              svg.selectAll("#map")
+                .transition()
+                .duration(1000)
+                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + zoom + ")translate(" + -zoomCenter[0] + "," + -zoomCenter[1] + ")");
+        }
+
+        function resetted(event, d){
+              svg.selectAll("#map")
+                .transition()
+                .duration(1000)
+                .attr("transform", "translate(0,0)");
+        }
 
         // function zoomout() {
         //     zoom.scaleBy(map, 0.5);

@@ -1,0 +1,149 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "properties": {
+                "name": "大船",
+                "uri": "https://uedayou.net/jrslod/東日本旅客鉄道/横須賀線/大船",
+                "railname": "東日本旅客鉄道横須賀線",
+                "door": "NULL"
+            },
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    139.53141,
+                    35.35416
+                ]
+            }
+        },
+        {
+            "properties": {
+                "name": "北鎌倉",
+                "uri": "https://uedayou.net/jrslod/東日本旅客鉄道/横須賀線/北鎌倉",
+                "railname": "東日本旅客鉄道横須賀線",
+                "door": "NULL"
+            },
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    139.54377,
+                    35.33867
+                ]
+            }
+        },
+        {
+            "properties": {
+                "name": "鎌倉",
+                "uri": "https://uedayou.net/jrslod/東日本旅客鉄道/横須賀線/鎌倉",
+                "railname": "東日本旅客鉄道横須賀線",
+                "door": "NULL"
+            },
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    139.55041,
+                    35.31933
+                ]
+            }
+        },
+        {
+            "properties": {
+                "name": "逗子",
+                "uri": "https://uedayou.net/jrslod/東日本旅客鉄道/横須賀線/逗子",
+                "railname": "東日本旅客鉄道横須賀線",
+                "door": "NULL"
+            },
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    139.57836,
+                    35.29739
+                ]
+            }
+        },
+        {
+            "properties": {
+                "name": "東逗子",
+                "uri": "https://uedayou.net/jrslod/東日本旅客鉄道/横須賀線/東逗子",
+                "railname": "東日本旅客鉄道横須賀線",
+                "door": "NULL"
+            },
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    139.60121,
+                    35.29884
+                ]
+            }
+        },
+        {
+            "properties": {
+                "name": "田浦",
+                "uri": "https://uedayou.net/jrslod/東日本旅客鉄道/横須賀線/田浦",
+                "railname": "東日本旅客鉄道横須賀線",
+                "door": "NULL"
+            },
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    139.63689,
+                    35.29292
+                ]
+            }
+        },
+        {
+            "properties": {
+                "name": "横須賀",
+                "uri": "https://uedayou.net/jrslod/東日本旅客鉄道/横須賀線/横須賀",
+                "railname": "東日本旅客鉄道横須賀線",
+                "door": "NULL"
+            },
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    139.65463,
+                    35.28427
+                ]
+            }
+        },
+        {
+            "properties": {
+                "name": "衣笠",
+                "uri": "https://uedayou.net/jrslod/東日本旅客鉄道/横須賀線/衣笠",
+                "railname": "東日本旅客鉄道横須賀線",
+                "door": "NULL"
+            },
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    139.66224,
+                    35.25672
+                ]
+            }
+        },
+        {
+            "properties": {
+                "name": "久里浜",
+                "uri": "https://uedayou.net/jrslod/東日本旅客鉄道/横須賀線/久里浜",
+                "railname": "東日本旅客鉄道横須賀線",
+                "door": "NULL"
+            },
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    139.70108,
+                    35.23284
+                ]
+            }
+        }
+    ]
+}
