@@ -51,11 +51,9 @@
         let square = d3.symbol().type("diamond");
         let geoGenerator = d3.geoPath().pointRadius(0).projection(projection);
         let wait = []
-        // datalist.forEach((path) => {
-        //     wait.push(d3.json(path));
-        // })
         wait.push(d3.json("./japan.topojson"))
         wait.push(d3.json("../data/allcompanies.geojson"))
+        wait.push(d3.json("./station_only.geojson"))
         wait.push(d3.csv("../data/tweets.csv"));
         Promise.all(wait).then(function (values) {
             var japangeo = topojson.feature(values[0], values[0].objects.japan);
@@ -79,6 +77,16 @@
                     .attr("stroke", "white")
                     .attr("fill", "none")
                     .attr("stroke-width", 1);
+                svg.selectAll("path2")
+                    .data(d.features.filter(d => d.geometry.type == "Point"))
+                    .join("circle")
+                    .attr("cx", d => { return projection(d.geometry.coordinates)[0]; })
+                    .attr("cy", d => { return projection(d.geometry.coordinates)[1]; })
+                    .attr("r", 1)
+                    .attr("stroke", "#a9ceec")
+                    .attr("stroke-widht", 0.1)
+                    .attr("fill", "#a9ceec")
+
             })
             const start_unixTime = 1262271600; //2010/01/01
             const end_unixTime = 1668006000; //2022/11/10
@@ -207,7 +215,7 @@
                     return;
                 }
                 else {
-                    if (dict[line] == undefined){
+                    if (dict[line] == undefined) {
                         console.log(line);
                         return;
                     }
@@ -225,7 +233,7 @@
                                     .attr("fill", "red")
                                     .transition()
                                     .duration(500)
-                                    .attr("r", Math.max(Math.log(tweets)*5 , 1))
+                                    .attr("r", Math.max(Math.log(tweets) * 5, 1))
                                     .transition()
                                     .delay(100)
                                     .duration(100)

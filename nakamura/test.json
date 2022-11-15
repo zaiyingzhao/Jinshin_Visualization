@@ -1,4 +1,4 @@
-let dict = {
+{
     "IRいしかわ鉄道線": [
         "../data/IRいしかわ鉄道/IRいしかわ鉄道IRいしかわ鉄道線_addRailname.geojson"
     ],
@@ -978,9 +978,6 @@ let dict = {
         "../data/樽見鉄道/樽見鉄道樽見線_addRailname.geojson"
     ],
     "武蔵野線": [
-        "../data/JR東/東日本旅客鉄道武蔵野線_addRailname.geojson"
-    ],
-    "武蔵野南線": [
         "../data/JR東/東日本旅客鉄道武蔵野線_addRailname.geojson"
     ],
     "武豊線": [
