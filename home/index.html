@@ -66,13 +66,6 @@
                 .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + zoom + ")translate(" + -zoomCenter[0] + "," + -zoomCenter[1] + ")");
         }
 
-        var tooltip = d3.select("body")
-            .append("div")
-            .attr("class", "tooltip")
-            .style("position", "absolute")
-            .style("top", "70px")
-            .style("left", "10px");
-
         let projection = d3.geoMercator()
             .center([135, 35])
             .translate([width / 2, height / 2])
@@ -84,6 +77,11 @@
         wait.push(d3.json("../data/station_only_addJinshindata.geojson"))
         wait.push(d3.csv("../data/tweets.csv"))
         Promise.all(wait).then(function (values) {
+            var tooltip = d3.select("body")
+                .append("div")
+                .attr("class", "tooltip")
+                .style("position", "absolute")
+            
             var japangeo = topojson.feature(values[0], values[0].objects.japan);
             map.selectAll("path")
                 .data(japangeo.features)
@@ -111,12 +109,13 @@
                     .attr("cx", d => { return projection(d.geometry.coordinates)[0]; })
                     .attr("cy", d => { return projection(d.geometry.coordinates)[1]; })
                     .attr("r", 0.2)
+                    .attr("class", "station")
                     .attr("stroke", "#a9ceec")
                     .attr("stroke-width", 0.1)
                     .attr("fill", "#a9ceec")
                     .on("mouseover", function (d, i) {
                         // ここで人身事故情報を表示できるようにする
-                        tooltip.style("visibility", "visible").html(i.properties.name);
+                        tooltip.style("left", d.layerX + "px").style("top", d.clientY + "px").style("visibility", "visible").html(i.properties.name);
                     })
                     .on("mouseout", function () {
                         tooltip.style("visibility", "hidden");
@@ -130,9 +129,12 @@
             d3.select('svg').call(zoom);
 
             function handleZoom(d) {
-                expansion = d.k;
+                expansion = d.transform.k;
+                console.log(d.transform.k);
                 d3.select('#map')
                     .attr('transform', d.transform);
+                d3.selectAll(".station")
+                    .attr("r", Math.max(0.2, 0.2 * expansion / 5));
             }
 
             d3.select("#reset")
@@ -291,7 +293,7 @@
                                     .attr("fill", "red")
                                     .transition()
                                     .duration(500)
-                                    .attr("r", Math.max(Math.log(tweets) , 0.1))
+                                    .attr("r", Math.max(Math.log(tweets)*5/expansion, 0.1))
                                     .transition()
                                     .delay(100)
                                     .duration(100)
