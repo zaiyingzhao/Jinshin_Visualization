@@ -43,7 +43,7 @@
     </div>
     <script type="text/javascript">
         var colorScale = d3.scaleOrdinal(d3.schemeSet1);
-        var width = 1000;
+        var width = 1600;
         var height = 900;
         var scale = 1500;
         let expansion = 1;
@@ -153,7 +153,7 @@
 
             var date = svg.append("text")
                 .text(`${new Date(nowunix_seconds * 1000)}`)
-                .attr("x", 500)
+                .attr("x", 1200)
                 .attr("y", 830)
                 .attr("font-family", "Arial, Helvetica, sans-serif")
                 .attr("stroke", "black");
@@ -231,9 +231,6 @@
                     nowunix_seconds = (end_unixTime - start_unixTime) / (width - 10 - 10) * (now_position - 10) + start_unixTime;
                     date.text(`${new Date(nowunix_seconds * 1000)}`);
                     let viewer = binary_search();
-                    if (viewer[1] - viewer[0] >= 20) {
-                        console.log(viewer[0], viewer[1]);
-                    }
                     for (let i = Math.max(viewer[0] + 1, viewer[1] - 20); i <= viewer[1]; i++) {
                         update_draw(csv[i]["line"], csv[i]["place"], csv[i]["tweets"]);
                     }
@@ -278,7 +275,6 @@
                 }
                 else {
                     if (dict[line] == undefined) {
-                        console.log(line);
                         return;
                     }
                     dict[line].forEach((line) => {
