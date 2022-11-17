@@ -200,6 +200,59 @@
                     }
                 })
 
+            var doorgraph = svg.append("g")
+                            .attr("class", "doorgraph")
+                            .attr("transform", "translate(50, 600)");
+
+            var graphwidth = 300;
+            var graphheight = 200;
+
+            d3.csv("../kagaya/doordate.csv").then(function(data) {
+                //console.log(data);
+
+                const xscale = d3.scaleTime()
+                            .domain([new Date("1974/01/01"), new Date("2022/11/10")])
+                            .range([0, graphwidth])
+                            .clamp(true);
+                const yscale = d3.scaleLinear()
+                            .domain([0, d3.max(data, d => +d.value)])
+                            .range([graphheight, 0]);
+
+                var xaxis = d3.axisBottom(xscale).ticks(5);
+                var yaxis = d3.axisLeft(yscale);
+
+                doorgraph.append("g")
+                    .attr("class", "xaxis")
+                    .attr("transform", `translate(0, ${graphheight})`)
+                    .call(xaxis);
+                doorgraph.append("g")
+                    .attr("class", "yaxis")
+                    .attr("transform", "translate(0, 0)")
+                    .call(yaxis);
+
+                drawline(data);
+
+                function drawline(data){
+                    var newData = data.filter(function(d) {
+                        return (new Date(d.date)) < (new Date(end_unixTime*1000));
+                    })
+                    //console.log(newData);
+                    
+                    var area = d3.area()
+                                    .x(function(d){return xscale(new Date(d.date));})
+                                    .y0(graphheight)
+                                    .y1(function(d){return yscale(d.value);});
+
+                    doorgraph.append("path")
+                        //.attr("fill", "#cce5df")
+                        //.attr("stroke", "#69b3a2")
+                        .attr("fill", "darkgrey")
+                        .attr("stroke", "grey")
+                        .attr("stroke-width", 2)
+                        .attr("d", area(newData));
+                }
+            })
+
             function step() {
                 let temp_seconds = nowunix_seconds + step_time;
                 if (now_to_value(temp_seconds) >= width - 10) {
@@ -236,6 +289,7 @@
                     for (let i = Math.max(viewer[0] + 1, viewer[1] - 20); i <= viewer[1]; i++) {
                         update_draw(csv[i]["line"], csv[i]["place"], csv[i]["tweets"]);
                     }
+                    drawline
                 }
                 //filter data set and redraw plot
             }
