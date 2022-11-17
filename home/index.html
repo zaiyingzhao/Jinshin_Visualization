@@ -244,8 +244,6 @@
                                     .y1(function(d){return yscale(d.value);});
 
                     doorgraph.append("path")
-                        //.attr("fill", "#cce5df")
-                        //.attr("stroke", "#69b3a2")
                         .attr("fill", "darkgrey")
                         .attr("stroke", "grey")
                         .attr("stroke-width", 2)
@@ -289,7 +287,6 @@
                     for (let i = Math.max(viewer[0] + 1, viewer[1] - 20); i <= viewer[1]; i++) {
                         update_draw(csv[i]["line"], csv[i]["place"], csv[i]["tweets"]);
                     }
-                    drawline
                 }
                 //filter data set and redraw plot
             }
