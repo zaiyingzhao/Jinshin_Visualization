@@ -75,6 +75,7 @@
         wait.push(d3.json("./japan.topojson"))
         wait.push(d3.json("../data/allcompanies.geojson"))
         wait.push(d3.json("../data/station_only_addJinshindata.geojson"))
+        wait.push(d3.csv("../data/doordate.csv"))
         wait.push(d3.csv("../data/tweets.csv"))
         Promise.all(wait).then(function (values) {
             var tooltip = d3.select("body")
@@ -94,6 +95,7 @@
             values.shift();
             let csv = values.pop();
             csv = csv.reverse();
+            var doordata = values.pop();
             values.forEach((d) => {
                 map.selectAll("path2")
                     .data(d.features)
@@ -205,52 +207,46 @@
                             .attr("transform", "translate(50, 600)");
 
             var graphwidth = 300;
-            var graphheight = 200;
+            var graphheight = 200;    
 
-            d3.csv("../kagaya/doordate.csv").then(function(data) {
-                //console.log(data);
+            const xscale = d3.scaleTime()
+                        .domain([new Date("1974/01/01"), new Date("2022/11/10")])
+                        .range([0, graphwidth])
+                        .clamp(true);
+            const yscale = d3.scaleLinear()
+                        .domain([0, d3.max(doordata, d => +d.value)])
+                        .range([graphheight, 0]);
 
-                const xscale = d3.scaleTime()
-                            .domain([new Date("1974/01/01"), new Date("2022/11/10")])
-                            .range([0, graphwidth])
-                            .clamp(true);
-                const yscale = d3.scaleLinear()
-                            .domain([0, d3.max(data, d => +d.value)])
-                            .range([graphheight, 0]);
+            var xaxis = d3.axisBottom(xscale).ticks(5);
+            var yaxis = d3.axisLeft(yscale);
 
-                var xaxis = d3.axisBottom(xscale).ticks(5);
-                var yaxis = d3.axisLeft(yscale);
-
-                doorgraph.append("g")
+            doorgraph.append("g")
                     .attr("class", "xaxis")
                     .attr("transform", `translate(0, ${graphheight})`)
                     .call(xaxis);
-                doorgraph.append("g")
+            doorgraph.append("g")
                     .attr("class", "yaxis")
                     .attr("transform", "translate(0, 0)")
                     .call(yaxis);
 
-                drawline(data);
+            var alldoor = doordata.filter(function(d) {
+                return (new Date(d.date)) < (new Date(end_unixTime*1000));
+            })
+            drawline(alldoor);
 
-                function drawline(data){
-                    var newData = data.filter(function(d) {
-                        return (new Date(d.date)) < (new Date(end_unixTime*1000));
-                    })
-                    //console.log(newData);
-                    
-                    var area = d3.area()
-                                    .x(function(d){return xscale(new Date(d.date));})
-                                    .y0(graphheight)
-                                    .y1(function(d){return yscale(d.value);});
+            function drawline(data){
+                var area = d3.area()
+                            .x(function(d){return xscale(new Date(d.date));})
+                            .y0(graphheight)
+                            .y1(function(d){return yscale(d.value);});
 
-                    doorgraph.append("path")
+                doorgraph.selectAll("path")
+                        .attr("d", area(data))
                         .attr("fill", "darkgrey")
                         .attr("stroke", "grey")
-                        .attr("stroke-width", 2)
-                        .attr("d", area(newData));
+                        .attr("stroke-width", 2);
                 }
-            })
-
+                
             function step() {
                 let temp_seconds = nowunix_seconds + step_time;
                 if (now_to_value(temp_seconds) >= width - 10) {
@@ -287,6 +283,10 @@
                     for (let i = Math.max(viewer[0] + 1, viewer[1] - 20); i <= viewer[1]; i++) {
                         update_draw(csv[i]["line"], csv[i]["place"], csv[i]["tweets"]);
                     }
+                    var newData = doordata.filter(function(d) {
+                        return (new Date(d.date)) < (new Date(nowunix_seconds*1000));
+                    })
+                    drawline(newData);
                 }
                 //filter data set and redraw plot
             }
