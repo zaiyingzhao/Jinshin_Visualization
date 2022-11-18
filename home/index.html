@@ -82,7 +82,7 @@
                 .append("div")
                 .attr("class", "tooltip")
                 .style("position", "absolute")
-            
+
             var japangeo = topojson.feature(values[0], values[0].objects.japan);
             map.selectAll("path")
                 .data(japangeo.features)
@@ -136,7 +136,7 @@
                 d3.select('#map')
                     .attr('transform', d.transform);
                 d3.selectAll(".station")
-                    .attr("r", Math.min(1, 1/expansion));
+                    .attr("r", Math.min(1, 1 / expansion));
             }
 
             d3.select("#reset")
@@ -203,51 +203,50 @@
                 })
 
             var doorgraph = svg.append("g")
-                            .attr("class", "doorgraph")
-                            .attr("transform", "translate(50, 600)");
+                .attr("class", "doorgraph")
+                .attr("transform", "translate(50, 600)");
 
             var graphwidth = 300;
-            var graphheight = 200;    
+            var graphheight = 200;
 
             const xscale = d3.scaleTime()
-                        .domain([new Date("1974/01/01"), new Date("2022/11/10")])
-                        .range([0, graphwidth])
-                        .clamp(true);
+                .domain([new Date("1974/01/01"), new Date("2022/11/10")])
+                .range([0, graphwidth])
+                .clamp(true);
             const yscale = d3.scaleLinear()
-                        .domain([0, d3.max(doordata, d => +d.value)])
-                        .range([graphheight, 0]);
+                .domain([0, d3.max(doordata, d => +d.value)])
+                .range([graphheight, 0]);
 
             var xaxis = d3.axisBottom(xscale).ticks(5);
             var yaxis = d3.axisLeft(yscale);
 
-            // doorgraph.append("g")
-            //         .attr("class", "xaxis")
-            //         .attr("transform", `translate(0, ${graphheight})`)
-            //         .call(xaxis);
             doorgraph.append("g")
-                    .attr("class", "yaxis")
-                    .attr("transform", "translate(0, 0)")
-                    .call(yaxis);
+                .attr("class", "xaxis")
+                .attr("transform", `translate(0, ${graphheight})`)
+                .call(xaxis);
+            doorgraph.append("g")
+                .attr("class", "yaxis")
+                .attr("transform", "translate(0, 0)")
+                .call(yaxis);
 
-            var alldoor = doordata.filter(function(d) {
-                return (new Date(d.date)) < (new Date(end_unixTime*1000));
+            var alldoor = doordata.filter(function (d) {
+                return (new Date(d.date)) < (new Date(nowunix_seconds * 1000));
             })
             drawline(alldoor);
 
-            function drawline(data){
-                console.log(data);
+            function drawline(data) {
                 var area = d3.area()
-                            .x(function(d){return xscale(new Date(d.date));})
-                            .y0(graphheight)
-                            .y1(function(d){return yscale(d.value);});
+                    .x(function (d) { return xscale(new Date(d.date)); })
+                    .y0(graphheight)
+                    .y1(function (d) { return yscale(d.value); });
 
-                doorgraph.selectAll("path")
-                        .attr("d", area(data))
-                        .attr("fill", "darkgrey")
-                        .attr("stroke", "grey")
-                        .attr("stroke-width", 2);
-                }
-                
+                doorgraph.append("path")
+                    .attr("d", area(data))
+                    .attr("fill", "darkgrey")
+                    .attr("stroke", "grey")
+                    .attr("stroke-width", 2);
+            }
+
             function step() {
                 let temp_seconds = nowunix_seconds + step_time;
                 if (now_to_value(temp_seconds) >= width - 10) {
@@ -284,8 +283,8 @@
                     for (let i = Math.max(viewer[0] + 1, viewer[1] - 20); i <= viewer[1]; i++) {
                         update_draw(csv[i]["line"], csv[i]["place"], csv[i]["tweets"]);
                     }
-                    var newData = doordata.filter(function(d) {
-                        return (new Date(d.date)) < (new Date(nowunix_seconds*1000));
+                    var newData = doordata.filter(function (d) {
+                        return (new Date(d.date)) < (new Date(nowunix_seconds * 1000));
                     })
                     drawline(newData);
                 }
@@ -345,7 +344,7 @@
                                     .attr("fill", "red")
                                     .transition()
                                     .duration(500)
-                                    .attr("r", Math.max(Math.log(tweets)*5/expansion, 0.1))
+                                    .attr("r", Math.max(Math.log(tweets) * 5 / expansion, 0.1))
                                     .transition()
                                     .delay(100)
                                     .duration(100)
