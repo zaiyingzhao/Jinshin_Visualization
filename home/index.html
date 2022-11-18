@@ -220,10 +220,10 @@
             var xaxis = d3.axisBottom(xscale).ticks(5);
             var yaxis = d3.axisLeft(yscale);
 
-            doorgraph.append("g")
-                    .attr("class", "xaxis")
-                    .attr("transform", `translate(0, ${graphheight})`)
-                    .call(xaxis);
+            // doorgraph.append("g")
+            //         .attr("class", "xaxis")
+            //         .attr("transform", `translate(0, ${graphheight})`)
+            //         .call(xaxis);
             doorgraph.append("g")
                     .attr("class", "yaxis")
                     .attr("transform", "translate(0, 0)")
@@ -235,6 +235,7 @@
             drawline(alldoor);
 
             function drawline(data){
+                console.log(data);
                 var area = d3.area()
                             .x(function(d){return xscale(new Date(d.date));})
                             .y0(graphheight)
