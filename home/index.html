@@ -32,7 +32,7 @@
         <select id="line_select">
         </select>
     </div>
-
+    <input type="datetime-local" id="selected_date">
     <div id="reset">
         <button id="reset-button">reset</button>
     </div>
@@ -43,6 +43,7 @@
         <button id="speed-button">x2</button>
     </div>
     <script type="text/javascript">
+
         function linename_option() {
             var select = document.getElementById("line_select");
             var option = document.createElement("option");
@@ -60,12 +61,12 @@
                 // selectタグの子要素にoptionタグを追加する
                 select.appendChild(option);
             })
-
         }
+
         linename_option();
 
         var colorScale = d3.scaleOrdinal(d3.schemeSet1);
-        var width = 1600;
+        var width = 1000;
         var height = 900;
         var scale = 1500;
         let expansion = 1;
@@ -99,6 +100,15 @@
         wait.push(d3.csv("../data/doordate.csv"))
         wait.push(d3.csv("../data/tweets.csv"))
         Promise.all(wait).then(function (values) {
+            
+            let dateselect = document.querySelector("#selected_date");
+            dateselect.addEventListener('change', (event, data) => {
+                console.log(event.target.valueAsNumber);
+                now_seconds = event.target.valueAsNumber/1000;
+                update(now_to_value(now_seconds));
+            })
+
+
             var tooltip = d3.select("body")
                 .append("div")
                 .attr("class", "tooltip")
@@ -126,6 +136,7 @@
                     .attr("stroke", "white")
                     .attr("fill", "none")
                     .attr("stroke-width", 0.3);
+
                 map.selectAll("path2")
                     .data(d.features.filter(d => d.geometry.type == "Point"))
                     .join("circle")
@@ -294,6 +305,7 @@
             }
             function update(now_position) {
                 // update position and text of label according to slider scale
+                console.log("update");
                 if (now_position >= 10 && now_position <= width - 10) {
                     handle.attr("cx", now_position);
                     preunix_seconds = nowunix_seconds;
@@ -302,15 +314,15 @@
                     let viewer = binary_search();
                     let count = 0;
                     let line_limit = document.getElementById('line_select');
-                    for (let i = viewer[0] + 1; i <= viewer[1] && count <= 20; i++) {    
-                        if (line_limit.value == "全て"){
+                    for (let i = viewer[0] + 1; i <= viewer[1] && count <= 20; i++) {
+                        if (line_limit.value == "全て") {
                             // 何もしない
                         }
                         else if (csv[i]["line"] != line_limit.value) {
                             continue;
                         }
                         update_draw(csv[i]["line"], csv[i]["place"], csv[i]["tweets"]);
-                        count ++;
+                        count++;
                     }
                     var newData = doordata.filter(function (d) {
                         return (new Date(d.date)) < (new Date(nowunix_seconds * 1000));
