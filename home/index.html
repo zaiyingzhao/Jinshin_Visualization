@@ -28,9 +28,10 @@
 </style>
 
 <body>
-    <!-- <button type = "button" onclick = "zoomin()">zoom in</button>
-    <button type = "button" onclick = "zoomout()">zoom out</button>
-    <button type = "button" onclick = "resetzoom()">reset zoom</button> -->
+    <div>
+        <select id="line_select">
+        </select>
+    </div>
 
     <div id="reset">
         <button id="reset-button">reset</button>
@@ -42,6 +43,27 @@
         <button id="speed-button">x2</button>
     </div>
     <script type="text/javascript">
+        function linename_option() {
+            var select = document.getElementById("line_select");
+            var option = document.createElement("option");
+            option.setAttribute('value', "全て");
+            // option要素に値をセット
+            option.innerHTML = "全て";
+            // selectタグの子要素にoptionタグを追加する
+            select.appendChild(option);
+            Object.keys(dict).forEach(d => {
+                // optionタグを作成する
+                var option = document.createElement("option");
+                option.setAttribute('value', d);
+                // option要素に値をセット
+                option.innerHTML = d;
+                // selectタグの子要素にoptionタグを追加する
+                select.appendChild(option);
+            })
+
+        }
+        linename_option();
+
         var colorScale = d3.scaleOrdinal(d3.schemeSet1);
         var width = 1600;
         var height = 900;
@@ -57,7 +79,6 @@
             .on("click", clicked)
 
         function clicked(event, d) {
-            console.log("clicked")
             var zoomCenter = d3.pointer(event)
             var zoom = 10
             svg.selectAll("#map")
@@ -132,7 +153,6 @@
 
             function handleZoom(d) {
                 expansion = d.transform.k;
-                console.log(d.transform.k);
                 d3.select('#map')
                     .attr('transform', d.transform);
                 d3.selectAll(".station")
@@ -206,11 +226,11 @@
                 .attr("class", "doorgraph")
                 .attr("transform", "translate(50, 600)");
 
-            var graphwidth = 300;
+            var graphwidth = width - 10;
             var graphheight = 200;
 
             const xscale = d3.scaleTime()
-                .domain([new Date("1974/01/01"), new Date("2022/11/10")])
+                .domain([new Date(start_unixTime * 1000), new Date("2022/11/10")])
                 .range([0, graphwidth])
                 .clamp(true);
             const yscale = d3.scaleLinear()
@@ -280,8 +300,17 @@
                     nowunix_seconds = (end_unixTime - start_unixTime) / (width - 10 - 10) * (now_position - 10) + start_unixTime;
                     date.text(`${new Date(nowunix_seconds * 1000)}`);
                     let viewer = binary_search();
-                    for (let i = Math.max(viewer[0] + 1, viewer[1] - 20); i <= viewer[1]; i++) {
+                    let count = 0;
+                    let line_limit = document.getElementById('line_select');
+                    for (let i = viewer[0] + 1; i <= viewer[1] && count <= 20; i++) {    
+                        if (line_limit.value == "全て"){
+                            // 何もしない
+                        }
+                        else if (csv[i]["line"] != line_limit.value) {
+                            continue;
+                        }
                         update_draw(csv[i]["line"], csv[i]["place"], csv[i]["tweets"]);
+                        count ++;
                     }
                     var newData = doordata.filter(function (d) {
                         return (new Date(d.date)) < (new Date(nowunix_seconds * 1000));
@@ -339,15 +368,14 @@
                                     .attr("cx", d => { return projection(d.geometry.coordinates)[0]; })
                                     .attr("cy", d => { return projection(d.geometry.coordinates)[1]; })
                                     .attr("r", 1)
-                                    .attr("stroke", "red")
-                                    .attr("stroke-widht", 0.1)
+                                    .attr("stroke", "none")
                                     .attr("fill", "red")
                                     .transition()
-                                    .duration(500)
+                                    .duration(100)
                                     .attr("r", Math.max(Math.log(tweets) * 5 / expansion, 0.1))
                                     .transition()
                                     .delay(100)
-                                    .duration(100)
+                                    .duration(1000)
                                     .attr("r", 0)
                             }
                         )
