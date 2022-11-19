@@ -525,7 +525,7 @@ dic = {
     "鹿島臨海鉄道鹿島臨港線": "東日本旅客鉄道鹿島線",
 }
 
-dir_path = "../data/**/*addRailname.geojson"
+dir_path = "../data/**/*station_only.geojson"
 geojson = glob.glob(dir_path,recursive=True)
 new_dic = {}
 for key in dic:

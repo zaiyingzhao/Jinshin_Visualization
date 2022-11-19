@@ -103,7 +103,6 @@
             
             let dateselect = document.querySelector("#selected_date");
             dateselect.addEventListener('change', (event, data) => {
-                console.log(event.target.valueAsNumber);
                 now_seconds = event.target.valueAsNumber/1000;
                 update(now_to_value(now_seconds));
             })
@@ -305,7 +304,6 @@
             }
             function update(now_position) {
                 // update position and text of label according to slider scale
-                console.log("update");
                 if (now_position >= 10 && now_position <= width - 10) {
                     handle.attr("cx", now_position);
                     preunix_seconds = nowunix_seconds;
@@ -375,7 +373,7 @@
                         d3.json(line).then(
                             function (d) {
                                 map.selectAll("path2")
-                                    .data(d.features.filter(d => (d.geometry.type == "Point" && d.properties.name == place.slice(0, -1))))
+                                    .data(d.features.filter(d => (d.properties.name == place.slice(0, -1))))
                                     .join("circle")
                                     .attr("cx", d => { return projection(d.geometry.coordinates)[0]; })
                                     .attr("cy", d => { return projection(d.geometry.coordinates)[1]; })
