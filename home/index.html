@@ -148,10 +148,10 @@
                     .attr("fill", "#a9ceec")
                     .on("mouseover", function (d, i) {
                         // ここで人身事故情報を表示できるようにする
-                        tooltip.style("left", d.layerX + "px").style("top", d.clientY + "px").style("visibility", "visible").html(i.properties.name);
+                        tooltip.style("left", d.layerX + "px").style("top", d.clientY + "px").style("visibility", "visible").html('<a href="https://google.com">ここ</a>');
                     })
                     .on("mouseout", function () {
-                        tooltip.style("visibility", "hidden");
+                        // tooltip.style("visibility", "hidden");
                     });
             })
             let zoom = d3.zoom()
@@ -163,6 +163,7 @@
 
             function handleZoom(d) {
                 expansion = d.transform.k;
+                d3.select(".tooltip").style("visibility","hidden");
                 d3.select('#map')
                     .attr('transform', d.transform);
                 d3.selectAll(".station")
