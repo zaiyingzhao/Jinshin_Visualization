@@ -147,18 +147,17 @@
                     .attr("stroke-width", 0.1)
                     .attr("fill", "#a9ceec")
                     .on("mouseover", function (d, i) {
-                        // ここで人身事故情報を表示できるようにする
                         if (i.properties.accidents == "NULL") {
                             tooltip.style("left", d.layerX + "px").style("top", d.clientY + "px").style("visibility", "visible").html(i.properties.name + "<br>" + "事故回数: " + 0 + "回")
                         }
                         else if (i.properties.accidents == 1) {
+                            url = csv[(i.properties.index).split(", ")[0].slice(1, -1)]["url"]
                             tooltip.style("left", d.layerX + "px").style("top", d.clientY + "px").style("visibility", "visible").html(
                                 i.properties.name + "<br>" + "事故回数: " + 1 + "回" + "<br>"
-                                + "詳細URL: " + csv[(i.properties.index).split(",")[0].slice(1, -1)]["url"]
+                                + "詳細URL: " + `<a href=url>${url}</a>`
                             )
                         }
                         else {
-                            console.log(i.properties.accidents, i.properties.name)
                             tooltip.style("left", d.layerX + "px").style("top", d.clientY + "px").style("visibility", "visible")
                             text = i.properties.name + "<br>" + "事故回数: " + i.properties.accidents + "回" + "<br>" + "詳細URL: "
                             for (let step = 0; step < i.properties.accidents; step++) {
@@ -174,7 +173,8 @@
                                 }
                                 text += csv[index - 0]["url"] + "<br>"
                             }
-                            tooltip.html(text)
+                            url = csv[index - 0]["url"]
+                            text += `<a href=url>${url}</a>` + "<br>"
                         }
                     })
                     .on("mouseout", function () {
