@@ -81,7 +81,7 @@
 
         function clicked(event, d) {
             var zoomCenter = d3.pointer(event)
-            var zoom = 10
+            var zoom = 150
             svg.selectAll("#map")
                 .transition()
                 .duration(1000)
@@ -100,10 +100,10 @@
         wait.push(d3.csv("../data/doordate.csv"))
         wait.push(d3.csv("../data/tweets.csv"))
         Promise.all(wait).then(function (values) {
-            
+
             let dateselect = document.querySelector("#selected_date");
             dateselect.addEventListener('change', (event, data) => {
-                now_seconds = event.target.valueAsNumber/1000;
+                now_seconds = event.target.valueAsNumber / 1000;
                 update(now_to_value(now_seconds));
             })
 
@@ -141,14 +141,41 @@
                     .join("circle")
                     .attr("cx", d => { return projection(d.geometry.coordinates)[0]; })
                     .attr("cy", d => { return projection(d.geometry.coordinates)[1]; })
-                    .attr("r", 0.2)
+                    .attr("r", 0.05)
                     .attr("class", "station")
                     .attr("stroke", "#a9ceec")
                     .attr("stroke-width", 0.1)
                     .attr("fill", "#a9ceec")
                     .on("mouseover", function (d, i) {
                         // ここで人身事故情報を表示できるようにする
-                        tooltip.style("left", d.layerX + "px").style("top", d.clientY + "px").style("visibility", "visible").html(i.properties.name);
+                        if (i.properties.accidents == "NULL") {
+                            tooltip.style("left", d.layerX + "px").style("top", d.clientY + "px").style("visibility", "visible").html(i.properties.name + "<br>" + "事故回数: " + 0 + "回")
+                        }
+                        else if (i.properties.accidents == 1) {
+                            tooltip.style("left", d.layerX + "px").style("top", d.clientY + "px").style("visibility", "visible").html(
+                                i.properties.name + "<br>" + "事故回数: " + 1 + "回" + "<br>"
+                                + "詳細URL: " + csv[(i.properties.index).split(",")[0].slice(1, -1)]["url"]
+                            )
+                        }
+                        else {
+                            console.log(i.properties.accidents, i.properties.name)
+                            tooltip.style("left", d.layerX + "px").style("top", d.clientY + "px").style("visibility", "visible")
+                            text = i.properties.name + "<br>" + "事故回数: " + i.properties.accidents + "回" + "<br>" + "詳細URL: "
+                            for (let step = 0; step < i.properties.accidents; step++) {
+                                let index = 0
+                                if (step == 0) {
+                                    index = (i.properties.index).split(",")[0].slice(1)
+                                }
+                                else if (step == i.properties.accidents - 1) {
+                                    index = (i.properties.index).split(",")[i.properties.accidents - 1].slice(0, -1)
+                                }
+                                else {
+                                    index = (i.properties.index).split(",")[step]
+                                }
+                                text += csv[index - 0]["url"] + "<br>"
+                            }
+                            tooltip.html(text)
+                        }
                     })
                     .on("mouseout", function () {
                         tooltip.style("visibility", "hidden");
