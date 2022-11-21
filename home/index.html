@@ -481,6 +481,11 @@
             .attr("width", width)
             .attr("height", height);
 
+        let information_of_accident = container.append("div")
+            .attr("class", "info")
+            .attr("width", 100)
+            .attr("height", 200);
+
         var map = svg.append('g')
             .attr('id', 'map')
             .attr('transform', 'translate(' + 0 + ',' + 0 + ')')
@@ -514,6 +519,11 @@
                 update(now_to_value(now_seconds));
             })
 
+            let speed = document.querySelector("#speed");
+            speed.addEventListener('change', (event, date) => {
+                speed = event.target.valueAsNumber;
+                step_time = 60 * 60 * 24 * speed;
+            })
 
             var tooltip = d3.select("body")
                 .append("div")
@@ -539,6 +549,7 @@
                     .data(d.features)
                     .enter()
                     .append("path")
+                    .attr("class", "linepath")
                     .attr("d", geoGenerator)
                     .attr("stroke", "white")
                     .attr("fill", "none")
@@ -552,7 +563,7 @@
                     .attr("r", 0.05)
                     .attr("class", "station")
                     .attr("stroke", "#a9ceec")
-                    .attr("stroke-width", 0.1)
+                    .attr("stroke-width", 0)
                     .attr("fill", "#a9ceec")
                     .on("mouseover", function (d, i) {
                         // ここで人身事故情報を表示できるようにする
@@ -654,7 +665,7 @@
 
             var date = svg.append("text")
                 .text(`${new Date(nowunix_seconds * 1000)}`)
-                .attr("x", 1200)
+                .attr("x", 600)
                 .attr("y", 830)
                 .attr("font-family", "Arial, Helvetica, sans-serif")
                 .attr("stroke", "black");
@@ -737,7 +748,7 @@
                     .x(function (d) { return xscale(new Date(d.date)); })
                     .y0(graphheight)
                     .y1(function (d) { return yscale(d.value); });
-
+                doorgraph.selectAll("path").remove();
                 doorgraph.append("path")
                     .attr("d", area(data))
                     .attr("fill", "darkgrey")
@@ -780,14 +791,14 @@
                     let viewer = binary_search();
                     let count = 0;
                     let line_limit = document.getElementById('line_select');
-                    for (let i = viewer[0] + 1; i <= viewer[1] && count <= 20; i++) {
+                    for (let i = viewer[0] + 1; i <= viewer[1] && count <= 40; i++) {
                         if (line_limit.value == "全て") {
                             // 何もしない
                         }
                         else if (csv[i]["line"] != line_limit.value) {
                             continue;
                         }
-                        update_draw(csv[i]["line"], csv[i]["place"], csv[i]["tweets"]);
+                        update_draw(csv[i]["line"], csv[i]["place"], csv[i]["tweets"], csv[i]["date"], i);
                         count++;
                     }
                     var newData = doordata.filter(function (d) {
@@ -825,13 +836,13 @@
                 let most_old = ac;
                 return [most_old, most_new];
             }
-
-            function update_draw(line, place, tweets) {
+            let placelist = [];
+            function update_draw(line, place, tweets, date, i) {
                 if (place.indexOf("〜") != -1) {
                     let station1 = place.slice(0, place.indexOf("〜"));
                     let station2 = place.slice(place.indexOf("〜") + 1, place.length)
-                    update_draw(line, station1, tweets);
-                    update_draw(line, station2, tweets);
+                    update_draw(line, station1, tweets, date,i );
+                    update_draw(line, station2, tweets, date, i);
                 }
                 else {
                     if (dict[line] == undefined) {
@@ -868,8 +879,8 @@
                                     .attr("stroke", "none")
                                     .attr("fill", "red")
                                     .transition()
-                                    .duration(100)
-                                    .attr("r", Math.max(Math.log(tweets) * 5 / expansion, 0.1))
+                                    .duration(500)
+                                    .attr("r", Math.max(Math.log(tweets) * 3 / expansion, 0.1))
                                     .transition()
                                     .delay(100)
                                     .duration(1000)
