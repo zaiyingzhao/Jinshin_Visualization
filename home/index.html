@@ -588,7 +588,12 @@
                     .on("mouseover", function (d, i) {
                         // ここで人身事故情報を表示できるようにする
                         if (i.properties.accidents == "NULL") {
-                            tooltip.style("left", d.layerX + "px").style("top", d.clientY + "px").style("visibility", "visible").html(i.properties.name + "<br>" + "事故回数: " + 0 + "回")
+                            if (i.properties.door == "NULL") {
+                                tooltip.style("left", d.layerX + "px").style("top", d.clientY + "px").style("visibility", "visible").html(i.properties.name + "<br>" + "事故回数: " + 0 + "回" + "<br>" + "ホームドア未設置")
+                            }
+                            else {
+                                tooltip.style("left", d.layerX + "px").style("top", d.clientY + "px").style("visibility", "visible").html(i.properties.name + "<br>" + "事故回数: " + 0 + "回" + "<br>" + "ホームドア設置日時: " + (i.properties.door).slice(0, -6))
+                            }
                         }
                         else if (i.properties.accidents == 1) {
                             index = (i.properties.index).slice(1, -1) - 0
@@ -602,8 +607,15 @@
                             else {
                                 injury = csv[rightindex]["injury"]
                             }
+                            if (i.properties.door == "NULL") {
+                                door = "ホームドア未設置"
+                            }
+                            if (i.properties.door != "NULL") {
+                                door = "ホームドア設置日時: " + (i.properties.door).slice(0, -6)
+                            }
+
                             tooltip.style("left", d.layerX + "px").style("top", d.clientY + "px").style("visibility", "visible").html(
-                                i.properties.name + "<br>" + "事故回数: " + 1 + "回" + "<br>"
+                                i.properties.name + "<br>" + "事故回数: " + 1 + "回" + "<br>" + door + "<br>"
                                 + "日時: " + csv[rightindex]["date"] + "<br>"
                                 + "路線名: " + csv[rightindex]["line"] + "<br>"
                                 + "被害状況: " + injury + "<br>"
@@ -612,8 +624,14 @@
                             )
                         }
                         else {
+                            if (i.properties.door == "NULL") {
+                                door = "ホームドア未設置"
+                            }
+                            if (i.properties.door != "NULL") {
+                                door = "ホームドア設置日時: " + (i.properties.door).slice(0, -6)
+                            }
                             tooltip.style("left", d.layerX + "px").style("top", d.clientY + "px").style("visibility", "visible")
-                            text = i.properties.name + "<br>" + "事故回数: " + i.properties.accidents + "回" + "<br>"
+                            text = i.properties.name + "<br>" + "事故回数: " + i.properties.accidents + "回" + "<br>" + door + "<br>"
                             for (let step = 0; step < i.properties.accidents; step++) {
                                 let index = 0
                                 if (step == 0) {
