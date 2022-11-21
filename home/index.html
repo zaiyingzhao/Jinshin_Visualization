@@ -557,13 +557,30 @@
                     .attr("stroke", "white")
                     .attr("fill", "none")
                     .attr("stroke-width", 0.3);
+                map.selectAll("path2")
+                    .data(d.features.filter(d => d.geometry.type == "Point"))
+                    .join("circle")
+                    .attr("cx", d => { return projection(d.geometry.coordinates)[0]; })
+                    .attr("cy", d => { return projection(d.geometry.coordinates)[1]; })
+                    .attr("r", (d) => {
+                        if (d.properties.accidents !== "NULL") {
+                            return d.properties.accidents;
+                        }
+                        else {
+                            return 0;
+                        }
+                    })
+                    .attr("class", "jinshin_station")
+                    .attr("opacity", 0.2)
+                    .attr("stroke-width", 0)
+                    .attr("fill", "orange")
 
                 map.selectAll("path2")
                     .data(d.features.filter(d => d.geometry.type == "Point"))
                     .join("circle")
                     .attr("cx", d => { return projection(d.geometry.coordinates)[0]; })
                     .attr("cy", d => { return projection(d.geometry.coordinates)[1]; })
-                    .attr("r", 0.05)
+                    .attr("r", Math.min(0.5, 1 / expansion * 4))
                     .attr("class", "station")
                     .attr("stroke", "#a9ceec")
                     .attr("stroke-width", 0)
@@ -649,17 +666,30 @@
 
             function handleZoom(d) {
                 expansion = d.transform.k;
+                d3.selectAll(".jinshin_station").attr("r", (d) => {
+                    if (d.properties.accidents !== "NULL") {
+                        return d.properties.accidents / Math.log(expansion + 1);
+                    } else {
+                        return 0;
+                    }
+                })
                 d3.select("#maintooltip").style("visibility", "hidden");
                 d3.select('#map')
                     .attr('transform', d.transform);
                 d3.selectAll(".station")
                     .attr("r", Math.min(0.5, 1 / expansion * 4))
+
                 d3.selectAll(".doorstation")
-                    .attr("r", Math.min(0.5, 1 / expansion * 4))
-                // .attr("stroke-width",1);
+                    .attr("r", (d, i) => {
+                        console.log(Math.min(0.5, 1 / expansion * 4));
+                        return Math.min(0.5, 1 / expansion * 4);
+                    })
+                    .attr("stroke-width", () => {
+                        return Math.min(0.1, 1 / expansion * 4);
+                    })
 
                 d3.selectAll(".linepath")
-                    .attr("stroke-width", Math.min(0.6, 1 / expansion) * 2);
+                    .attr("stroke-width", Math.min(0.6, 1 / expansion * 2));
             }
 
             d3.select("#reset")
@@ -821,7 +851,7 @@
                     })
                     drawline(newData);
                     let new_home_door_index = binary_search_for_home_door();
-                    console.log(new_home_door_index)
+                    // console.log(new_home_door_index)
                     doorstation(new_home_door_index);
                 }
                 //filter data set and redraw plot
@@ -868,7 +898,7 @@
                     }
                 }
                 let most_new = ac;
-                console.log(most_new)
+                // console.log(most_new)
                 return most_new;
             }
             let placelist = [];
@@ -928,22 +958,23 @@
 
             function doorstation(new_home_door_index) {
                 // map.selectAll(".door").remove();
-                if (now_door_index < new_home_door_index){
+                if (now_door_index < new_home_door_index) {
                     for (let index = now_door_index + 1; index <= new_home_door_index; index++) {
                         var coordinates = [doorlocation[index]["longitude"], doorlocation[index]["latitude"]];
                         map.append("circle")
                             .attr("cx", projection(coordinates)[0])
                             .attr("cy", projection(coordinates)[1])
-                            .attr("r", 0.05)
-                            .attr("id", `home_door_${index}`)
+                            .attr("r", Math.min(0.5, 1 / expansion * 4))
                             .attr("class", "doorstation")
                             .attr("stroke", "blue")
-                            .attr("stroke-width", 0.01)
+                            .attr("stroke-width", Math.min(0.1, 1 / expansion * 4))
                             .attr("fill", "none");
+
                     }
-                }else {
-                    for (let index = now_door_index; index > new_home_door_index; index--){
-                        map.select(`#home_door${index}`).remove();
+                } else {
+                    for (let index = now_door_index; index > new_home_door_index; index--) {
+                        map.select(`#home_door_${index}`).remove();
+                        console.log("remove!");
                     }
                 }
                 now_door_index = new_home_door_index;

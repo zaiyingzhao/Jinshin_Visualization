@@ -175,3 +175,22 @@ TODO:曜日ごとに変更出来るようにする。
 - 時間を飛ばすと重くなる問題に対して、飛ばした後の時間から近いものから20個を表示する最大にすることで、軽量化した。
   - https://github.com/InfovisHandsOn/A-Pastani/commit/ac020bf63027de9d851ec33e015134cec96102d9
 - zoomに対応して各種表示の調整を行った。
+
+# 11/21
+## 前回(11/15)から今日までの進捗
+- ホームドア設置件数のグラフがバグっているのを修正した。[commit](https://github.com/InfovisHandsOn/A-Pastani/commit/96ac588a9db41cfd8c71bb5495fd610c071730c3)
+- 路線ごとにフィルターをかけられるようにした。[commit](https://github.com/InfovisHandsOn/A-Pastani/commit/c52a4bd9c589227a2134ef3d452c07685a4b97b7)
+- 任意の時刻に入力から飛べるようにした。[commit](https://github.com/InfovisHandsOn/A-Pastani/commit/e5bd27ebc030c83758a83a3783987097e10fd50f)
+- geojsonを改良して、Pointのみのデータを生成し、サイトを軽量化した。[commit](https://github.com/InfovisHandsOn/A-Pastani/commit/f4cdaa23d7891d2430ac3a09e8dac5b288f9d5be)
+- tooltipの消えるタイミングをmouseremoveから、ユーザーが地図を動かしたときに変更した。[commit](https://github.com/InfovisHandsOn/A-Pastani/commit/072250cd73b3b88f7d69856c8f05b27188215c3c)
+
+## 今日の進捗
+- flexboxに対応して表示を修正した。[commit](https://github.com/InfovisHandsOn/A-Pastani/commit/0658d7678ed9552633ddb7469aed5293780bd609)
+- speedを任意の値に変えられるように変更した。[commit](https://github.com/InfovisHandsOn/A-Pastani/commit/0658d7678ed9552633ddb7469aed5293780bd609)
+- より拡大できるようにした。[commit](https://github.com/InfovisHandsOn/A-Pastani/commit/5720d444935529290b6ef5a749726995e3341623)
+- 操作しやすいようにUIの変更。[commit](https://github.com/InfovisHandsOn/A-Pastani/commit/e70ff5afe419f6f6e4431f8ba2fbfac2baa814d8)
+- これまでの成果物として別にあった時計の表示をindex.htmlに統合。[commit](https://github.com/InfovisHandsOn/A-Pastani/commit/c9d5a6944ae060214dfa13357489761e38b1af54)
+- homedoor表示の軽量化(CSVのソートとバイナリサーチの実装)。[commit](https://github.com/InfovisHandsOn/A-Pastani/commit/98cc60b06ca9f1d123cb2b35a7c3c7791389e826)
+- ホームドア設置駅の表示の改良と、人身事故発生駅の発生件数に応じた円の表示
+
+![](shinchoku_image/nakamura/jinshin_circle.png)
