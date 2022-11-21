@@ -201,6 +201,7 @@
             function handleZoom(d) {
                 expansion = d.transform.k;
                 d3.select(".tooltip").style("visibility", "hidden");
+
                 d3.select('#map')
                     .attr('transform', d.transform);
                 d3.selectAll(".station")
