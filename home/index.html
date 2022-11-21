@@ -625,6 +625,16 @@
                         }
                     })
                     .on("mouseout", function () {
+                    })
+                    .on("click", function (d, i) {
+                        // クリックすると点滅（サイズがズームに対応できていない）
+                        d3.select(this)
+                            .transition()
+                            .duration(500)
+                            .attr("fill", "red")
+                            .transition()
+                            .duration(500)
+                            .attr("fill", "#a9ceec")
                     });
             })
             let zoom = d3.zoom()
@@ -841,7 +851,7 @@
                 if (place.indexOf("〜") != -1) {
                     let station1 = place.slice(0, place.indexOf("〜"));
                     let station2 = place.slice(place.indexOf("〜") + 1, place.length)
-                    update_draw(line, station1, tweets, date,i );
+                    update_draw(line, station1, tweets, date, i);
                     update_draw(line, station2, tweets, date, i);
                 }
                 else {
