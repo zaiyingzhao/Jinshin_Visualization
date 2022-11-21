@@ -163,14 +163,15 @@
                         }
                         else if (i.properties.accidents == 1) {
                             index = (i.properties.index).slice(1, -1) - 0
-                            console.log(i.properties.railname, csv[csv.length - index - 1]["line"])
-                            url = csv[csv.length - index - 1]["url"]
+                            rightindex = dsv.length - index - 1
+                            // console.log(i.properties.railname, csv[csv.length - index - 1]["line"])
+                            url = csv[rightindex]["url"]
                             tooltip.style("left", d.layerX + "px").style("top", d.clientY + "px").style("visibility", "visible").html(
                                 i.properties.name + "<br>" + "事故回数: " + 1 + "回" + "<br>"
-                                + "日時: " + csv[csv.length - index - 1]["date"] + "<br>"
-                                + "路線名: " + csv[csv.length - index - 1]["line"] + "<br>"
-                                + "被害状況: " + csv[csv.length - index - 1]["injury"] + "<br>"
-                                + "関連ツイート数:" + csv[csv.length - index - 1]["tweets"] + "<br>"
+                                + "日時: " + csv[rightindex]["date"] + "<br>"
+                                + "路線名: " + csv[rightindex]["line"] + "<br>"
+                                + "被害状況: " + csv[rightindex]["injury"] + "<br>"
+                                + "関連ツイート数:" + csv[rightindex]["tweets"] + "<br>"
                                 + `<a href=${url}>さらに詳細へ</a>`
                             )
                         }
@@ -188,12 +189,13 @@
                                 else {
                                     index = (i.properties.index).split(",")[step] - 0
                                 }
-                                url = csv[csv.length - index - 1]["url"]
+                                rightindex = csv.length - index - 1
+                                url = csv[rightindex]["url"]
                                 text += `【事故${step + 1}】` + "<br>"
-                                    + "日時: " + csv[csv.length - index - 1]["date"] + "<br>"
-                                    + "路線名: " + csv[csv.length - index - 1]["line"] + "<br>"
-                                    + "被害状況: " + csv[csv.length - index - 1]["injury"] + "<br>"
-                                    + "関連ツイート数:" + csv[csv.length - index - 1]["tweets"] + "<br>"
+                                    + "日時: " + csv[rightindex]["date"] + "<br>"
+                                    + "路線名: " + csv[rightindex]["line"] + "<br>"
+                                    + "被害状況: " + csv[rightindex]["injury"] + "<br>"
+                                    + "関連ツイート数:" + csv[rightindex]["tweets"] + "<br>"
                                     + `<a href=${url}>さらに詳細へ</a>` + "<br>"
                             }
                             tooltip.html(text)
