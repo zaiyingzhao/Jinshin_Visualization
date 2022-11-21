@@ -271,6 +271,7 @@
                     .y0(graphheight)
                     .y1(function (d) { return yscale(d.value); });
 
+                doorgraph.selectAll("path").remove();
                 doorgraph.append("path")
                     .attr("d", area(data))
                     .attr("fill", "darkgrey")
