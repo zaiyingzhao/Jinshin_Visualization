@@ -10,12 +10,18 @@
     <script src="./dict.js" charset="utf-8"></script>
 </head>
 <style>
+    * {
+        background-color: #0a0c0d;
+        color: #ECEFF7;
+        font-family: "Arial, Helvetica, sans-serif";
+    }
+
     .tooltip {
         position: absolute;
         width: auto;
         height: auto;
         padding: 4px;
-        font: 10px sans-serif;
+        font: 13px sans-serif;
         color: #fff;
         background: #333;
         -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -83,11 +89,50 @@
 
     .hour-label {
         font-size: 24px;
+        color: #fff;
     }
 
     .svgframe {
-        background-color: #EFF5F5;
-        border: solid 1px #EFF5F5;
+        background-color: #0A0C0D;
+        border: solid 1px #0A0C0D;
+    }
+
+    .info {
+        font-size: 14px;
+    }
+
+    .select {
+        display: inline-block;
+        position: relative;
+        border: 1px solid #eee;
+        vertical-align: middle;
+    }
+
+    select {
+        appearance: none;
+        width: 300px;
+        padding-right: 1em;
+        border: none;
+        outline: 0;
+        background: #0A0C0D;
+        background-image: none;
+        box-shadow: none;
+        text-indent: 0.01px;
+        text-overflow: ellipsis;
+        cursor: pointer;
+    }
+
+    select::before {
+        position: absolute;
+        top: 18px;
+        right: 16px;
+        width: 0;
+        height: 0;
+        border-width: 10px 5px 0 5px;
+        border-style: solid;
+        border-color: #eee transparent transparent transparent;
+        content: "";
+        pointer-events: none;
     }
 </style>
 
@@ -157,7 +202,7 @@
             .attr("class", "svgframe")
             .on("click", function (event, d) {
                 if (event.target.className.baseVal != "bar") {
-                    histogram.selectAll("rect").attr("fill", "#497174");
+                    histogram.selectAll("rect").attr("fill", "#D0D3DB");
                     d3.json("../data/clockdata_all.json").then((data) => {
                         drawGraph(data, face, "all");
                     })
@@ -201,13 +246,13 @@
                     .attr("y", function (d) { return yScale(d.value); })
                     .attr("width", xScale.bandwidth())
                     .attr("height", function (d) { return histoheight - margin - yScale(d.value); })
-                    .attr("fill", "#497174")
+                    .attr("fill", "#D0D3DB")
                     .on("mouseover", function (event, d) { tooltip2.style("visibility", "visible").html(d.day + "<br>" + d.value); })
                     .on("mousemove", function (d) { tooltip2.style("left", event.pageX + 20 + "px").style("top", event.pageY + "px"); })
                     .on("mouseout", function (d) { tooltip2.style("visibility", "hidden"); })
                     .on("click", function (event, d) {
-                        histogram.selectAll("rect").attr("fill", "#497174");
-                        d3.select(this).attr("fill", "#EB6440")
+                        histogram.selectAll("rect").attr("fill", "#D0D3D8");
+                        d3.select(this).attr("fill", "#FFF")
                         if (d.day == "all") {
                             d3.json("../data/clockdata_all.json").then((data) => {
                                 drawGraph(data, face, d.day);
@@ -270,6 +315,7 @@
                 .enter()
                 .append('text')
                 .attr('class', 'hour-label')
+                .attr("fill", "#fff")
                 .attr('text-anchor', 'middle')
                 .attr('x', function (d) {
                     return hourLabelRadius * Math.sin(hourScale(d) * radians);
@@ -367,7 +413,7 @@
                 .attr("d", start(data))
                 .attr("stroke", "black")
                 .attr("stroke-width", 0)
-                .attr("fill", "#D6E4E5")
+                .attr("fill", "#393D48")
                 .attr("class", "max")
                 .transition()
                 .delay(400)
@@ -377,7 +423,7 @@
                 .attr("d", start(data))
                 .attr("stroke", "black")
                 .attr("stroke-width", 0)
-                .attr("fill", "#497174")
+                .attr("fill", "#D0D3D8")
                 .attr("class", "quarter3")
                 .transition()
                 .delay(300)
@@ -387,7 +433,7 @@
                 .attr("d", start(data))
                 .attr("stroke", "black")
                 .attr("stroke-width", 0)
-                .attr("fill", "#EB6440")
+                .attr("fill", "#8C000E")
                 .attr("class", "median")
                 .transition()
                 .delay(200)
@@ -397,7 +443,7 @@
                 .attr("d", start(data))
                 .attr("stroke", "black")
                 .attr("stroke-width", 0)
-                .attr("fill", "#0E5E6F")
+                .attr("fill", "#49515A")
                 .attr("class", "quarter")
                 .transition()
                 .delay(100)
@@ -407,7 +453,7 @@
                 .attr("d", start(data))
                 .attr("stroke", "black")
                 .attr("stroke-width", 0)
-                .attr("fill", "#EFF5F5")
+                .attr("fill", "#393D48")
                 .attr("class", "min")
                 .transition()
                 .delay(0)
@@ -475,11 +521,15 @@
         var width = 1000;
         var height = 900;
         var scale = 1500;
-        let expansion = 1;
+        let expansion = 20;
         var svg = container.append("svg")
             .attr("class", "main")
             .attr("width", width)
             .attr("height", height);
+        svg.append("rect")
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .attr("fill", "#0A0C0D");
 
         let information_of_accident = container.append("div")
             .attr("class", "info")
@@ -540,7 +590,7 @@
                 .attr("d", geoGenerator)
                 .attr("stroke", "black")
                 .attr("stroke-width", 0.1)
-                .attr("fill", "#646464");
+                .attr("fill", "#393D48");
             values.shift();
             let csv = values.pop();
             csv = csv.reverse();
@@ -553,7 +603,7 @@
                     .append("path")
                     .attr("class", "linepath")
                     .attr("d", geoGenerator)
-                    .attr("stroke", "white")
+                    .attr("stroke", "#79818a")
                     .attr("fill", "none")
                     .attr("stroke-width", 0.3);
                 map.selectAll("path2")
@@ -563,7 +613,7 @@
                     .attr("cy", d => { return projection(d.geometry.coordinates)[1]; })
                     .attr("r", (d) => {
                         if (d.properties.accidents !== "NULL") {
-                            return d.properties.accidents;
+                            return d.properties.accidents / Math.log(expansion + 1);
                         }
                         else {
                             return 0;
@@ -572,7 +622,7 @@
                     .attr("class", "jinshin_station")
                     .attr("opacity", 0.2)
                     .attr("stroke-width", 0)
-                    .attr("fill", "orange")
+                    .attr("fill", "#ff8c00")
 
                 map.selectAll("path2")
                     .data(d.features.filter(d => d.geometry.type == "Point"))
@@ -581,9 +631,9 @@
                     .attr("cy", d => { return projection(d.geometry.coordinates)[1]; })
                     .attr("r", Math.min(0.5, 1 / expansion * 4))
                     .attr("class", "station")
-                    .attr("stroke", "#a9ceec")
+                    .attr("stroke", "#D0D3D8")
                     .attr("stroke-width", 0)
-                    .attr("fill", "#a9ceec")
+                    .attr("fill", "#D0D3D8")
                     .on("mouseover", function (d, i) {
                         // ここで人身事故情報を表示できるようにする
                         if (i.properties.accidents == "NULL") {
@@ -683,6 +733,7 @@
 
             function handleZoom(d) {
                 expansion = d.transform.k;
+                console.log(expansion);
                 d3.selectAll(".jinshin_station").attr("r", (d) => {
                     if (d.properties.accidents !== "NULL") {
                         return d.properties.accidents / Math.log(expansion + 1);
@@ -694,14 +745,14 @@
                 d3.select('#map')
                     .attr('transform', d.transform);
                 d3.selectAll(".station")
-                    .attr("r", Math.min(0.5, 1 / expansion * 4))
+                    .attr("r", Math.min(0.5, 1 / (Math.log(expansion + 1) * 3)))
 
                 d3.selectAll(".doorstation")
                     .attr("r", (d, i) => {
-                        return Math.min(0.5, 1 / expansion * 4);
+                        return Math.min(0.5, 1 / (Math.log(expansion + 1) * 3));
                     })
                     .attr("stroke-width", () => {
-                        return Math.min(0.1, 1 / expansion * 4);
+                        return Math.min(0.1, 1 / (Math.log(expansion + 1) * 3));
                     })
 
                 d3.selectAll(".linepath")
@@ -729,7 +780,7 @@
                 .attr("x", 600)
                 .attr("y", 830)
                 .attr("font-family", "Arial, Helvetica, sans-serif")
-                .attr("stroke", "black");
+                .attr("fill", "#ECEFF7");
 
             var slider = svg.append("g")
                 .attr("class", "slider");
@@ -752,6 +803,7 @@
                     }));
 
             var handle = slider.insert("circle", ".track-overlay")
+                .attr("fill", "#ECEFF7")
                 .attr("cx", 10)
                 .attr("cy", height - 50)
                 .attr("r", 7);
@@ -812,7 +864,7 @@
                 doorgraph.selectAll("path").remove();
                 doorgraph.append("path")
                     .attr("d", area(data))
-                    .attr("fill", "darkgrey")
+                    .attr("fill", "#ECEFF7")
                     .attr("stroke", "grey")
                     .attr("stroke-width", 2);
             }
@@ -930,7 +982,7 @@
                         return;
                     }
                     placelist.push([place, line, date]);
-                    if (placelist.length > 30) {
+                    if (placelist.length > 40) {
                         placelist.shift();
                     }
                     let info_sentence = "";
@@ -958,7 +1010,8 @@
                                     .attr("cy", d => { return projection(d.geometry.coordinates)[1]; })
                                     .attr("r", 1)
                                     .attr("stroke", "none")
-                                    .attr("fill", "red")
+                                    .attr("fill", "#8C000E")
+                                    .attr("opacity", 0.8)
                                     .transition()
                                     .duration(500)
                                     .attr("r", Math.max(Math.log(tweets) * 3 / expansion, 0.1))
@@ -983,7 +1036,8 @@
                             .attr("id", `home_door_${index}`)
                             .attr("r", Math.min(0.5, 1 / expansion * 4))
                             .attr("class", "doorstation")
-                            .attr("stroke", "blue")
+                            .attr("opacity", 0.4)
+                            .attr("stroke", "#006699")
                             .attr("stroke-width", Math.min(0.1, 1 / expansion * 4))
                             .attr("fill", "none");
 
@@ -996,6 +1050,19 @@
                 }
                 now_door_index = new_home_door_index;
             }
+            information_of_accident
+                .attr("opacity", 1)
+                .html("orange circle: the number of accidents in the station. <br> green circle: the station that has home doors.")
+                .transition()
+                .duration(2000)
+                .attr("opacity", 0);
+            setTimeout(() => {
+                console.log("hoge");
+                svg.selectAll("#map")
+                    .transition()
+                    .duration(1000)
+                    .attr("transform", "translate(-9790.564898160268,-6600.002412485717) scale(16.35885648975877)");
+            }, 1000)
         })
     </script>
     <div class="play_parameter">
