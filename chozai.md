@@ -84,4 +84,18 @@ twitter APIでキーワードを含むツイート検索をしても取得でき
 - geojsonから人身事故情報にアクセスできるようにした
   1. [get_jinshin_information.py](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/get_jinshin_information.py)において、[人身事故データ](https://github.com/InfovisHandsOn/A-Pastani/blob/main/data/tweets.csv)と以前作成した[人身事故データの路線名から正式路線名を返す辞書](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/jinshin_to_geojson_dictionary.py)を用いて各駅の人身事故回数およびその人身事故のcsvデータにおけるインデックスを取得した（[accidents_per_station.csv](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/accidents_per_station.csv)）
   2. [add_geojson_jinshin_information.py](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/add_geojson_jinshin_information.py)において中村くんが作成した[すべての駅情報をまとめたgeojson](https://github.com/InfovisHandsOn/A-Pastani/blob/main/data/station_only.geojson)の全ての駅に対して事故回数と該当インデックスのプロパティを追加した（[station_only_addJinshindata.geojson](https://github.com/InfovisHandsOn/A-Pastani/blob/main/data/station_only_addJinshindata.geojson)）
-  - これによってgeojsonから事故詳細をさんしょうできるようになり、tooltipに反映させる予定
+  - これによってgeojsonから事故詳細を参照できるようになり、tooltipに反映させる予定
+
+## 第8回（11/21）
+### やったこと
+- tooltip実装
+  - 以前geojsonに加えた様々なpropertiesを参照して事故情報やホームドア設置日時などをホバー時に表示できるようにした
+  - 事故のニュース原文についてはtooltipにurlを表示し、そこから当該サイトに飛べるようにした
+  - 被害情報やホームドア設置日時についてgeojsonに記載がない場合や人身事故回数が複数回の場合についても不自然でない表記になるよう注意した
+- 加賀谷くんがホームドア設置日時以降の駅アイコン変更を実装する際に必要となる情報を抽出した[csv](https://github.com/InfovisHandsOn/A-Pastani/blob/main/data/sorted_doordate.csv)を作成した
+- 路線名誤表示を修正
+  - index.htmlでは二分探索をする便宜上で事故情報csvのインデックスを逆転させており、geojsonに追加したindexを逆転させずそのまま用いることで全く別の路線名が表示される不具合が発生していたため、これを解決した
+- 同名駅の衝突によるバグ解消
+  - 同名の駅があることによりtooltipに表示される路線名が入れ替わってしまうバグが確認されたので、以前作成した[add_geojson_jinshin_information.py](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/add_geojson_jinshin_information.py)を修正することでgeojson内のindex(事故情報csvの参照に用いる)を正しく更新した
+- 駅アイコンクリック時にアイコンが点滅するようにした
+  - zoomした際に点滅が小さくなってしまう（zoom比率の分駅アイコンを小さくしているため）ので、次回要修正
