@@ -91,25 +91,12 @@
             .domain([0, 59]);
 
         var handData = [
-            // {
-            //     type: 'hour',
-            //     value: 0,
-            //     length: -hourHandLength,
-            //     scale: hourScale
-            // },
             {
                 type: 'minute',
                 value: 0,
                 length: -minuteHandLength,
                 scale: minuteScale
             },
-            // {
-            //     type: 'second',
-            //     value: 0,
-            //     length: -secondHandLength,
-            //     scale: secondScale,
-            //     balance: secondHandBalance
-            // }
         ];
 
         let datascale = d3.scaleLinear().domain([0, 500]).range([0, clockRadius]);
@@ -398,8 +385,6 @@
         function updateData() {
             var t = new Date();
             handData[0].value = (t.getHours() % 12) + t.getMinutes() / 60;
-            // handData[1].value = t.getMinutes();
-            // handData[2].value = t.getSeconds();
         }
 
         function dragstart(event, d) {
@@ -408,7 +393,6 @@
         function dragged(event, d) {
             const nowx = event.x;
             const nowy = event.y;
-            // console.log(nowx,nowy);
             let degree = Math.atan(nowy / nowx) * 180 / Math.PI + 90;
             if (nowx < 0) {
                 degree += 180;
