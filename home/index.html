@@ -721,7 +721,12 @@
                             .attr("fill", "red")
                             .transition()
                             .duration(500)
-                            .attr("fill", "#a9ceec")
+                            .attr("fill", "#D0D3D8")
+                            .duration(500)
+                            .attr("fill", "red")
+                            .transition()
+                            .duration(500)
+                            .attr("fill", "#D0D3D8")
                     });
             })
             let zoom = d3.zoom()
@@ -1060,9 +1065,9 @@
                 console.log("hoge");
                 svg.selectAll("#map")
                     .transition()
-                    .duration(1000)
+                    .duration(3500)
                     .attr("transform", "translate(-9790.564898160268,-6600.002412485717) scale(16.35885648975877)");
-            }, 1000)
+            }, 300)
         })
     </script>
     <div class="play_parameter">
