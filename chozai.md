@@ -98,4 +98,3 @@ twitter APIでキーワードを含むツイート検索をしても取得でき
 - 同名駅の衝突によるバグ解消
   - 同名の駅があることによりtooltipに表示される路線名が入れ替わってしまうバグが確認されたので、以前作成した[add_geojson_jinshin_information.py](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/add_geojson_jinshin_information.py)を修正することでgeojson内のindex(事故情報csvの参照に用いる)を正しく更新した
 - 駅アイコンクリック時にアイコンが点滅するようにした
-  - zoomした際に点滅が小さくなってしまう（zoom比率の分駅アイコンを小さくしているため）ので、次回要修正
