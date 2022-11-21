@@ -114,6 +114,7 @@
         wait.push(d3.json("../data/allcompanies.geojson"))
         wait.push(d3.json("../data/station_only_addJinshindata.geojson"))
         wait.push(d3.csv("../data/doordate.csv"))
+        wait.push(d3.csv("../data/doorlocation.csv"))
         wait.push(d3.csv("../data/tweets.csv"))
         Promise.all(wait).then(function (values) {
 
@@ -147,6 +148,7 @@
             values.shift();
             let csv = values.pop();
             csv = csv.reverse();
+            var doorlocation = values.pop();
             var doordata = values.pop();
             values.forEach((d) => {
                 map.selectAll("path2")
@@ -227,6 +229,8 @@
                 d3.select('#map')
                     .attr('transform', d.transform);
                 d3.selectAll(".station")
+                    .attr("r", Math.min(0.5, 1 / expansion * 4))
+                d3.selectAll(".doorstation")
                     .attr("r", Math.min(0.5, 1 / expansion * 4))
                 // .attr("stroke-width",1);
 
@@ -393,6 +397,10 @@
                         return (new Date(d.date)) < (new Date(nowunix_seconds * 1000));
                     })
                     drawline(newData);
+                    var newdoor = doorlocation.filter(function(d) {
+                        return (new Date(d.date)) < (new Date(nowunix_seconds * 1000));
+                    })
+                    doorstation(newdoor);
                 }
                 //filter data set and redraw plot
             }
@@ -471,6 +479,21 @@
                         )
                     })
                 }
+            }
+
+            function doorstation(data) {
+                map.selectAll(".door").remove();
+                data.forEach(function(d) {
+                    var coordinates = [d.longitude, d.latitude];
+                    map.append("circle")
+                    .attr("cx", projection(coordinates)[0])
+                    .attr("cy", projection(coordinates)[1])
+                    .attr("r", 0.05)
+                    .attr("class", "doorstation")
+                    .attr("stroke", "blue")
+                    .attr("stroke-width", 0.01)
+                    .attr("fill", "none");
+                })
             }
         })
     </script>
