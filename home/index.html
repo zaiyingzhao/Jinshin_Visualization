@@ -510,7 +510,9 @@
         wait.push(d3.json("../data/allcompanies.geojson"))
         wait.push(d3.json("../data/station_only_addJinshindata.geojson"))
         wait.push(d3.csv("../data/doordate.csv"))
+        wait.push(d3.csv("../data/doorlocation.csv"))
         wait.push(d3.csv("../data/tweets.csv"))
+        let now_door_index = 0;
         Promise.all(wait).then(function (values) {
 
             let dateselect = document.querySelector("#selected_date");
@@ -543,6 +545,7 @@
             values.shift();
             let csv = values.pop();
             csv = csv.reverse();
+            var doorlocation = values.pop();
             var doordata = values.pop();
             values.forEach((d) => {
                 map.selectAll("path2")
@@ -650,6 +653,8 @@
                 d3.select('#map')
                     .attr('transform', d.transform);
                 d3.selectAll(".station")
+                    .attr("r", Math.min(0.5, 1 / expansion * 4))
+                d3.selectAll(".doorstation")
                     .attr("r", Math.min(0.5, 1 / expansion * 4))
                 // .attr("stroke-width",1);
 
@@ -815,6 +820,9 @@
                         return (new Date(d.date)) < (new Date(nowunix_seconds * 1000));
                     })
                     drawline(newData);
+                    let new_home_door_index = binary_search_for_home_door();
+                    console.log(new_home_door_index)
+                    doorstation(new_home_door_index);
                 }
                 //filter data set and redraw plot
             }
@@ -845,6 +853,23 @@
                 }
                 let most_old = ac;
                 return [most_old, most_new];
+            }
+
+            function binary_search_for_home_door() {
+                let wa = doorlocation.length;
+                let ac = 0;
+                while (wa - ac > 1) {
+                    let mid = parseInt((ac + wa) / 2);
+                    if (new Date(doorlocation[mid]["date"]).getTime() < nowunix_seconds * 1000) {
+                        ac = mid;
+                    }
+                    else {
+                        wa = mid;
+                    }
+                }
+                let most_new = ac;
+                console.log(most_new)
+                return most_new;
             }
             let placelist = [];
             function update_draw(line, place, tweets, date, i) {
@@ -899,6 +924,29 @@
                         )
                     })
                 }
+            }
+
+            function doorstation(new_home_door_index) {
+                // map.selectAll(".door").remove();
+                if (now_door_index < new_home_door_index){
+                    for (let index = now_door_index + 1; index <= new_home_door_index; index++) {
+                        var coordinates = [doorlocation[index]["longitude"], doorlocation[index]["latitude"]];
+                        map.append("circle")
+                            .attr("cx", projection(coordinates)[0])
+                            .attr("cy", projection(coordinates)[1])
+                            .attr("r", 0.05)
+                            .attr("id", `home_door_${index}`)
+                            .attr("class", "doorstation")
+                            .attr("stroke", "blue")
+                            .attr("stroke-width", 0.01)
+                            .attr("fill", "none");
+                    }
+                }else {
+                    for (let index = now_door_index; index > new_home_door_index; index--){
+                        map.select(`#home_door${index}`).remove();
+                    }
+                }
+                now_door_index = new_home_door_index;
             }
         })
     </script>
