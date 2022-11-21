@@ -32,12 +32,62 @@
 
     .parameter {
         display: flex;
+        justify-content: center;
     }
 
     .play_parameter {
         display: flex;
         justify-content: center;
         width: 900;
+    }
+
+    #rim {
+        fill: none;
+        stroke: #999;
+        stroke-width: 3px;
+    }
+
+    .second-hand {
+        stroke-width: 3;
+
+    }
+
+    .minute-hand {
+        stroke-width: 8;
+        stroke-linecap: round;
+    }
+
+    .hour-hand {
+        stroke-width: 12;
+        stroke-linecap: round;
+    }
+
+    .hands-cover {
+        stroke-width: 3;
+        fill: #fff;
+    }
+
+    .second-tick {
+        stroke-width: 3;
+        fill: #000;
+    }
+
+    .hour-tick {
+        stroke-width: 8;
+        fill: #000;
+    }
+
+    .second-label {
+        font-size: 12px;
+    }
+
+    .hour-label {
+        font-size: 24px;
+    }
+
+    .svgframe {
+        background-color: #EFF5F5;
+        border: solid 1px #EFF5F5;
     }
 </style>
 
@@ -53,6 +103,352 @@
         </div>
     </div>
     <script type="text/javascript">
+        let container = d3.select("body").append("div").attr("class", "container");
+
+        // //ここから時計
+        var radians = 0.0174532925,
+            clockRadius = 180,
+            margin = 40,
+            histoheight = 300
+        width2 = (clockRadius + margin) * 2,
+            height2 = (clockRadius + margin) * 2 + histoheight,
+            hourHandLength = 2 * clockRadius / 3,
+            minuteHandLength = clockRadius,
+            secondHandLength = clockRadius - 12,
+            secondHandBalance = 30,
+            secondTickStart = clockRadius;
+        secondTickLength = -10,
+            hourTickStart = clockRadius,
+            hourTickLength = -18;
+        secondLabelRadius = clockRadius + 16;
+        secondLabelYOffset = 5
+        hourLabelRadius = clockRadius - 40
+        hourLabelYOffset = 7;
+
+
+        var hourScale = d3.scaleLinear()
+            .range([0, 330])
+            .domain([0, 11]);
+
+        var minuteScale = secondScale = d3.scaleLinear()
+            .range([0, 354])
+            .domain([0, 59]);
+
+        var handData = [
+            {
+                type: 'minute',
+                value: 0,
+                length: -minuteHandLength,
+                scale: minuteScale
+            },
+        ];
+
+        let datascale = d3.scaleLinear().domain([0, 500]).range([0, clockRadius]);
+
+        var tooltip2 = d3.select("body")
+            .append("div")
+            .attr("class", "tooltip")
+            .style("position", "absolute")
+            .style("padding", "5px");
+
+        var svg2 = d3.select(".container").append("svg")
+            .attr("width", width2)
+            .attr("height", height2)
+            .attr("class", "svgframe")
+            .on("click", function (event, d) {
+                if (event.target.className.baseVal != "bar") {
+                    histogram.selectAll("rect").attr("fill", "#497174");
+                    d3.json("../data/clockdata_all.json").then((data) => {
+                        drawGraph(data, face, "all");
+                    })
+                }
+            });
+
+        var histogram = svg2.append('g')
+            .attr('id', 'histogram')
+            .attr('transform', 'translate(' + 0 + ',' + 0 + ')');
+
+        var face = svg2.append('g')
+            .attr('id', 'clock-face')
+            .attr('transform', 'translate(' + (clockRadius + margin) + ',' + (clockRadius + margin + histoheight) + ')');
+
+        function drawHistogram() {
+            d3.csv("../data/jinshin-youbi.csv").then(function (data) {
+                var xScale = d3.scaleBand()
+                    .rangeRound([margin, width2 - margin])
+                    .padding(0.1)
+                    .domain(data.map(function (d) { return d.day; }));
+
+                var yScale = d3.scaleLinear()
+                    .domain([0, d3.max(data, function (d) { return d.value; })])
+                    .range([histoheight - margin, margin]);
+
+                histogram.append("g")
+                    .attr("transform", "translate(" + 0 + "," + (histoheight - margin) + ")")
+                    .call(d3.axisBottom(xScale));
+
+                histogram.append("g")
+                    .attr("transform", "translate(" + margin + "," + 0 + ")")
+                    .call(d3.axisLeft(yScale));
+
+                histogram.append("g")
+                    .selectAll("rect")
+                    .data(data)
+                    .enter()
+                    .append("rect")
+                    .attr("class", "bar")
+                    .attr("x", function (d) { return xScale(d.day); })
+                    .attr("y", function (d) { return yScale(d.value); })
+                    .attr("width", xScale.bandwidth())
+                    .attr("height", function (d) { return histoheight - margin - yScale(d.value); })
+                    .attr("fill", "#497174")
+                    .on("mouseover", function (event, d) { tooltip2.style("visibility", "visible").html(d.day + "<br>" + d.value); })
+                    .on("mousemove", function (d) { tooltip2.style("left", event.pageX + 20 + "px").style("top", event.pageY + "px"); })
+                    .on("mouseout", function (d) { tooltip2.style("visibility", "hidden"); })
+                    .on("click", function (event, d) {
+                        histogram.selectAll("rect").attr("fill", "#497174");
+                        d3.select(this).attr("fill", "#EB6440")
+                        if (d.day == "all") {
+                            d3.json("../data/clockdata_all.json").then((data) => {
+                                drawGraph(data, face, d.day);
+                            })
+                        } else if (d.day == "mon") {
+                            d3.json("../data/clockdata_mon.json").then((data) => {
+                                drawGraph(data, face, d.day);
+                            })
+                        } else if (d.day == "tue") {
+                            d3.json("../data/clockdata_tue.json").then((data) => {
+                                drawGraph(data, face, d.day);
+                            })
+                        } else if (d.day == "wed") {
+                            d3.json("../data/clockdata_wed.json").then((data) => {
+                                drawGraph(data, face, d.day);
+                            })
+                        } else if (d.day == "thu") {
+                            d3.json("../data/clockdata_thu.json").then((data) => {
+                                drawGraph(data, face, d.day);
+                            })
+                        } else if (d.day == "fri") {
+                            d3.json("../data/clockdata_fri.json").then((data) => {
+                                drawGraph(data, face, d.day);
+                            })
+                        } else if (d.day == "sat") {
+                            d3.json("../data/clockdata_sat.json").then((data) => {
+                                drawGraph(data, face, d.day);
+                            })
+                        } else {
+                            d3.json("../data/clockdata_sun.json").then((data) => {
+                                drawGraph(data, face, d.day);
+                            })
+                        }
+                    });
+            });
+        }
+
+        function drawClock() { //create all the clock elements
+            updateData();	//draw them in the correct starting position
+
+            d3.json("../data/clockdata_all.json").then((data) => {
+                drawGraph(data, face, "all");
+            })
+
+
+            face.selectAll('.hour-tick')
+                .data(d3.range(0, 12)).enter()
+                .append('line')
+                .attr('class', 'hour-tick')
+                .attr('x1', 0)
+                .attr('x2', 0)
+                .attr('y1', hourTickStart)
+                .attr('y2', hourTickStart + hourTickLength)
+                .attr('transform', function (d) {
+                    return 'rotate(' + hourScale(d) + ')';
+                });
+
+            face.selectAll('.hour-label')
+                .data(d3.range(3, 13, 3))
+                .enter()
+                .append('text')
+                .attr('class', 'hour-label')
+                .attr('text-anchor', 'middle')
+                .attr('x', function (d) {
+                    return hourLabelRadius * Math.sin(hourScale(d) * radians);
+                })
+                .attr('y', function (d) {
+                    return -hourLabelRadius * Math.cos(hourScale(d) * radians) + hourLabelYOffset;
+                })
+                .text(function (d) {
+                    return d * 2;
+                });
+
+
+            var hands = face.append('g').attr('id', 'clock-hands');
+
+            face.append('g').attr('id', 'face-overlay')
+                .append('circle').attr('class', 'hands-cover')
+                .attr('x', 0)
+                .attr('y', 0)
+                .attr('r', clockRadius / 20);
+
+            hands.selectAll('line')
+                .data(handData)
+                .enter()
+                .append('line')
+                .attr('class', function (d) {
+                    return d.type + '-hand';
+                })
+                .attr('x1', 0)
+                .attr('y1', function (d) {
+                    return d.balance ? d.balance : 0;
+                })
+                .attr('x2', 0)
+                .attr('y2', function (d) {
+                    return d.length;
+                })
+                .attr('transform', function (d) {
+                    return 'rotate(' + d.scale(d.value) + ')';
+                })
+                .call(
+                    d3.drag()
+                        .on("start", dragstart)
+                        .on("drag", dragged)
+                        .on("end", dragend));
+        }
+
+        function drawGraph(data, face, day) {
+            face.selectAll("#graph").remove();
+
+            var start = d3.line()
+                .x(0)
+                .y(0)
+
+            if (day == "all") {
+                var medline = d3.line(data)
+                    .x((d, i) => { return d.median * 5 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.median * 5 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                var minline = d3.line()
+                    .x((d, i) => { return d.min * 5 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.min * 5 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                var minline2 = d3.line()
+                    .x((d, i) => { return d.min * 1 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.min * 1 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                var maxline = d3.line()
+                    .x((d, i) => { return d.max * 5 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.max * 5 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                var quarterline = d3.line()
+                    .x((d, i) => { return d.quarter * 5 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.quarter * 5 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                var quarter3line = d3.line()
+                    .x((d, i) => { return d.quarter3 * 5 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.quarter3 * 5 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+            } else {
+                var medline = d3.line()
+                    .x((d, i) => { return d.median * 20 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.median * 20 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                var minline = d3.line()
+                    .x((d, i) => { return d.min * 20 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.min * 20 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                var minline2 = d3.line()
+                    .x((d, i) => { return d.min * 1 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.min * 1 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                var maxline = d3.line()
+                    .x((d, i) => { return d.max * 20 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.max * 20 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                var quarterline = d3.line()
+                    .x((d, i) => { return d.quarter * 20 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.quarter * 20 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                var quarter3line = d3.line()
+                    .x((d, i) => { return d.quarter3 * 20 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.quarter3 * 20 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+            }
+            var linegroup = face.append("g").attr("id", "graph")
+
+            linegroup.append("path")
+                .attr("d", start(data))
+                .attr("stroke", "black")
+                .attr("stroke-width", 0)
+                .attr("fill", "#D6E4E5")
+                .attr("class", "max")
+                .transition()
+                .delay(400)
+                .duration(200)
+                .attr("d", maxline(data));
+            linegroup.append("path")
+                .attr("d", start(data))
+                .attr("stroke", "black")
+                .attr("stroke-width", 0)
+                .attr("fill", "#497174")
+                .attr("class", "quarter3")
+                .transition()
+                .delay(300)
+                .duration(200)
+                .attr("d", quarter3line(data));
+            linegroup.append("path")
+                .attr("d", start(data))
+                .attr("stroke", "black")
+                .attr("stroke-width", 0)
+                .attr("fill", "#EB6440")
+                .attr("class", "median")
+                .transition()
+                .delay(200)
+                .duration(200)
+                .attr("d", medline(data));
+            linegroup.append("path")
+                .attr("d", start(data))
+                .attr("stroke", "black")
+                .attr("stroke-width", 0)
+                .attr("fill", "#0E5E6F")
+                .attr("class", "quarter")
+                .transition()
+                .delay(100)
+                .duration(200)
+                .attr("d", quarterline(data));
+            linegroup.append("path")
+                .attr("d", start(data))
+                .attr("stroke", "black")
+                .attr("stroke-width", 0)
+                .attr("fill", "#EFF5F5")
+                .attr("class", "min")
+                .transition()
+                .delay(0)
+                .duration(200)
+                .attr("d", minline(data));
+        }
+
+        function moveHands() {
+            d3.select('#clock-hands').selectAll('line')
+                .data(handData)
+                .transition()
+                .attr('transform', function (d) {
+                    return 'rotate(' + d.scale(d.value) + ')';
+                });
+        }
+        function updateData() {
+            var t = new Date();
+            handData[0].value = (t.getHours() % 12) + t.getMinutes() / 60;
+        }
+
+        function dragstart(event, d) {
+        }
+
+        function dragged(event, d) {
+            const nowx = event.x;
+            const nowy = event.y;
+            let degree = Math.atan(nowy / nowx) * 180 / Math.PI + 90;
+            if (nowx < 0) {
+                degree += 180;
+            }
+            d3.select("." + d.type + "-hand").attr("transform", "rotate(" + degree + ")")
+        }
+
+        function dragend(event, d) {
+
+        }
+
+        drawHistogram();
+        drawClock("all");
+
+        d3.select(self.frameElement).style("height", height2 + "px");
 
         function linename_option() {
             var select = document.getElementById("line_select");
@@ -80,7 +476,8 @@
         var height = 900;
         var scale = 1500;
         let expansion = 1;
-        var svg = d3.select("body").append("svg")
+        var svg = container.append("svg")
+            .attr("class", "main")
             .attr("width", width)
             .attr("height", height);
 
@@ -122,6 +519,7 @@
                 .append("div")
                 .attr("class", "tooltip")
                 .style("position", "absolute")
+                .attr("id", "maintooltip")
 
             var japangeo = topojson.feature(values[0], values[0].objects.japan);
             map.selectAll("path")
@@ -192,17 +590,16 @@
                                 rightindex = csv.length - index - 1
                                 url = csv[rightindex]["url"]
                                 text += `【事故${step + 1}】` + "<br>"
-                                    + "日時: " + csv[rightindex]["date"] + "<br>"
-                                    + "路線名: " + csv[rightindex]["line"] + "<br>"
-                                    + "被害状況: " + csv[rightindex]["injury"] + "<br>"
-                                    + "関連ツイート数:" + csv[rightindex]["tweets"] + "<br>"
-                                    + `<a href=${url}>さらに詳細へ</a>` + "<br>"
+                                    + "日時: " + csv[(i.properties.index).split(", ")[0].slice(1, -1)]["date"] + "<br>"
+                                    + "路線名: " + csv[(i.properties.index).split(", ")[0].slice(1, -1)]["line"] + "<br>"
+                                    + "被害状況: " + csv[(i.properties.index).split(", ")[0].slice(1, -1)]["injury"] + "<br>"
+                                    + "ツイート数:" + csv[(i.properties.index).split(", ")[0].slice(1, -1)]["tweets"] + "<br>"
+                                    + `<a href=${url} target='_blank'>さらに詳細へ</a>` + "<br>"
                             }
                             tooltip.html(text)
                         }
                     })
                     .on("mouseout", function () {
-                        //tooltip.style("visibility", "hidden");
                     });
             })
             let zoom = d3.zoom()
@@ -210,12 +607,11 @@
                 .translateExtent([[0, 0], [width, height]])
                 .on('zoom', handleZoom);
 
-            d3.select('svg').call(zoom);
+            d3.select('.main').call(zoom);
 
             function handleZoom(d) {
                 expansion = d.transform.k;
-                d3.select(".tooltip").style("visibility", "hidden");
-
+                d3.select("#maintooltip").style("visibility", "hidden");
                 d3.select('#map')
                     .attr('transform', d.transform);
                 d3.selectAll(".station")
@@ -265,7 +661,7 @@
                 .call(d3.drag()
                     .on("start", function () { })
                     .on("drag", function (event, d) {
-                        currentValue = event.sourceEvent.clientX;
+                        currentValue = event.sourceEvent.clientX - 460;
                         update(currentValue);
                     }));
 
@@ -427,6 +823,25 @@
                     if (dict[line] == undefined) {
                         return;
                     }
+                    placelist.push([place, line, date]);
+                    if (placelist.length > 30) {
+                        placelist.shift();
+                    }
+                    let info_sentence = "";
+                    placelist.forEach(e => {
+                        let tmp_sentence = `<a href=${csv[i]["url"]} target="_blank">`;
+                        let tmp_sentence2 = `${e[2]}`
+                        tmp_sentence2 += ` ${e[1]}`
+                        tmp_sentence2 += ` ${e[0]}`;
+                        const MAX_LENGTH = 30 //文字数上限
+                        if (tmp_sentence2.length >= MAX_LENGTH) {
+                            tmp_sentence2 = tmp_sentence2.substr(0, MAX_LENGTH) + '...'
+                        }
+                        tmp_sentence += tmp_sentence2;
+                        tmp_sentence += "</a><br>"
+                        info_sentence += tmp_sentence;
+                    })
+                    information_of_accident.html(`${info_sentence} 14896件中${i}件目を表示しました`)
                     dict[line].forEach((line) => {
                         d3.json(line).then(
                             function (d) {
