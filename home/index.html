@@ -163,7 +163,7 @@
                         }
                         else if (i.properties.accidents == 1) {
                             index = (i.properties.index).slice(1, -1) - 0
-                            rightindex = dsv.length - index - 1
+                            rightindex = sv.length - index - 1
                             // console.log(i.properties.railname, csv[csv.length - index - 1]["line"])
                             url = csv[rightindex]["url"]
                             tooltip.style("left", d.layerX + "px").style("top", d.clientY + "px").style("visibility", "visible").html(
