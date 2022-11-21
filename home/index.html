@@ -29,23 +29,28 @@
     .container {
         display: flex;
     }
+
+    .parameter {
+        display: flex;
+    }
+
+    .play_parameter {
+        display: flex;
+        justify-content: center;
+        width: 900;
+    }
 </style>
 
 <body>
-    <div>
-        <select id="line_select">
-        </select>
-    </div>
-    <input type="datetime-local" id="selected_date">
-    <div id="reset">
-        <button id="reset-button">reset</button>
-    </div>
-    <div>
-        <button id="play-button">Play</button>
-    </div>
-    <div>
-        <!-- <button id="speed-button">x2</button> -->
-        <input type="number" id="speed">倍速
+    <div class="parameter">
+        <div>
+            <select id="line_select">
+            </select>
+        </div>
+        <input type="datetime-local" id="selected_date">
+        <div id="reset">
+            <button id="reset-button">reset zoom</button>
+        </div>
     </div>
     <script type="text/javascript">
 
@@ -223,7 +228,7 @@
                     .attr('transform', d.transform);
                 d3.selectAll(".station")
                     .attr("r", Math.min(0.5, 1 / expansion * 4))
-                    // .attr("stroke-width",1);
+                // .attr("stroke-width",1);
 
                 d3.selectAll(".linepath")
                     .attr("stroke-width", Math.min(0.6, 1 / expansion) * 2);
@@ -294,7 +299,8 @@
 
             var doorgraph = svg.append("g")
                 .attr("class", "doorgraph")
-                .attr("transform", "translate(50, 600)");
+                .attr("transform", "translate(50, 600)")
+                .attr("opacity", 0.5);
 
             var graphwidth = width - 10;
             var graphheight = 200;
@@ -467,11 +473,15 @@
                 }
             }
         })
-
-
-
-
     </script>
+    <div class="play_parameter">
+        <div>
+            <button id="play-button">Play</button>
+        </div>
+        <div>
+            <input type="number" id="speed">倍速
+        </div>
+    </div>
 </body>
 
 </html>
