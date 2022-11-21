@@ -25,6 +25,10 @@
         visibility: hidden;
         text-align: center;
     }
+
+    .container {
+        display: flex;
+    }
 </style>
 
 <body>
@@ -40,7 +44,8 @@
         <button id="play-button">Play</button>
     </div>
     <div>
-        <button id="speed-button">x2</button>
+        <!-- <button id="speed-button">x2</button> -->
+        <input type="number" id="speed">倍にする
     </div>
     <script type="text/javascript">
 
@@ -70,9 +75,15 @@
         var height = 900;
         var scale = 1500;
         let expansion = 1;
-        var svg = d3.select("body").append("svg")
+        let container = d3.select("body").append("div").attr("class", "container");
+        var svg = container.append("svg")
             .attr("width", width)
             .attr("height", height);
+
+        let information_of_accident = container.append("div")
+            .attr("class", "info")
+            .attr("width", 100)
+            .attr("height", 200);
 
         var map = svg.append('g')
             .attr('id', 'map')
@@ -100,11 +111,17 @@
         wait.push(d3.csv("../data/doordate.csv"))
         wait.push(d3.csv("../data/tweets.csv"))
         Promise.all(wait).then(function (values) {
-            
+
             let dateselect = document.querySelector("#selected_date");
             dateselect.addEventListener('change', (event, data) => {
-                now_seconds = event.target.valueAsNumber/1000;
+                now_seconds = event.target.valueAsNumber / 1000;
                 update(now_to_value(now_seconds));
+            })
+
+            let speed = document.querySelector("#speed");
+            speed.addEventListener('change', (event, date) => {
+                speed = event.target.valueAsNumber;
+                step_time = 60 * 60 * 24 * speed;
             })
 
 
@@ -163,7 +180,7 @@
 
             function handleZoom(d) {
                 expansion = d.transform.k;
-                d3.select(".tooltip").style("visibility","hidden");
+                d3.select(".tooltip").style("visibility", "hidden");
                 d3.select('#map')
                     .attr('transform', d.transform);
                 d3.selectAll(".station")
@@ -320,7 +337,8 @@
                         else if (csv[i]["line"] != line_limit.value) {
                             continue;
                         }
-                        update_draw(csv[i]["line"], csv[i]["place"], csv[i]["tweets"]);
+                        update_draw(csv[i]["line"], csv[i]["place"], csv[i]["tweets"], csv[i]["date"], i);
+                        console.log(csv[i]["line"])
                         count++;
                     }
                     var newData = doordata.filter(function (d) {
@@ -358,18 +376,31 @@
                 let most_old = ac;
                 return [most_old, most_new];
             }
-
-            function update_draw(line, place, tweets) {
+            let placelist = [];
+            function update_draw(line, place, tweets, date, i) {
                 if (place.indexOf("〜") != -1) {
                     let station1 = place.slice(0, place.indexOf("〜"));
                     let station2 = place.slice(place.indexOf("〜") + 1, place.length)
-                    update_draw(line, station1, tweets);
-                    update_draw(line, station2, tweets);
+                    update_draw(line, station1, tweets, date, i);
+                    update_draw(line, station2, tweets, date, i);
                 }
                 else {
+                    console.log(line);
                     if (dict[line] == undefined) {
                         return;
                     }
+                    placelist.push([place, line, date]);
+                    if (placelist.length > 35) {
+                        placelist.shift();
+                    }
+                    let info_sentence = "";
+                    placelist.forEach(e => {
+                        info_sentence += `${e[2]}`
+                        info_sentence += ` ${e[1]}`
+                        info_sentence += ` ${e[0]}`;
+                        info_sentence += "<br>"
+                    })
+                    information_of_accident.html(`${info_sentence} 14896件中${i}件目を表示しました`)
                     dict[line].forEach((line) => {
                         d3.json(line).then(
                             function (d) {
