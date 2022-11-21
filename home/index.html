@@ -92,7 +92,7 @@
 
         function clicked(event, d) {
             var zoomCenter = d3.pointer(event)
-            var zoom = 10
+            var zoom = 150
             svg.selectAll("#map")
                 .transition()
                 .duration(1000)
@@ -158,17 +158,54 @@
                     .join("circle")
                     .attr("cx", d => { return projection(d.geometry.coordinates)[0]; })
                     .attr("cy", d => { return projection(d.geometry.coordinates)[1]; })
-                    .attr("r", 0.2)
+                    .attr("r", 0.05)
                     .attr("class", "station")
                     .attr("stroke", "#a9ceec")
                     .attr("stroke-width", 0.1)
                     .attr("fill", "#a9ceec")
                     .on("mouseover", function (d, i) {
                         // ここで人身事故情報を表示できるようにする
-                        tooltip.style("left", d.layerX + "px").style("top", d.clientY + "px").style("visibility", "visible").html('<a href="https://google.com">ここ</a>');
+                        if (i.properties.accidents == "NULL") {
+                            tooltip.style("left", d.layerX + "px").style("top", d.clientY + "px").style("visibility", "visible").html(i.properties.name + "<br>" + "事故回数: " + 0 + "回")
+                        }
+                        else if (i.properties.accidents == 1) {
+                            url = csv[(i.properties.index).split(", ")[0].slice(1, -1)]["url"]
+                            tooltip.style("left", d.layerX + "px").style("top", d.clientY + "px").style("visibility", "visible").html(
+                                i.properties.name + "<br>" + "事故回数: " + 1 + "回" + "<br>"
+                                + "日時: " + csv[(i.properties.index).split(", ")[0].slice(1, -1)]["date"] + "<br>"
+                                + "路線名: " + csv[(i.properties.index).split(", ")[0].slice(1, -1)]["line"] + "<br>"
+                                + "被害状況: " + csv[(i.properties.index).split(", ")[0].slice(1, -1)]["injury"] + "<br>"
+                                + "ツイート数:" + csv[(i.properties.index).split(", ")[0].slice(1, -1)]["tweets"] + "<br>"
+                                + `<a href=${url}>さらに詳細へ</a>`
+                            )
+                        }
+                        else {
+                            tooltip.style("left", d.layerX + "px").style("top", d.clientY + "px").style("visibility", "visible")
+                            text = i.properties.name + "<br>" + "事故回数: " + i.properties.accidents + "回" + "<br>"
+                            for (let step = 0; step < i.properties.accidents; step++) {
+                                let index = 0
+                                if (step == 0) {
+                                    index = (i.properties.index).split(",")[0].slice(1)
+                                }
+                                else if (step == i.properties.accidents - 1) {
+                                    index = (i.properties.index).split(",")[i.properties.accidents - 1].slice(0, -1)
+                                }
+                                else {
+                                    index = (i.properties.index).split(",")[step]
+                                }
+                                url = csv[index - 0]["url"]
+                                text += `【事故${step + 1}】` + "<br>"
+                                    + "日時: " + csv[(i.properties.index).split(", ")[0].slice(1, -1)]["date"] + "<br>"
+                                    + "路線名: " + csv[(i.properties.index).split(", ")[0].slice(1, -1)]["line"] + "<br>"
+                                    + "被害状況: " + csv[(i.properties.index).split(", ")[0].slice(1, -1)]["injury"] + "<br>"
+                                    + "ツイート数:" + csv[(i.properties.index).split(", ")[0].slice(1, -1)]["tweets"] + "<br>"
+                                    + `<a href=${url}>さらに詳細へ</a>` + "<br>"
+                            }
+                            tooltip.html(text)
+                        }
                     })
                     .on("mouseout", function () {
-                        // tooltip.style("visibility", "hidden");
+                        //tooltip.style("visibility", "hidden");
                     });
             })
             let zoom = d3.zoom()
@@ -181,6 +218,7 @@
             function handleZoom(d) {
                 expansion = d.transform.k;
                 d3.select(".tooltip").style("visibility", "hidden");
+
                 d3.select('#map')
                     .attr('transform', d.transform);
                 d3.selectAll(".station")
@@ -288,6 +326,7 @@
                     .y0(graphheight)
                     .y1(function (d) { return yscale(d.value); });
 
+                doorgraph.selectAll("path").remove();
                 doorgraph.append("path")
                     .attr("d", area(data))
                     .attr("fill", "darkgrey")
