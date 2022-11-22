@@ -98,3 +98,11 @@ twitter APIでキーワードを含むツイート検索をしても取得でき
 - 同名駅の衝突によるバグ解消
   - 同名の駅があることによりtooltipに表示される路線名が入れ替わってしまうバグが確認されたので、以前作成した[add_geojson_jinshin_information.py](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/add_geojson_jinshin_information.py)を修正することでgeojson内のindex(事故情報csvの参照に用いる)を正しく更新した
 - 駅アイコンクリック時にアイコンが点滅するようにした
+
+## 第9回（11/22）
+### やったこと
+- 事故回数バグfix
+  - 都内の事故回数があまりにも少ないことから確認したところ人身事故回数が正しく数えられていない場合があったので以前作成した[get_jinshin_information.py](https://github.com/InfovisHandsOn/A-Pastani/blob/main/cho/Optimized-Modified-GetOldTweets3-OMGOT/GetOldTweets3-0.0.10/get_jinshin_information.py)を修正して正確な事故回数をgeojsonへ書き込みした
+  - 完成版index.htmlを全体的に確認したところtooltip表示、事故回数に対応する円サイズ、事故詳細サイトでの記載内容に一貫していない部分は見られていないのでこれで自身の担当箇所のバグは解消されたと思われる
+  - (※一部一見事故回数に対応する円サイズが正しくない駅が見られるが、これは同じ駅だが別路線の駅アイコンが全く同じ場所に上書きされホバー時にその駅が感知されることが原因で、geojsonのproperties自体の情報が間違っている訳ではない)
+- それ以外の時間はプレゼン資料準備に充てた、現在も引き続き資料作成中
