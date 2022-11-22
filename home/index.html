@@ -211,7 +211,7 @@
 
         var histogram = svg2.append('g')
             .attr('id', 'histogram')
-            .attr('transform', 'translate(' + 0 + ',' + 0 + ')');
+            .attr('transform', 'translate(' + 15 + ',' + 0 + ')');
 
         var face = svg2.append('g')
             .attr('id', 'clock-face')
@@ -220,7 +220,7 @@
         function drawHistogram() {
             d3.csv("../data/jinshin-youbi.csv").then(function (data) {
                 var xScale = d3.scaleBand()
-                    .rangeRound([margin, width2 - margin])
+                    .rangeRound([margin, width2 - margin - 20])
                     .padding(0.1)
                     .domain(data.map(function (d) { return d.day; }));
 
@@ -235,6 +235,15 @@
                 histogram.append("g")
                     .attr("transform", "translate(" + margin + "," + 0 + ")")
                     .call(d3.axisLeft(yScale));
+
+                histogram.append("text")
+                    .attr("transform", "rotate(-90)")
+                    .attr("y", -5)
+                    .attr("x", -40)
+                    .attr("fill", "white")
+                    .attr("font-size", "10px")
+                    .style("text-anchor", "end")
+                    .text("Number of Accidents"); 
 
                 histogram.append("g")
                     .selectAll("rect")
@@ -359,6 +368,32 @@
                         .on("start", dragstart)
                         .on("drag", dragged)
                         .on("end", dragend));
+
+            var legend = ["Max", "Upper Quartile", "Median", "Lower Quartile", "Minimum"]
+            var color = ["#393D48", "#D0D3D8", "#8C000E", "#49515A", "#393D48"]
+            var size = 10
+
+            face.selectAll("legendsquare")
+                .data(legend)
+                .enter()
+                .append("rect")
+                .attr("x", 70)
+                .attr("y", function(d,i){ return i*(size+5) - 120})
+                .attr("width", size)
+                .attr("height", size)
+                .attr("fill", function(d, i){ return color[i]})
+
+            face.selectAll("legendlabels")
+                .data(legend)
+                .enter()
+                .append("text")
+                .attr("x", 70 + size*1.5)
+                .attr("y", function(d,i){ return i*(size+5) + (size/2) + 5 - 120}) 
+                .attr("fill", "white")
+                .attr("font-size", "12px")
+                .text(function(d){ return d})
+                .attr("text-anchor", "left")
+                .style("alignment-baseline", "middle")
         }
 
         function drawGraph(data, face, day) {
