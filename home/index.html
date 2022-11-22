@@ -1,10 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head prefix="og:http://ogp.me/ns#">
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
-    <title>D3 Test</title>
+    <title>Jinshin Visualization</title>
+
+    <meta property="og:title" content="Jinshin Visualization">
+    <meta property="og:description" content="人身事故を可視化">
+    <meta property="og:url" content="https://yutyan0119.github.io/Jinshin-visualization/">
+    <meta property="og:image" content="https://yutyan0119.github.io/Jinshin-visualization/ogp.png">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Jinshin Visualization">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@yutyan_ut">
+
     <script src="./d3.js" charset="utf-8"></script>
     <script src="./topojson.js" charset="utf-8"></script>
     <script src="./dict.js" charset="utf-8"></script>
@@ -16,6 +26,10 @@
         font-family: "Arial, Helvetica, sans-serif";
     }
 
+    .tooltip>a {
+        background-color: #333;
+    }
+
     .tooltip {
         position: absolute;
         width: auto;
@@ -24,12 +38,40 @@
         font: 13px sans-serif;
         color: #fff;
         background: #333;
+        background-color: #333;
         -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
         -moz-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
         box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
         border-radius: 4px;
         visibility: hidden;
         text-align: center;
+    }
+
+    .info {
+        width: 400px;
+        height: 880px;
+        /* border: solid 1px #212529; */
+        /* background-color: #3c4042; */
+        line-height: 25px;
+        border-radius: 5px;
+        padding-left: 20px;
+
+    }
+
+    .info>a {
+        text-decoration: none;
+        white-space: nowrap;
+        display: inline-block;
+        /* background-color: #3c4042; */
+        background-image: linear-gradient(to right, rgba(0, 0, 0, 0) 50%, rgb(49, 170, 226) 50%);
+        background-position: 0 0;
+        background-size: 200% auto;
+        transition: .3s;
+    }
+
+    .info>a:hover {
+        background-position: -100% 0;
+        color: #fff;
     }
 
     .container {
@@ -55,7 +97,6 @@
 
     .second-hand {
         stroke-width: 3;
-
     }
 
     .minute-hand {
@@ -299,7 +340,7 @@
                     .attr("fill", "white")
                     .attr("font-size", "10px")
                     .style("text-anchor", "end")
-                    .text("Number of Accidents"); 
+                    .text("Number of Accidents");
 
                 histogram.append("g")
                     .selectAll("rect")
@@ -434,20 +475,20 @@
                 .enter()
                 .append("rect")
                 .attr("x", 70)
-                .attr("y", function(d,i){ return i*(size+5) - 120})
+                .attr("y", function (d, i) { return i * (size + 5) - 120 })
                 .attr("width", size)
                 .attr("height", size)
-                .attr("fill", function(d, i){ return color[i]})
+                .attr("fill", function (d, i) { return color[i] })
 
             face.selectAll("legendlabels")
                 .data(legend)
                 .enter()
                 .append("text")
-                .attr("x", 70 + size*1.5)
-                .attr("y", function(d,i){ return i*(size+5) + (size/2) + 5 - 120}) 
+                .attr("x", 70 + size * 1.5)
+                .attr("y", function (d, i) { return i * (size + 5) + (size / 2) + 5 - 120 })
                 .attr("fill", "white")
                 .attr("font-size", "12px")
-                .text(function(d){ return d})
+                .text(function (d) { return d })
                 .attr("text-anchor", "left")
                 .style("alignment-baseline", "middle")
         }
@@ -630,15 +671,11 @@
         var map = svg.append('g')
             .attr('id', 'map')
             .attr('transform', 'translate(' + 0 + ',' + 0 + ')')
-        // .on("click", clicked)
+            .on("click", clicked)
 
         function clicked(event, d) {
-            var zoomCenter = d3.pointer(event)
-            var zoom = 150
-            svg.selectAll("#map")
-                .transition()
-                .duration(1000)
-                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + zoom + ")translate(" + -zoomCenter[0] + "," + -zoomCenter[1] + ")");
+            console.log("clicked");
+            d3.select("#maintooltip").style("visibility", "hidden");
         }
 
         let projection = d3.geoMercator()
@@ -680,7 +717,7 @@
                 .append("path")
                 .attr("d", geoGenerator)
                 .attr("stroke", "black")
-                .attr("stroke-width", 0.1)
+                .attr("stroke-width", 0.05)
                 .attr("fill", "#393D48");
             values.shift();
             let csv = values.pop();
@@ -890,83 +927,38 @@
                     .attr("stroke-width", Math.min(0.6, 1 / expansion * 2));
             }
 
-            function helpshow(event, d) {
-                expansion = 34.01266157947373;
-                d3.selectAll(".jinshin_station").attr("r", (d) => {
-                    if (d.properties.accidents !== "NULL") {
-                        return d.properties.accidents / Math.log(expansion + 1) * 0.2;
-                    } else {
-                        return 0;
-                    }
-                })
-                d3.select("#maintooltip").style("visibility", "hidden");
-                d3.selectAll(".station")
-                    .attr("r", Math.min(0.5, 1 / (Math.log(expansion + 1) * 5)))
-
-                d3.selectAll(".doorstation")
-                    .attr("r", (d, i) => {
-                        return Math.min(0.5, 1 / (Math.log(expansion + 1) * 5));
+            function helpshow(first) {
+                if (first === 1) {
+                    expansion = 34.01266157947373;
+                    d3.selectAll(".jinshin_station").attr("r", (d) => {
+                        if (d.properties.accidents !== "NULL") {
+                            return d.properties.accidents / Math.log(expansion + 1) * 0.2;
+                        } else {
+                            return 0;
+                        }
                     })
-                    .attr("stroke-width", () => {
-                        return Math.min(0.1, 1 / (Math.log(expansion + 1) * 5));
-                    })
+                    d3.select("#maintooltip").style("visibility", "hidden");
+                    d3.selectAll(".station")
+                        .attr("r", Math.min(0.5, 1 / (Math.log(expansion + 1) * 5)))
 
-                d3.selectAll(".linepath")
-                    .attr("stroke-width", Math.min(0.6, 1 / expansion * 2));
-                svg.selectAll("#map")
-                    .transition()
-                    .duration(3500)
-                    .attr("transform", "translate(-20716.3278606015,-14163.157008715993) scale(34.01266157947373)");
-                map.append("rect")
-                    .attr("width", 13)
-                    .attr("height", 2.5)
-                    .attr("x", projection([139.46811, 35.68099])[0] - 0.6)
-                    .attr("y", projection([139.46811, 35.68099])[1] - 0.6)
-                    .attr("fill", "black")
-                    .attr("class", "info-rect")
-                    .attr("rx", 0.5)
-                    .attr("opacity", 0.8)
-                    .transition()
-                    .delay(8000)
-                    .duration(1000)
-                    .attr("widht", 0)
-                    .attr("height", 0)
-                map.append("text")
-                    .attr("x", () => { console.log(projection([139.46811, 35.68099])[0]); return projection([139.46811, 35.68099])[0] })
-                    .attr("y", projection([139.46811, 35.68099])[1])
-                    .text("Orange Circle: Number of personal injury accidents")
-                    .attr("font-size", 0.5)
-                    .attr("class", "info-text")
-                    .attr("fill", "#fff")
-                    .attr("opacity", 1)
-                    .transition()
-                    .delay(8000)
-                    .duration(1000)
-                    .attr("opacity", 0)
-                map.append("text")
-                    .attr("x", projection([139.46811, 35.68099])[0])
-                    .attr("y", projection([139.46811, 35.68099])[1] + 0.8)
-                    .text("Blue Circle: Stations with platform doors")
-                    .attr("font-size", 0.5)
-                    .attr("class", "info-text")
-                    .attr("fill", "#fff")
-                    .attr("opacity", 1)
-                    .transition()
-                    .delay(8000)
-                    .duration(1000)
-                    .attr("opacity", 0)
-                map.append("text")
-                    .attr("x", projection([139.46811, 35.68099])[0])
-                    .attr("y", projection([139.46811, 35.68099])[1] + 1.6)
-                    .text("Click on each station to see details.")
-                    .attr("font-size", 0.5)
-                    .attr("class", "info-text")
-                    .attr("fill", "#fff")
-                    .attr("opacity", 1)
-                    .transition()
-                    .delay(8000)
-                    .duration(1000)
-                    .attr("opacity", 0)
+                    d3.selectAll(".doorstation")
+                        .attr("r", (d, i) => {
+                            return Math.min(0.5, 1 / (Math.log(expansion + 1) * 5));
+                        })
+                        .attr("stroke-width", () => {
+                            return Math.min(0.1, 1 / (Math.log(expansion + 1) * 5));
+                        })
+
+                    d3.selectAll(".linepath")
+                        .attr("stroke-width", Math.min(0.6, 1 / expansion * 2));
+                    svg.selectAll("#map")
+                        .transition()
+                        .duration(3500)
+                        .attr("transform", "translate(-20716.3278606015,-14163.157008715993) scale(34.01266157947373)");
+                }
+                legend.selectAll("rect").transition().delay(0).duration(1000).attr("height", 210).transition().delay(6000).duration(1000).attr("height", 0)
+                legend_contents.transition().delay(0).duration(1000).attr("opacity", 1).transition().delay(6000).duration(1000).attr("opacity", 0)
+
             }
 
             const start_unixTime = 1262271600; //2010/01/01
@@ -1058,7 +1050,7 @@
                 .attr("fill", "white")
                 .attr("font-size", "12px")
                 .style("text-anchor", "end")
-                .text("Number of Platform Doors"); 
+                .text("Number of Platform Doors");
 
             var alldoor = doordata.filter(function (d) {
                 return (new Date(d.date)) < (new Date(nowunix_seconds * 1000));
@@ -1191,16 +1183,16 @@
                         return;
                     }
                     placelist.push([place, line, date]);
-                    if (placelist.length > 40) {
+                    if (placelist.length > 34) {
                         placelist.shift();
                     }
                     let info_sentence = "";
                     placelist.forEach(e => {
-                        let tmp_sentence = `<a href=${csv[i]["url"]} target="_blank">`;
+                        let tmp_sentence = `<a href=${csv[i]["url"]} target="_blank">・`;
                         let tmp_sentence2 = `${e[2]}`
                         tmp_sentence2 += ` ${e[1]}`
                         tmp_sentence2 += ` ${e[0]}`;
-                        const MAX_LENGTH = 30 //文字数上限
+                        const MAX_LENGTH = 28 //文字数上限
                         if (tmp_sentence2.length >= MAX_LENGTH) {
                             tmp_sentence2 = tmp_sentence2.substr(0, MAX_LENGTH) + '...'
                         }
@@ -1264,8 +1256,65 @@
                 now_door_index = new_home_door_index;
             }
             setTimeout(() => {
-                helpshow()
+                helpshow(1)
             }, 300)
+
+            let legend = svg.append("g")
+                .attr("class", "legend")
+            legend.append("rect")
+                .attr("x", width - 800)
+                .attr("y", 300)
+                .attr("height", 0)
+                .attr("width", 600)
+                .attr("fill", "black")
+                .attr("opacity", 0.8);
+            let legend_contents = legend.append("g").attr("class", "legend_contents").attr("opacity", 0)
+            legend_contents.append("circle")
+                .attr("cx", width - 760)
+                .attr("cy", 330)
+                .attr("r", 20)
+                .attr("fill", "#ff8c00")
+                .attr("opacity", 0.5);
+            legend_contents.append("text")
+                .attr("x", width - 730)
+                .attr("y", 335)
+                .attr("fill", "#D0D3D8")
+                .text(": number of accidents")
+            legend_contents.append("circle")
+                .attr("cx", width - 760)
+                .attr("cy", 380)
+                .attr("r", 5)
+                .attr("fill", "#D0D3D8")
+                .attr("opacity", 1);
+            legend_contents.append("text")
+                .attr("x", width - 730)
+                .attr("y", 385)
+                .attr("fill", "#D0D3D8")
+                .text(": station")
+            legend_contents.append("circle")
+                .attr("cx", width - 760)
+                .attr("cy", 430)
+                .attr("r", 5)
+                .attr("stroke", "#006699")
+                .attr("stroke-width", 4)
+                .attr("fill", "#D0D3D8")
+                .attr("opacity", 1);
+            legend_contents.append("text")
+                .attr("x", width - 730)
+                .attr("y", 435)
+                .attr("fill", "#D0D3D8")
+                .text(": station with platform doors")
+            legend_contents.append("circle")
+                .attr("cx", width - 760)
+                .attr("cy", 480)
+                .attr("r", 20)
+                .attr("fill", "#8C000E")
+                .attr("opacity", 0.8);
+            legend_contents.append("text")
+                .attr("x", width - 730)
+                .attr("y", 485)
+                .attr("fill", "#D0D3D8")
+                .text(": accident (radius depends on number of tweets about the accident)")
         })
     </script>
     <div class="play_parameter">
