@@ -194,3 +194,10 @@ TODO:曜日ごとに変更出来るようにする。
 - ホームドア設置駅の表示の改良と、人身事故発生駅の発生件数に応じた円の表示
 
 ![](shinchoku_image/nakamura/jinshin_circle.png)
+
+# 11/22
+- 全体的なデザインの調整を行った
+  - zoom時の表示の改良
+  - ページ全体デザインの調整
+- スライドを作った
+  - https://docs.google.com/presentation/d/1y_yHa6pFSITmGuRu9BXcaB6W8Nmb7XwHwcQzzGtApK4/edit?usp=sharing  
