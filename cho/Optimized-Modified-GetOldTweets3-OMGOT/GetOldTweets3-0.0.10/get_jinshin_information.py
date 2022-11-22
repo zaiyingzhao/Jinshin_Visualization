@@ -26,9 +26,16 @@ for i in range(len(tweets)):
         if sta in station:
             station_index = station.index(sta)
             # 路線名が一致している（完全に同じ駅）ときに人身事故回数加算
-            if line[station_index] == tweets["line"][i]:
+            if line[station_index] == dic[tweets["line"][i]]:
                 accidents[station_index] += 1
                 index[station_index].append(i)
+            else:
+                line.append(dic[tweets["line"][i]])
+                station.append(sta)
+                accidents.append(1)
+                index.append([i])
+                
+                            
         # 同名駅で人身事故が発生していない場合
         else:
             line.append(dic[tweets["line"][i]])
