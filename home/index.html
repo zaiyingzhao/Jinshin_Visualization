@@ -101,38 +101,90 @@
         font-size: 14px;
     }
 
-    .select {
-        display: inline-block;
+    select {
+        background: #cfcedb;
+        border-radius: 5px;
         position: relative;
-        border: 1px solid #eee;
-        vertical-align: middle;
+        z-index: 1;
     }
+
+    select::after {
+        position: absolute;
+        content: '';
+        width: 8px;
+        height: 8px;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%) rotate(45deg);
+        border-bottom: 2px solid #fff;
+        border-right: 2px solid #fff;
+        z-index: -1;
+    }
+
 
     select {
-        appearance: none;
-        width: 300px;
-        padding-right: 1em;
+        /* 初期化 */
+        background: #333;
+        border-radius: 5px;
         border: none;
-        outline: 0;
-        background: #0A0C0D;
-        background-image: none;
-        box-shadow: none;
-        text-indent: 0.01px;
-        text-overflow: ellipsis;
-        cursor: pointer;
+        color: #fff;
+        font-size: 12px;
+        /* width: 100%;
+        height: 100%; */
+        /* padding: 0 10px; */
+        position: relative;
+        margin: 5px;
     }
 
-    select::before {
-        position: absolute;
-        top: 18px;
-        right: 16px;
-        width: 0;
-        height: 0;
-        border-width: 10px 5px 0 5px;
-        border-style: solid;
-        border-color: #eee transparent transparent transparent;
-        content: "";
-        pointer-events: none;
+    select:hover {
+        background: #999;
+    }
+
+
+    button {
+        cursor: pointer;
+        user-select: none;
+        -webkit-transition: all 0.3s;
+        transition: all 0.3s;
+        text-align: center;
+        vertical-align: middle;
+        box-shadow: none;
+        text-decoration: none;
+        letter-spacing: 0.1em;
+        color: #212529;
+        border-radius: 0.5rem;
+        border: none;
+        outline: none;
+        background: transparent;
+        margin: 5px;
+    }
+
+    button {
+        color: #fff;
+        background-color: #333;
+    }
+
+    button:hover {
+        color: #fff;
+        background: #999;
+    }
+
+    input {
+        cursor: pointer;
+        user-select: none;
+        -webkit-transition: all 0.3s;
+        transition: all 0.3s;
+        text-align: center;
+        vertical-align: middle;
+        box-shadow: none;
+        text-decoration: none;
+        letter-spacing: 0.1em;
+        color: #cfcedb;
+        border-radius: 0.2rem;
+        border: none;
+        outline: none;
+        background: #3c4042;
+        margin: 5px;
     }
 </style>
 
@@ -145,6 +197,9 @@
         <input type="datetime-local" id="selected_date">
         <div id="reset">
             <button id="reset-button">reset zoom</button>
+        </div>
+        <div id="help">
+            <button id="help-button">help</button>
         </div>
     </div>
     <script type="text/javascript">
@@ -536,7 +591,7 @@
             var option = document.createElement("option");
             option.setAttribute('value', "全て");
             // option要素に値をセット
-            option.innerHTML = "全て";
+            option.innerHTML = "全ての路線";
             // selectタグの子要素にoptionタグを追加する
             select.appendChild(option);
             Object.keys(dict).forEach(d => {
@@ -801,11 +856,116 @@
             d3.select("#reset")
                 .on("click", resetted);
 
+            d3.select("#help")
+                .on("click", helpshow);
+
             function resetted(event, d) {
                 svg.selectAll("#map")
                     .transition()
                     .duration(1000)
                     .attr("transform", "translate(0,0)");
+                expansion = 1;
+                d3.selectAll(".jinshin_station").transition()
+                    .duration(1000).attr("r", (d) => {
+                        if (d.properties.accidents !== "NULL") {
+                            return d.properties.accidents / Math.log(expansion + 1);
+                        } else {
+                            return 0;
+                        }
+                    })
+                d3.select("#maintooltip").style("visibility", "hidden");
+                d3.selectAll(".station")
+                    .attr("r", Math.min(0.5, 1 / (Math.log(expansion + 1) * 5)))
+
+                d3.selectAll(".doorstation")
+                    .attr("r", (d, i) => {
+                        return Math.min(0.5, 1 / (Math.log(expansion + 1) * 5));
+                    })
+                    .attr("stroke-width", () => {
+                        return Math.min(0.1, 1 / (Math.log(expansion + 1) * 5));
+                    })
+
+                d3.selectAll(".linepath")
+                    .attr("stroke-width", Math.min(0.6, 1 / expansion * 2));
+            }
+
+            function helpshow(event, d) {
+                expansion = 34.01266157947373;
+                d3.selectAll(".jinshin_station").attr("r", (d) => {
+                    if (d.properties.accidents !== "NULL") {
+                        return d.properties.accidents / Math.log(expansion + 1);
+                    } else {
+                        return 0;
+                    }
+                })
+                d3.select("#maintooltip").style("visibility", "hidden");
+                d3.selectAll(".station")
+                    .attr("r", Math.min(0.5, 1 / (Math.log(expansion + 1) * 5)))
+
+                d3.selectAll(".doorstation")
+                    .attr("r", (d, i) => {
+                        return Math.min(0.5, 1 / (Math.log(expansion + 1) * 5));
+                    })
+                    .attr("stroke-width", () => {
+                        return Math.min(0.1, 1 / (Math.log(expansion + 1) * 5));
+                    })
+
+                d3.selectAll(".linepath")
+                    .attr("stroke-width", Math.min(0.6, 1 / expansion * 2));
+                svg.selectAll("#map")
+                    .transition()
+                    .duration(3500)
+                    .attr("transform", "translate(-20716.3278606015,-14163.157008715993) scale(34.01266157947373)");
+                map.append("rect")
+                    .attr("width", 13)
+                    .attr("height", 2.5)
+                    .attr("x", projection([139.46811, 35.68099])[0] - 0.6)
+                    .attr("y", projection([139.46811, 35.68099])[1] - 0.6)
+                    .attr("fill", "black")
+                    .attr("class", "info-rect")
+                    .attr("rx", 0.5)
+                    .attr("opacity", 0.8)
+                    .transition()
+                    .delay(8000)
+                    .duration(1000)
+                    .attr("widht", 0)
+                    .attr("height", 0)
+                map.append("text")
+                    .attr("x", () => { console.log(projection([139.46811, 35.68099])[0]); return projection([139.46811, 35.68099])[0] })
+                    .attr("y", projection([139.46811, 35.68099])[1])
+                    .text("Orange Circle: Number of personal injury accidents")
+                    .attr("font-size", 0.5)
+                    .attr("class", "info-text")
+                    .attr("fill", "#fff")
+                    .attr("opacity", 1)
+                    .transition()
+                    .delay(8000)
+                    .duration(1000)
+                    .attr("opacity", 0)
+                map.append("text")
+                    .attr("x", projection([139.46811, 35.68099])[0])
+                    .attr("y", projection([139.46811, 35.68099])[1] + 0.8)
+                    .text("Blue Circle: Stations with platform doors")
+                    .attr("font-size", 0.5)
+                    .attr("class", "info-text")
+                    .attr("fill", "#fff")
+                    .attr("opacity", 1)
+                    .transition()
+                    .delay(8000)
+                    .duration(1000)
+                    .attr("opacity", 0)
+                map.append("text")
+                    .attr("x", projection([139.46811, 35.68099])[0])
+                    .attr("y", projection([139.46811, 35.68099])[1] + 1.6)
+                    .text("Click on each station to see details.")
+                    .attr("font-size", 0.5)
+                    .attr("class", "info-text")
+                    .attr("fill", "#fff")
+                    .attr("opacity", 1)
+                    .transition()
+                    .delay(8000)
+                    .duration(1000)
+                    .attr("opacity", 0)
             }
 
             const start_unixTime = 1262271600; //2010/01/01
@@ -1093,22 +1253,8 @@
                 }
                 now_door_index = new_home_door_index;
             }
-            information_of_accident
-                .attr("opacity", 1)
-                .html("orange circle: the number of accidents in the station. <br> green circle: the station that has home doors.")
-                .transition()
-                .duration(2000)
-                .attr("opacity", 0);
             setTimeout(() => {
-                svg.selectAll("#map")
-                    .transition()
-                    .duration(3500)
-                    .attr("transform", "translate(-20716.3278606015,-14163.157008715993) scale(34.01266157947373)");
-                map.append("circle")
-                    .attr("r", 100)
-                    .attr("cx", 0)
-                    .attr("cy", 0)
-                    .attr("fill", "white")
+                helpshow()
             }, 300)
         })
     </script>
