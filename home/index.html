@@ -773,7 +773,6 @@
 
             function handleZoom(d) {
                 expansion = d.transform.k;
-                console.log(expansion);
                 d3.selectAll(".jinshin_station").attr("r", (d) => {
                     if (d.properties.accidents !== "NULL") {
                         return d.properties.accidents / Math.log(expansion + 1);
@@ -1074,18 +1073,22 @@
                             .attr("cx", projection(coordinates)[0])
                             .attr("cy", projection(coordinates)[1])
                             .attr("id", `home_door_${index}`)
-                            .attr("r", Math.min(0.5, 1 / (Math.log(expansion + 1) * 5)))
                             .attr("class", "doorstation")
                             .attr("opacity", 0.4)
                             .attr("stroke", "#006699")
                             .attr("stroke-width", Math.min(0.1, 1 / (Math.log(expansion + 1) * 5)))
-                            .attr("fill", "none");
+                            .attr("fill", "none")
+                            .attr("r", 0)
+                            .transition()
+                            .duration(1000)
+                            .attr("r", () => { return 1 / Math.log(expansion + 1) })
+                            .duration(1000)
+                            .attr("r", Math.min(0.5, 1 / (Math.log(expansion + 1) * 5)))
 
                     }
                 } else {
                     for (let index = now_door_index; index > new_home_door_index; index--) {
                         map.select(`#home_door_${index}`).remove();
-                        console.log("remove!");
                     }
                 }
                 now_door_index = new_home_door_index;
@@ -1097,11 +1100,15 @@
                 .duration(2000)
                 .attr("opacity", 0);
             setTimeout(() => {
-                console.log("hoge");
                 svg.selectAll("#map")
                     .transition()
                     .duration(3500)
                     .attr("transform", "translate(-20716.3278606015,-14163.157008715993) scale(34.01266157947373)");
+                map.append("circle")
+                    .attr("r", 100)
+                    .attr("cx", 0)
+                    .attr("cy", 0)
+                    .attr("fill", "white")
             }, 300)
         })
     </script>
