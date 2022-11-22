@@ -25,6 +25,9 @@
         color: #ECEFF7;
         font-family: "Arial, Helvetica, sans-serif";
     }
+    .tooltip > a {
+        background-color: #333;
+    }
 
     .tooltip {
         position: absolute;
@@ -34,12 +37,26 @@
         font: 13px sans-serif;
         color: #fff;
         background: #333;
+        background-color: #333;
         -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
         -moz-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
         box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
         border-radius: 4px;
         visibility: hidden;
         text-align: center;
+    }
+
+    .info{
+        width: 300px;
+        height: 880px;
+        border:solid 1px #212529;
+        line-height: 25px;
+        border-radius: 3px;
+        padding-left: 20px;
+
+    }
+    .info > a{
+        text-decoration: none;
     }
 
     .container {
@@ -65,7 +82,6 @@
 
     .second-hand {
         stroke-width: 3;
-
     }
 
     .minute-hand {
@@ -690,7 +706,7 @@
                 .append("path")
                 .attr("d", geoGenerator)
                 .attr("stroke", "black")
-                .attr("stroke-width", 0.1)
+                .attr("stroke-width", 0.05)
                 .attr("fill", "#393D48");
             values.shift();
             let csv = values.pop();
@@ -1156,7 +1172,7 @@
                         return;
                     }
                     placelist.push([place, line, date]);
-                    if (placelist.length > 40) {
+                    if (placelist.length > 34) {
                         placelist.shift();
                     }
                     let info_sentence = "";
@@ -1165,7 +1181,7 @@
                         let tmp_sentence2 = `${e[2]}`
                         tmp_sentence2 += ` ${e[1]}`
                         tmp_sentence2 += ` ${e[0]}`;
-                        const MAX_LENGTH = 30 //文字数上限
+                        const MAX_LENGTH = 28 //文字数上限
                         if (tmp_sentence2.length >= MAX_LENGTH) {
                             tmp_sentence2 = tmp_sentence2.substr(0, MAX_LENGTH) + '...'
                         }
