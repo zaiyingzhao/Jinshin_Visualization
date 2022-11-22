@@ -50,8 +50,6 @@
     .info {
         width: 400px;
         height: 880px;
-        /* border: solid 1px #212529; */
-        /* background-color: #3c4042; */
         line-height: 25px;
         border-radius: 5px;
         padding-left: 20px;
@@ -62,7 +60,6 @@
         text-decoration: none;
         white-space: nowrap;
         display: inline-block;
-        /* background-color: #3c4042; */
         background-image: linear-gradient(to right, rgba(0, 0, 0, 0) 50%, rgb(49, 170, 226) 50%);
         background-position: 0 0;
         background-size: 200% auto;
@@ -171,9 +168,6 @@
         border: none;
         color: #fff;
         font-size: 12px;
-        /* width: 100%;
-        height: 100%; */
-        /* padding: 0 10px; */
         position: relative;
         margin: 5px;
     }
@@ -242,6 +236,9 @@
         </div>
         <div id="help">
             <button id="help-button">help</button>
+        </div>
+        <div id="light-mode">
+            <button id="light-mode-button">light-mode</button>
         </div>
     </div>
     <script type="text/javascript">
@@ -636,6 +633,12 @@
             option.innerHTML = "全ての路線";
             // selectタグの子要素にoptionタグを追加する
             select.appendChild(option);
+            var option = document.createElement("option");
+            option.setAttribute('value', "none");
+            // option要素に値をセット
+            option.innerHTML = "人身事故を表示しない";
+            // selectタグの子要素にoptionタグを追加する
+            select.appendChild(option);
             Object.keys(dict).forEach(d => {
                 // optionタグを作成する
                 var option = document.createElement("option");
@@ -897,6 +900,26 @@
             d3.select("#help")
                 .on("click", helpshow);
 
+            d3.select("#light-mode")
+                .on("click", lightmode);
+
+            let light_mode = false;
+
+            function lightmode(event, d) {
+                if (!light_mode) {
+                    d3.selectAll(".station").style("visibility", "hidden");
+                    d3.selectAll(".jinshin_station").style("visibility", "hidden");
+                    d3.select("#light-mode-button").text("normal-mode");
+                    light_mode = true;
+                }
+                else {
+                    d3.selectAll(".station").style("visibility", "visible");
+                    d3.selectAll(".jinshin_station").style("visibility", "visible");
+                    d3.select("#light-mode-button").text("light-mode");
+                    light_mode = false;
+                }
+            }
+
             function resetted(event, d) {
                 svg.selectAll("#map")
                     .transition()
@@ -956,9 +979,9 @@
                         .duration(3500)
                         .attr("transform", "translate(-20716.3278606015,-14163.157008715993) scale(34.01266157947373)");
                 }
-                legend.selectAll("rect").transition().delay(0).duration(1000).attr("height", 210).transition().delay(6000).duration(1000).attr("height", 0)
-                legend_contents.transition().delay(0).duration(1000).attr("opacity", 1).transition().delay(6000).duration(1000).attr("opacity", 0)
-
+                legend.selectAll("rect").transition().delay(0).duration(1000).attr("height", 210).transition().delay(9000).duration(1000).attr("height", 0)
+                legend.select(".light-mode-recommend").transition().delay(0).duration(1000).attr("height", 30).transition().delay(9000).duration(1000).attr("height", 0)
+                legend_contents.transition().delay(0).duration(1000).attr("opacity", 1).transition().delay(9000).duration(1000).attr("opacity", 0)
             }
 
             const start_unixTime = 1262271600; //2010/01/01
@@ -1255,9 +1278,7 @@
                 }
                 now_door_index = new_home_door_index;
             }
-            setTimeout(() => {
-                helpshow(1)
-            }, 300)
+
 
             let legend = svg.append("g")
                 .attr("class", "legend")
@@ -1268,7 +1289,21 @@
                 .attr("width", 600)
                 .attr("fill", "black")
                 .attr("opacity", 0.8);
+            legend.append("rect")
+                .attr("x", width - 670)
+                .attr("y", 0)
+                .attr("class", "light-mode-recommend")
+                .attr("height", 0)
+                .attr("width", 500)
+                .attr("fill", "black")
+                .attr("opacity", 0.8);
             let legend_contents = legend.append("g").attr("class", "legend_contents").attr("opacity", 0)
+            legend_contents.append("text")
+                .attr("x", width - 630)
+                .attr("y", 20)
+                .attr("class", "light-mode-recommend")
+                .attr("fill", "#D0D3D8")
+                .text("It is recommended to use light-mode when moving😊↑↑")
             legend_contents.append("circle")
                 .attr("cx", width - 760)
                 .attr("cy", 330)
@@ -1315,6 +1350,7 @@
                 .attr("y", 485)
                 .attr("fill", "#D0D3D8")
                 .text(": accident (radius depends on number of tweets about the accident)")
+            helpshow(1);
         })
     </script>
     <div class="play_parameter">

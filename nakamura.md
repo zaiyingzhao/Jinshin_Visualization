@@ -201,3 +201,5 @@ TODO:曜日ごとに変更出来るようにする。
   - ページ全体デザインの調整
 - スライドを作った
   - https://docs.google.com/presentation/d/1y_yHa6pFSITmGuRu9BXcaB6W8Nmb7XwHwcQzzGtApK4/edit?usp=sharing  
+- light-modeの追加
+- 選択肢に人身事故を表示しないを追加
