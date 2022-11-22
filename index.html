@@ -1,10 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head prefix="og:http://ogp.me/ns#">
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
-    <title>Jinshin visualization</title>
+    <title>Jinshin Visualization</title>
+
+    <meta property="og:title" content="Jinshin Visualization">
+    <meta property="og:description" content="人身事故を可視化">
+    <meta property="og:url" content="https://yutyan0119.github.io/Jinshin-visualization/">
+    <meta property="og:image" content="https://yutyan0119.github.io/Jinshin-visualization/ogp.png">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Jinshin Visualization">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@yutyan_ut">
+
     <script src="./d3.js" charset="utf-8"></script>
     <script src="./topojson.js" charset="utf-8"></script>
     <script src="./dict.js" charset="utf-8"></script>
@@ -299,7 +309,7 @@
                     .attr("fill", "white")
                     .attr("font-size", "10px")
                     .style("text-anchor", "end")
-                    .text("Number of Accidents"); 
+                    .text("Number of Accidents");
 
                 histogram.append("g")
                     .selectAll("rect")
@@ -434,20 +444,20 @@
                 .enter()
                 .append("rect")
                 .attr("x", 70)
-                .attr("y", function(d,i){ return i*(size+5) - 120})
+                .attr("y", function (d, i) { return i * (size + 5) - 120 })
                 .attr("width", size)
                 .attr("height", size)
-                .attr("fill", function(d, i){ return color[i]})
+                .attr("fill", function (d, i) { return color[i] })
 
             face.selectAll("legendlabels")
                 .data(legend)
                 .enter()
                 .append("text")
-                .attr("x", 70 + size*1.5)
-                .attr("y", function(d,i){ return i*(size+5) + (size/2) + 5 - 120}) 
+                .attr("x", 70 + size * 1.5)
+                .attr("y", function (d, i) { return i * (size + 5) + (size / 2) + 5 - 120 })
                 .attr("fill", "white")
                 .attr("font-size", "12px")
-                .text(function(d){ return d})
+                .text(function (d) { return d })
                 .attr("text-anchor", "left")
                 .style("alignment-baseline", "middle")
         }
@@ -1058,7 +1068,7 @@
                 .attr("fill", "white")
                 .attr("font-size", "12px")
                 .style("text-anchor", "end")
-                .text("Number of Platform Doors"); 
+                .text("Number of Platform Doors");
 
             var alldoor = doordata.filter(function (d) {
                 return (new Date(d.date)) < (new Date(nowunix_seconds * 1000));
