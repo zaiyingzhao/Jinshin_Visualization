@@ -53,5 +53,5 @@ for i in range(len(information)):
         )
         station["features"][indexlist[0]]["properties"]["index"] = information["index"][i]
 
-with open("station_only_addJinshindata.geojson", "w") as f:
+with open("/home/zaiying/A-Pastani/data/station_only_addJinshindata.geojson", "w") as f:
     json.dump(station, f, ensure_ascii=False)

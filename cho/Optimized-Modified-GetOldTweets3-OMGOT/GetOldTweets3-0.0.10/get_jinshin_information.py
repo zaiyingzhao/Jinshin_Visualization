@@ -24,12 +24,21 @@ for i in range(len(tweets)):
     for sta in stations:
         # 既に同名駅で人身事故が発生している場合
         if sta in station:
-            station_index = station.index(sta)
+            station_index = [j for j, x in enumerate(station) if x == sta]
             # 路線名が一致している（完全に同じ駅）ときに人身事故回数加算
-            if line[station_index] == dic[tweets["line"][i]]:
-                accidents[station_index] += 1
-                index[station_index].append(i)
-            else:
+            flag = 1
+            for idx in station_index:
+                if type(line[idx]) == str: linelist1 = [line[idx]]
+                elif type(line[idx]) != str: linelist1 = line[idx]
+                if type(dic[tweets["line"][i]]) == str: linelist2 = [dic[tweets["line"][i]]]
+                elif type(dic[tweets["line"][i]]) != str: linelist2 = dic[tweets["line"][i]]
+                lineand = set(linelist1) & set(linelist2)
+                if len(lineand) > 0:
+                    accidents[idx] += 1
+                    index[idx].append(i)
+                    flag = 0
+                    
+            if flag:
                 line.append(dic[tweets["line"][i]])
                 station.append(sta)
                 accidents.append(1)
@@ -46,3 +55,4 @@ for i in range(len(tweets)):
 data = pd.DataFrame({"路線名": line, "駅名": station, "人身事故回数": accidents, "index": index})
 
 data.to_csv("/home/zaiying/A-Pastani/data/accidents_per_station.csv", encoding="utf-8")
+data.to_csv("accidents_per_station.csv", encoding="utf-8")
