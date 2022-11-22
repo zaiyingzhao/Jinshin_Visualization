@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>D3 Test</title>
+    <script src="./d3.js" charset="utf-8"></script>
+    <script src="./topojson.js" charset="utf-8"></script>
+    <script src="./dict.js" charset="utf-8"></script>
+</head>
+<style>
+    * {
+        background-color: #0a0c0d;
+        color: #ECEFF7;
+        font-family: "Arial, Helvetica, sans-serif";
+    }
+
+    .tooltip {
+        position: absolute;
+        width: auto;
+        height: auto;
+        padding: 4px;
+        font: 13px sans-serif;
+        color: #fff;
+        background: #333;
+        -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        -moz-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        border-radius: 4px;
+        visibility: hidden;
+        text-align: center;
+    }
+
+    .container {
+        display: flex;
+    }
+
+    .parameter {
+        display: flex;
+        justify-content: center;
+    }
+
+    .play_parameter {
+        display: flex;
+        justify-content: center;
+        width: 900;
+    }
+
+    #rim {
+        fill: none;
+        stroke: #999;
+        stroke-width: 3px;
+    }
+
+    .second-hand {
+        stroke-width: 3;
+
+    }
+
+    .minute-hand {
+        stroke-width: 8;
+        stroke-linecap: round;
+    }
+
+    .hour-hand {
+        stroke-width: 12;
+        stroke-linecap: round;
+    }
+
+    .hands-cover {
+        stroke-width: 3;
+        fill: #fff;
+    }
+
+    .second-tick {
+        stroke-width: 3;
+        fill: #000;
+    }
+
+    .hour-tick {
+        stroke-width: 8;
+        fill: #000;
+    }
+
+    .second-label {
+        font-size: 12px;
+    }
+
+    .hour-label {
+        font-size: 24px;
+        color: #fff;
+    }
+
+    .svgframe {
+        background-color: #0A0C0D;
+        border: solid 1px #0A0C0D;
+    }
+
+    .info {
+        font-size: 14px;
+        margin: 10px;
+    }
+
+    select {
+        background: #cfcedb;
+        border-radius: 5px;
+        position: relative;
+        z-index: 1;
+    }
+
+    select::after {
+        position: absolute;
+        content: '';
+        width: 8px;
+        height: 8px;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%) rotate(45deg);
+        border-bottom: 2px solid #fff;
+        border-right: 2px solid #fff;
+        z-index: -1;
+    }
+
+
+    select {
+        /* 初期化 */
+        background: #333;
+        border-radius: 5px;
+        border: none;
+        color: #fff;
+        font-size: 12px;
+        /* width: 100%;
+        height: 100%; */
+        /* padding: 0 10px; */
+        position: relative;
+        margin: 5px;
+    }
+
+    select:hover {
+        background: #999;
+    }
+
+
+    button {
+        cursor: pointer;
+        user-select: none;
+        -webkit-transition: all 0.3s;
+        transition: all 0.3s;
+        text-align: center;
+        vertical-align: middle;
+        box-shadow: none;
+        text-decoration: none;
+        letter-spacing: 0.1em;
+        color: #212529;
+        border-radius: 0.5rem;
+        border: none;
+        outline: none;
+        background: transparent;
+        margin: 5px;
+    }
+
+    button {
+        color: #fff;
+        background-color: #333;
+    }
+
+    button:hover {
+        color: #fff;
+        background: #999;
+    }
+
+    input {
+        cursor: pointer;
+        user-select: none;
+        -webkit-transition: all 0.3s;
+        transition: all 0.3s;
+        text-align: center;
+        vertical-align: middle;
+        box-shadow: none;
+        text-decoration: none;
+        letter-spacing: 0.1em;
+        color: #cfcedb;
+        border-radius: 0.2rem;
+        border: none;
+        outline: none;
+        background: #3c4042;
+        margin: 5px;
+    }
+</style>
+
+<body>
+    <div class="parameter">
+        <div>
+            <select id="line_select">
+            </select>
+        </div>
+        <input type="datetime-local" id="selected_date">
+        <div id="reset">
+            <button id="reset-button">reset zoom</button>
+        </div>
+        <div id="help">
+            <button id="help-button">help</button>
+        </div>
+    </div>
+    <script type="text/javascript">
+        let container = d3.select("body").append("div").attr("class", "container");
+
+        // //ここから時計
+        var radians = 0.0174532925,
+            clockRadius = 180,
+            margin = 40,
+            histoheight = 300
+        width2 = (clockRadius + margin) * 2,
+            height2 = (clockRadius + margin) * 2 + histoheight,
+            hourHandLength = 2 * clockRadius / 3,
+            minuteHandLength = clockRadius,
+            secondHandLength = clockRadius - 12,
+            secondHandBalance = 30,
+            secondTickStart = clockRadius;
+        secondTickLength = -10,
+            hourTickStart = clockRadius,
+            hourTickLength = -18;
+        secondLabelRadius = clockRadius + 16;
+        secondLabelYOffset = 5
+        hourLabelRadius = clockRadius - 40
+        hourLabelYOffset = 7;
+
+
+        var hourScale = d3.scaleLinear()
+            .range([0, 330])
+            .domain([0, 11]);
+
+        var minuteScale = secondScale = d3.scaleLinear()
+            .range([0, 354])
+            .domain([0, 59]);
+
+        var handData = [
+            {
+                type: 'minute',
+                value: 0,
+                length: -minuteHandLength,
+                scale: minuteScale
+            },
+        ];
+
+        let datascale = d3.scaleLinear().domain([0, 500]).range([0, clockRadius]);
+
+        var tooltip2 = d3.select("body")
+            .append("div")
+            .attr("class", "tooltip")
+            .style("position", "absolute")
+            .style("padding", "5px");
+
+        var svg2 = d3.select(".container").append("svg")
+            .attr("width", width2)
+            .attr("height", height2)
+            .attr("class", "svgframe")
+            .on("click", function (event, d) {
+                if (event.target.className.baseVal != "bar") {
+                    histogram.selectAll("rect").attr("fill", "#D0D3DB");
+                    d3.json("data/clockdata_all.json").then((data) => {
+                        drawGraph(data, face, "all");
+                    })
+                }
+            });
+
+        var histogram = svg2.append('g')
+            .attr('id', 'histogram')
+            .attr('transform', 'translate(' + 15 + ',' + 0 + ')');
+
+        var face = svg2.append('g')
+            .attr('id', 'clock-face')
+            .attr('transform', 'translate(' + (clockRadius + margin) + ',' + (clockRadius + margin + histoheight) + ')');
+
+        function drawHistogram() {
+            d3.csv("data/jinshin-youbi.csv").then(function (data) {
+                var xScale = d3.scaleBand()
+                    .rangeRound([margin, width2 - margin - 20])
+                    .padding(0.1)
+                    .domain(data.map(function (d) { return d.day; }));
+
+                var yScale = d3.scaleLinear()
+                    .domain([0, d3.max(data, function (d) { return d.value; })])
+                    .range([histoheight - margin, margin]);
+
+                histogram.append("g")
+                    .attr("transform", "translate(" + 0 + "," + (histoheight - margin) + ")")
+                    .call(d3.axisBottom(xScale));
+
+                histogram.append("g")
+                    .attr("transform", "translate(" + margin + "," + 0 + ")")
+                    .call(d3.axisLeft(yScale));
+
+                histogram.append("text")
+                    .attr("transform", "rotate(-90)")
+                    .attr("y", -5)
+                    .attr("x", -40)
+                    .attr("fill", "white")
+                    .attr("font-size", "10px")
+                    .style("text-anchor", "end")
+                    .text("Number of Accidents"); 
+
+                histogram.append("g")
+                    .selectAll("rect")
+                    .data(data)
+                    .enter()
+                    .append("rect")
+                    .attr("class", "bar")
+                    .attr("x", function (d) { return xScale(d.day); })
+                    .attr("y", function (d) { return yScale(d.value); })
+                    .attr("width", xScale.bandwidth())
+                    .attr("height", function (d) { return histoheight - margin - yScale(d.value); })
+                    .attr("fill", "#D0D3DB")
+                    .on("mouseover", function (event, d) { tooltip2.style("visibility", "visible").html(d.day + "<br>" + d.value); })
+                    .on("mousemove", function (d) { tooltip2.style("left", event.pageX + 20 + "px").style("top", event.pageY + "px"); })
+                    .on("mouseout", function (d) { tooltip2.style("visibility", "hidden"); })
+                    .on("click", function (event, d) {
+                        histogram.selectAll("rect").attr("fill", "#D0D3D8");
+                        d3.select(this).attr("fill", "#FFF")
+                        if (d.day == "all") {
+                            d3.json("data/clockdata_all.json").then((data) => {
+                                drawGraph(data, face, d.day);
+                            })
+                        } else if (d.day == "mon") {
+                            d3.json("data/clockdata_mon.json").then((data) => {
+                                drawGraph(data, face, d.day);
+                            })
+                        } else if (d.day == "tue") {
+                            d3.json("data/clockdata_tue.json").then((data) => {
+                                drawGraph(data, face, d.day);
+                            })
+                        } else if (d.day == "wed") {
+                            d3.json("data/clockdata_wed.json").then((data) => {
+                                drawGraph(data, face, d.day);
+                            })
+                        } else if (d.day == "thu") {
+                            d3.json("data/clockdata_thu.json").then((data) => {
+                                drawGraph(data, face, d.day);
+                            })
+                        } else if (d.day == "fri") {
+                            d3.json("data/clockdata_fri.json").then((data) => {
+                                drawGraph(data, face, d.day);
+                            })
+                        } else if (d.day == "sat") {
+                            d3.json("data/clockdata_sat.json").then((data) => {
+                                drawGraph(data, face, d.day);
+                            })
+                        } else {
+                            d3.json("data/clockdata_sun.json").then((data) => {
+                                drawGraph(data, face, d.day);
+                            })
+                        }
+                    });
+            });
+        }
+
+        function drawClock() { //create all the clock elements
+            updateData();	//draw them in the correct starting position
+
+            d3.json("data/clockdata_all.json").then((data) => {
+                drawGraph(data, face, "all");
+            })
+
+
+            face.selectAll('.hour-tick')
+                .data(d3.range(0, 12)).enter()
+                .append('line')
+                .attr('class', 'hour-tick')
+                .attr('x1', 0)
+                .attr('x2', 0)
+                .attr('y1', hourTickStart)
+                .attr('y2', hourTickStart + hourTickLength)
+                .attr('transform', function (d) {
+                    return 'rotate(' + hourScale(d) + ')';
+                });
+
+            face.selectAll('.hour-label')
+                .data(d3.range(3, 13, 3))
+                .enter()
+                .append('text')
+                .attr('class', 'hour-label')
+                .attr("fill", "#fff")
+                .attr('text-anchor', 'middle')
+                .attr('x', function (d) {
+                    return hourLabelRadius * Math.sin(hourScale(d) * radians);
+                })
+                .attr('y', function (d) {
+                    return -hourLabelRadius * Math.cos(hourScale(d) * radians) + hourLabelYOffset;
+                })
+                .text(function (d) {
+                    return d * 2;
+                });
+
+
+            var hands = face.append('g').attr('id', 'clock-hands');
+
+            face.append('g').attr('id', 'face-overlay')
+                .append('circle').attr('class', 'hands-cover')
+                .attr('x', 0)
+                .attr('y', 0)
+                .attr('r', clockRadius / 20);
+
+            hands.selectAll('line')
+                .data(handData)
+                .enter()
+                .append('line')
+                .attr('class', function (d) {
+                    return d.type + '-hand';
+                })
+                .attr('x1', 0)
+                .attr('y1', function (d) {
+                    return d.balance ? d.balance : 0;
+                })
+                .attr('x2', 0)
+                .attr('y2', function (d) {
+                    return d.length;
+                })
+                .attr('transform', function (d) {
+                    return 'rotate(' + d.scale(d.value) + ')';
+                })
+                .call(
+                    d3.drag()
+                        .on("start", dragstart)
+                        .on("drag", dragged)
+                        .on("end", dragend));
+
+            var legend = ["Max", "Upper Quartile", "Median", "Lower Quartile", "Minimum"]
+            var color = ["#393D48", "#D0D3D8", "#8C000E", "#49515A", "#393D48"]
+            var size = 10
+
+            face.selectAll("legendsquare")
+                .data(legend)
+                .enter()
+                .append("rect")
+                .attr("x", 70)
+                .attr("y", function(d,i){ return i*(size+5) - 120})
+                .attr("width", size)
+                .attr("height", size)
+                .attr("fill", function(d, i){ return color[i]})
+
+            face.selectAll("legendlabels")
+                .data(legend)
+                .enter()
+                .append("text")
+                .attr("x", 70 + size*1.5)
+                .attr("y", function(d,i){ return i*(size+5) + (size/2) + 5 - 120}) 
+                .attr("fill", "white")
+                .attr("font-size", "12px")
+                .text(function(d){ return d})
+                .attr("text-anchor", "left")
+                .style("alignment-baseline", "middle")
+        }
+
+        function drawGraph(data, face, day) {
+            face.selectAll("#graph").remove();
+
+            var start = d3.line()
+                .x(0)
+                .y(0)
+
+            if (day == "all") {
+                var medline = d3.line(data)
+                    .x((d, i) => { return d.median * 5 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.median * 5 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                var minline = d3.line()
+                    .x((d, i) => { return d.min * 5 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.min * 5 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                var minline2 = d3.line()
+                    .x((d, i) => { return d.min * 1 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.min * 1 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                var maxline = d3.line()
+                    .x((d, i) => { return d.max * 5 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.max * 5 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                var quarterline = d3.line()
+                    .x((d, i) => { return d.quarter * 5 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.quarter * 5 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                var quarter3line = d3.line()
+                    .x((d, i) => { return d.quarter3 * 5 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.quarter3 * 5 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+            } else {
+                var medline = d3.line()
+                    .x((d, i) => { return d.median * 20 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.median * 20 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                var minline = d3.line()
+                    .x((d, i) => { return d.min * 20 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.min * 20 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                var minline2 = d3.line()
+                    .x((d, i) => { return d.min * 1 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.min * 1 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                var maxline = d3.line()
+                    .x((d, i) => { return d.max * 20 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.max * 20 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                var quarterline = d3.line()
+                    .x((d, i) => { return d.quarter * 20 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.quarter * 20 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                var quarter3line = d3.line()
+                    .x((d, i) => { return d.quarter3 * 20 * Math.cos((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+                    .y((d, i) => { return d.quarter3 * 20 * Math.sin((d.hour * 15 + d.minute * 15 / 60 - 90) * Math.PI / 180) })
+            }
+            var linegroup = face.append("g").attr("id", "graph")
+
+            linegroup.append("path")
+                .attr("d", start(data))
+                .attr("stroke", "black")
+                .attr("stroke-width", 0)
+                .attr("fill", "#393D48")
+                .attr("class", "max")
+                .transition()
+                .delay(400)
+                .duration(200)
+                .attr("d", maxline(data));
+            linegroup.append("path")
+                .attr("d", start(data))
+                .attr("stroke", "black")
+                .attr("stroke-width", 0)
+                .attr("fill", "#D0D3D8")
+                .attr("class", "quarter3")
+                .transition()
+                .delay(300)
+                .duration(200)
+                .attr("d", quarter3line(data));
+            linegroup.append("path")
+                .attr("d", start(data))
+                .attr("stroke", "black")
+                .attr("stroke-width", 0)
+                .attr("fill", "#8C000E")
+                .attr("class", "median")
+                .transition()
+                .delay(200)
+                .duration(200)
+                .attr("d", medline(data));
+            linegroup.append("path")
+                .attr("d", start(data))
+                .attr("stroke", "black")
+                .attr("stroke-width", 0)
+                .attr("fill", "#49515A")
+                .attr("class", "quarter")
+                .transition()
+                .delay(100)
+                .duration(200)
+                .attr("d", quarterline(data));
+            linegroup.append("path")
+                .attr("d", start(data))
+                .attr("stroke", "black")
+                .attr("stroke-width", 0)
+                .attr("fill", "#393D48")
+                .attr("class", "min")
+                .transition()
+                .delay(0)
+                .duration(200)
+                .attr("d", minline(data));
+        }
+
+        function moveHands() {
+            d3.select('#clock-hands').selectAll('line')
+                .data(handData)
+                .transition()
+                .attr('transform', function (d) {
+                    return 'rotate(' + d.scale(d.value) + ')';
+                });
+        }
+        function updateData() {
+            var t = new Date();
+            handData[0].value = (t.getHours() % 12) + t.getMinutes() / 60;
+        }
+
+        function dragstart(event, d) {
+        }
+
+        function dragged(event, d) {
+            const nowx = event.x;
+            const nowy = event.y;
+            let degree = Math.atan(nowy / nowx) * 180 / Math.PI + 90;
+            if (nowx < 0) {
+                degree += 180;
+            }
+            d3.select("." + d.type + "-hand").attr("transform", "rotate(" + degree + ")")
+        }
+
+        function dragend(event, d) {
+
+        }
+
+        drawHistogram();
+        drawClock("all");
+
+        d3.select(self.frameElement).style("height", height2 + "px");
+
+        function linename_option() {
+            var select = document.getElementById("line_select");
+            var option = document.createElement("option");
+            option.setAttribute('value', "全て");
+            // option要素に値をセット
+            option.innerHTML = "全ての路線";
+            // selectタグの子要素にoptionタグを追加する
+            select.appendChild(option);
+            Object.keys(dict).forEach(d => {
+                // optionタグを作成する
+                var option = document.createElement("option");
+                option.setAttribute('value', d);
+                // option要素に値をセット
+                option.innerHTML = d;
+                // selectタグの子要素にoptionタグを追加する
+                select.appendChild(option);
+            })
+        }
+
+        linename_option();
+
+        var colorScale = d3.scaleOrdinal(d3.schemeSet1);
+        var width = 1000;
+        var height = 900;
+        var scale = 1500;
+        let expansion = 34.01266157947373;
+        var svg = container.append("svg")
+            .attr("class", "main")
+            .attr("width", width)
+            .attr("height", height);
+        svg.append("rect")
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .attr("fill", "#0A0C0D");
+
+        let information_of_accident = container.append("div")
+            .attr("class", "info")
+            .attr("width", 100)
+            .attr("height", 200);
+
+        var map = svg.append('g')
+            .attr('id', 'map')
+            .attr('transform', 'translate(' + 0 + ',' + 0 + ')')
+        // .on("click", clicked)
+
+        function clicked(event, d) {
+            var zoomCenter = d3.pointer(event)
+            var zoom = 150
+            svg.selectAll("#map")
+                .transition()
+                .duration(1000)
+                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + zoom + ")translate(" + -zoomCenter[0] + "," + -zoomCenter[1] + ")");
+        }
+
+        let projection = d3.geoMercator()
+            .center([135, 35])
+            .translate([width / 2, height / 2])
+            .scale(scale);
+        let geoGenerator = d3.geoPath().pointRadius(0).projection(projection);
+        let wait = []
+        wait.push(d3.json("./japan.topojson"))
+        wait.push(d3.json("data/allcompanies.geojson"))
+        wait.push(d3.json("data/station_only_addJinshindata.geojson"))
+        wait.push(d3.csv("data/doordate.csv"))
+        wait.push(d3.csv("data/doorlocation.csv"))
+        wait.push(d3.csv("data/tweets.csv"))
+        let now_door_index = 0;
+        Promise.all(wait).then(function (values) {
+            let dateselect = document.querySelector("#selected_date");
+            dateselect.addEventListener('change', (event, data) => {
+                now_seconds = event.target.valueAsNumber / 1000;
+                update(now_to_value(now_seconds));
+            })
+
+            let speed = document.querySelector("#speed");
+            speed.addEventListener('change', (event, date) => {
+                speed = event.target.valueAsNumber;
+                step_time = 60 * 60 * 24 * speed;
+            })
+
+            var tooltip = d3.select("body")
+                .append("div")
+                .attr("class", "tooltip")
+                .style("position", "absolute")
+                .attr("id", "maintooltip")
+
+            var japangeo = topojson.feature(values[0], values[0].objects.japan);
+            map.selectAll("path")
+                .data(japangeo.features)
+                .enter()
+                .append("path")
+                .attr("d", geoGenerator)
+                .attr("stroke", "black")
+                .attr("stroke-width", 0.1)
+                .attr("fill", "#393D48");
+            values.shift();
+            let csv = values.pop();
+            csv = csv.reverse();
+            var doorlocation = values.pop();
+            var doordata = values.pop();
+            values.forEach((d) => {
+                map.selectAll("path2")
+                    .data(d.features)
+                    .enter()
+                    .append("path")
+                    .attr("class", "linepath")
+                    .attr("d", geoGenerator)
+                    .attr("stroke", "#79818a")
+                    .attr("fill", "none")
+                    .attr("stroke-width", Math.min(0.6, 1 / expansion * 2));
+                map.selectAll("path2")
+                    .data(d.features.filter(d => d.geometry.type == "Point"))
+                    .join("circle")
+                    .attr("cx", d => { return projection(d.geometry.coordinates)[0]; })
+                    .attr("cy", d => { return projection(d.geometry.coordinates)[1]; })
+                    .attr("r", (d) => {
+                        if (d.properties.accidents !== "NULL") {
+                            return d.properties.accidents / Math.log(expansion + 1);
+                        }
+                        else {
+                            return 0;
+                        }
+                    })
+                    .attr("class", "jinshin_station")
+                    .attr("opacity", 0.2)
+                    .attr("stroke-width", 0)
+                    .attr("fill", "#ff8c00")
+
+                map.selectAll("path2")
+                    .data(d.features.filter(d => d.geometry.type == "Point"))
+                    .join("circle")
+                    .attr("cx", d => { return projection(d.geometry.coordinates)[0]; })
+                    .attr("cy", d => { return projection(d.geometry.coordinates)[1]; })
+                    .attr("r", Math.min(0.5, 1 / (Math.log(expansion + 1) * 5)))
+                    .attr("class", "station")
+                    .attr("stroke", "#D0D3D8")
+                    .attr("stroke-width", 0)
+                    .attr("fill", "#D0D3D8")
+                    .on("mouseover", function (d, i) {
+                        // ここで人身事故情報を表示できるようにする
+                        if (i.properties.accidents == "NULL") {
+                            if (i.properties.door == "NULL") {
+                                tooltip.style("left", d.layerX + "px").style("top", d.clientY + "px").style("visibility", "visible").html(i.properties.name + "<br>" + "事故回数: " + 0 + "回" + "<br>" + "ホームドア未設置")
+                            }
+                            else {
+                                tooltip.style("left", d.layerX + "px").style("top", d.clientY + "px").style("visibility", "visible").html(i.properties.name + "<br>" + "事故回数: " + 0 + "回" + "<br>" + "ホームドア設置日時: " + (i.properties.door).slice(0, -6))
+                            }
+                        }
+                        else if (i.properties.accidents == 1) {
+                            index = (i.properties.index).slice(1, -1) - 0
+                            rightindex = csv.length - index - 1
+                            // console.log(i.properties.railname, csv[csv.length - index - 1]["line"])
+                            url = csv[rightindex]["url"]
+                            // "injury"に情報がない場合があるので場合分け
+                            if (csv[rightindex]["injury"] == "") {
+                                injury = "情報なし"
+                            }
+                            else {
+                                injury = csv[rightindex]["injury"]
+                            }
+                            if (i.properties.door == "NULL") {
+                                door = "ホームドア未設置"
+                            }
+                            if (i.properties.door != "NULL") {
+                                door = "ホームドア設置日時: " + (i.properties.door).slice(0, -6)
+                            }
+
+                            tooltip.style("left", d.layerX + "px").style("top", d.clientY + "px").style("visibility", "visible").html(
+                                i.properties.name + "<br>" + "事故回数: " + 1 + "回" + "<br>" + door + "<br>"
+                                + "日時: " + csv[rightindex]["date"] + "<br>"
+                                + "路線名: " + csv[rightindex]["line"] + "<br>"
+                                + "被害状況: " + injury + "<br>"
+                                + "関連ツイート数:" + csv[rightindex]["tweets"] + "<br>"
+                                + `<a href=${url}>さらに詳細へ</a>`
+                            )
+                        }
+                        else {
+                            if (i.properties.door == "NULL") {
+                                door = "ホームドア未設置"
+                            }
+                            if (i.properties.door != "NULL") {
+                                door = "ホームドア設置日時: " + (i.properties.door).slice(0, -6)
+                            }
+                            tooltip.style("left", d.layerX + "px").style("top", d.clientY + "px").style("visibility", "visible")
+                            text = i.properties.name + "<br>" + "事故回数: " + i.properties.accidents + "回" + "<br>" + door + "<br>"
+                            for (let step = 0; step < i.properties.accidents; step++) {
+                                let index = 0
+                                if (step == 0) {
+                                    index = (i.properties.index).split(",")[0].slice(1) - 0
+                                }
+                                else if (step == i.properties.accidents - 1) {
+                                    index = (i.properties.index).split(",")[i.properties.accidents - 1].slice(0, -1) - 0
+                                }
+                                else {
+                                    index = (i.properties.index).split(",")[step] - 0
+                                }
+                                rightindex = csv.length - index - 1
+                                url = csv[rightindex]["url"]
+                                // "injury"に情報がない場合があるので場合分け
+                                if (csv[rightindex]["injury"] == "") {
+                                    injury = "情報なし"
+                                }
+                                else {
+                                    injury = csv[rightindex]["injury"]
+                                }
+                                text += `【事故${step + 1}】` + "<br>"
+                                    + "日時: " + csv[rightindex]["date"] + "<br>"
+                                    + "路線名: " + csv[rightindex]["line"] + "<br>"
+                                    + "被害状況: " + injury + "<br>"
+                                    + "関連ツイート数:" + csv[rightindex]["tweets"] + "<br>"
+                                    + `<a href=${url}>さらに詳細へ</a>` + "<br>"
+                            }
+                            tooltip.html(text)
+                        }
+                    })
+                    .on("mouseout", function () {
+                    })
+                    .on("click", function (d, i) {
+                        // クリックすると点滅（サイズがズームに対応できていない）
+                        d3.select(this)
+                            .transition()
+                            .duration(500)
+                            .attr("fill", "red")
+                            .transition()
+                            .duration(500)
+                            .attr("fill", "#D0D3D8")
+                            .duration(500)
+                            .attr("fill", "red")
+                            .transition()
+                            .duration(500)
+                            .attr("fill", "#D0D3D8")
+                    });
+            })
+            let zoom = d3.zoom()
+                .scaleExtent([1, 150])
+                .translateExtent([[0, 0], [width, height]])
+                .on('zoom', handleZoom);
+
+            d3.select('.main').call(zoom);
+
+            function handleZoom(d) {
+                expansion = d.transform.k;
+                d3.selectAll(".jinshin_station").attr("r", (d) => {
+                    if (d.properties.accidents !== "NULL") {
+                        return d.properties.accidents / Math.log(expansion + 1) * 0.2;
+                    } else {
+                        return 0;
+                    }
+                })
+                d3.select("#maintooltip").style("visibility", "hidden");
+                d3.select('#map')
+                    .attr('transform', d.transform);
+                d3.selectAll(".station")
+                    .attr("r", Math.min(0.5, 1 / (Math.log(expansion + 1) * 5)))
+
+                d3.selectAll(".doorstation")
+                    .attr("r", (d, i) => {
+                        return Math.min(0.5, 1 / (Math.log(expansion + 1) * 5));
+                    })
+                    .attr("stroke-width", () => {
+                        return Math.min(0.1, 1 / (Math.log(expansion + 1) * 5));
+                    })
+
+                d3.selectAll(".linepath")
+                    .attr("stroke-width", Math.min(0.6, 1 / expansion * 2));
+            }
+
+            d3.select("#reset")
+                .on("click", resetted);
+
+            d3.select("#help")
+                .on("click", helpshow);
+
+            function resetted(event, d) {
+                svg.selectAll("#map")
+                    .transition()
+                    .duration(1000)
+                    .attr("transform", "translate(0,0)");
+                expansion = 1;
+                d3.selectAll(".jinshin_station").transition()
+                    .duration(1000).attr("r", (d) => {
+                        if (d.properties.accidents !== "NULL") {
+                            return d.properties.accidents / Math.log(expansion + 1) * 0.2;
+                        } else {
+                            return 0;
+                        }
+                    })
+                d3.select("#maintooltip").style("visibility", "hidden");
+                d3.selectAll(".station")
+                    .attr("r", Math.min(0.5, 1 / (Math.log(expansion + 1) * 5)))
+
+                d3.selectAll(".doorstation")
+                    .attr("r", (d, i) => {
+                        return Math.min(0.5, 1 / (Math.log(expansion + 1) * 5));
+                    })
+                    .attr("stroke-width", () => {
+                        return Math.min(0.1, 1 / (Math.log(expansion + 1) * 5));
+                    })
+
+                d3.selectAll(".linepath")
+                    .attr("stroke-width", Math.min(0.6, 1 / expansion * 2));
+            }
+
+            function helpshow(event, d) {
+                expansion = 34.01266157947373;
+                d3.selectAll(".jinshin_station").attr("r", (d) => {
+                    if (d.properties.accidents !== "NULL") {
+                        return d.properties.accidents / Math.log(expansion + 1) * 0.2;
+                    } else {
+                        return 0;
+                    }
+                })
+                d3.select("#maintooltip").style("visibility", "hidden");
+                d3.selectAll(".station")
+                    .attr("r", Math.min(0.5, 1 / (Math.log(expansion + 1) * 5)))
+
+                d3.selectAll(".doorstation")
+                    .attr("r", (d, i) => {
+                        return Math.min(0.5, 1 / (Math.log(expansion + 1) * 5));
+                    })
+                    .attr("stroke-width", () => {
+                        return Math.min(0.1, 1 / (Math.log(expansion + 1) * 5));
+                    })
+
+                d3.selectAll(".linepath")
+                    .attr("stroke-width", Math.min(0.6, 1 / expansion * 2));
+                svg.selectAll("#map")
+                    .transition()
+                    .duration(3500)
+                    .attr("transform", "translate(-20716.3278606015,-14163.157008715993) scale(34.01266157947373)");
+                map.append("rect")
+                    .attr("width", 13)
+                    .attr("height", 2.5)
+                    .attr("x", projection([139.46811, 35.68099])[0] - 0.6)
+                    .attr("y", projection([139.46811, 35.68099])[1] - 0.6)
+                    .attr("fill", "black")
+                    .attr("class", "info-rect")
+                    .attr("rx", 0.5)
+                    .attr("opacity", 0.8)
+                    .transition()
+                    .delay(8000)
+                    .duration(1000)
+                    .attr("widht", 0)
+                    .attr("height", 0)
+                map.append("text")
+                    .attr("x", () => { console.log(projection([139.46811, 35.68099])[0]); return projection([139.46811, 35.68099])[0] })
+                    .attr("y", projection([139.46811, 35.68099])[1])
+                    .text("Orange Circle: Number of personal injury accidents")
+                    .attr("font-size", 0.5)
+                    .attr("class", "info-text")
+                    .attr("fill", "#fff")
+                    .attr("opacity", 1)
+                    .transition()
+                    .delay(8000)
+                    .duration(1000)
+                    .attr("opacity", 0)
+                map.append("text")
+                    .attr("x", projection([139.46811, 35.68099])[0])
+                    .attr("y", projection([139.46811, 35.68099])[1] + 0.8)
+                    .text("Blue Circle: Stations with platform doors")
+                    .attr("font-size", 0.5)
+                    .attr("class", "info-text")
+                    .attr("fill", "#fff")
+                    .attr("opacity", 1)
+                    .transition()
+                    .delay(8000)
+                    .duration(1000)
+                    .attr("opacity", 0)
+                map.append("text")
+                    .attr("x", projection([139.46811, 35.68099])[0])
+                    .attr("y", projection([139.46811, 35.68099])[1] + 1.6)
+                    .text("Click on each station to see details.")
+                    .attr("font-size", 0.5)
+                    .attr("class", "info-text")
+                    .attr("fill", "#fff")
+                    .attr("opacity", 1)
+                    .transition()
+                    .delay(8000)
+                    .duration(1000)
+                    .attr("opacity", 0)
+            }
+
+            const start_unixTime = 1262271600; //2010/01/01
+            const end_unixTime = 1668006000; //2022/11/10
+            var dateformat = d3.timeFormat("%Y/%m/%d %H:%M:%S");
+            let nowunix_seconds = start_unixTime;
+            let step_time = 60 * 60 * 24;
+            let preunix_seconds = nowunix_seconds;
+
+            var date = svg.append("text")
+                .text(dateformat(new Date(nowunix_seconds * 1000)))
+                .attr("x", 810)
+                .attr("y", 830)
+                .attr("font-family", "Arial, Helvetica, sans-serif")
+                .attr("fill", "#ECEFF7");
+
+            var slider = svg.append("g")
+                .attr("class", "slider");
+
+            slider.append("line")
+                .attr("x1", 10)
+                .attr("x2", width - 10)
+                .attr("y1", height - 50)
+                .attr("y2", height - 50)
+                .attr("stroke", "grey")
+                .attr("stroke-width", 5)
+                .attr("stroke-linecap", "round")
+                .attr("pointer-events", "stroke")
+                .attr("cursor", "crosshair")
+                .call(d3.drag()
+                    .on("start", function () { })
+                    .on("drag", function (event, d) {
+                        currentValue = event.sourceEvent.clientX - 460;
+                        update(currentValue);
+                    }));
+
+            var handle = slider.insert("circle", ".track-overlay")
+                .attr("fill", "#ECEFF7")
+                .attr("cx", 10)
+                .attr("cy", height - 50)
+                .attr("r", 7);
+            let interval = 100;
+            let timer;
+            var playButton = d3.select("#play-button")
+                .on("click", function () {
+                    var button = d3.select(this);
+                    if (button.text() == "Pause") {
+                        clearInterval(timer);
+                        // timer = 0;
+                        button.text("Play");
+                    } else {
+                        //moving = true;
+                        timer = setInterval(step, interval);
+                        button.text("Pause");
+                    }
+                })
+
+            var doorgraph = svg.append("g")
+                .attr("class", "doorgraph")
+                .attr("transform", "translate(70, 600)")
+                .attr("opacity", 0.5);
+
+            var graphwidth = width - 100;
+            var graphheight = 200;
+
+            const xscale = d3.scaleTime()
+                .domain([new Date(start_unixTime * 1000), new Date("2022/11/10")])
+                .range([0, graphwidth])
+                .clamp(true);
+            const yscale = d3.scaleLinear()
+                .domain([0, d3.max(doordata, d => +d.value)])
+                .range([graphheight, 0]);
+
+            var xaxis = d3.axisBottom(xscale).ticks(5);
+            var yaxis = d3.axisLeft(yscale);
+
+            doorgraph.append("g")
+                .attr("class", "xaxis")
+                .attr("transform", `translate(0, ${graphheight})`)
+                .call(xaxis);
+            doorgraph.append("g")
+                .attr("class", "yaxis")
+                .attr("transform", "translate(0, 0)")
+                .call(yaxis);
+            doorgraph.append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", -40)
+                .attr("x", -10)
+                .attr("fill", "white")
+                .attr("font-size", "12px")
+                .style("text-anchor", "end")
+                .text("Number of Platform Doors"); 
+
+            var alldoor = doordata.filter(function (d) {
+                return (new Date(d.date)) < (new Date(nowunix_seconds * 1000));
+            })
+            drawline(alldoor);
+
+            function drawline(data) {
+                var area = d3.area()
+                    .x(function (d) { return xscale(new Date(d.date)); })
+                    .y0(graphheight)
+                    .y1(function (d) { return yscale(d.value); });
+                doorgraph.selectAll("path").remove();
+                doorgraph.append("path")
+                    .attr("d", area(data))
+                    .attr("fill", "#ECEFF7")
+                    .attr("stroke", "grey")
+                    .attr("stroke-width", 2);
+            }
+
+            function step() {
+                let temp_seconds = nowunix_seconds + step_time;
+                if (now_to_value(temp_seconds) >= width - 10) {
+                    clearInterval(timer);
+                    playButton.text("Play");
+                }
+                update(now_to_value(temp_seconds));
+            }
+
+            var speedButton = d3.select("#speed-button")
+                .on("click", function () {
+                    let button = d3.select(this);
+                    if (button.text() == "x2") {
+                        step_time *= 2;
+                        button.text("1/2");
+                    }
+                    else {
+                        step_time /= 2;
+                        button.text("x2");
+                    }
+                })
+            doorstation(binary_search_for_home_door())
+            function now_to_value(now_seconds) {
+                return (now_seconds - start_unixTime) * (width - 20) / (end_unixTime - start_unixTime) + 10;
+            }
+            function update(now_position) {
+                // update position and text of label according to slider scale
+                if (now_position >= 10 && now_position <= width - 10) {
+                    handle.attr("cx", now_position);
+                    preunix_seconds = nowunix_seconds;
+                    nowunix_seconds = (end_unixTime - start_unixTime) / (width - 10 - 10) * (now_position - 10) + start_unixTime;
+                    date.text(dateformat(new Date(nowunix_seconds * 1000)));
+                    let viewer = binary_search();
+                    let count = 0;
+                    let line_limit = document.getElementById('line_select');
+                    for (let i = viewer[0] + 1; i <= viewer[1] && count <= 40; i++) {
+                        if (line_limit.value == "全て") {
+                            // 何もしない
+                        }
+                        else if (csv[i]["line"] != line_limit.value) {
+                            continue;
+                        }
+                        update_draw(csv[i]["line"], csv[i]["place"], csv[i]["tweets"], csv[i]["date"], i);
+                        count++;
+                    }
+                    var newData = doordata.filter(function (d) {
+                        return (new Date(d.date)) < (new Date(nowunix_seconds * 1000));
+                    })
+                    drawline(newData);
+                    let new_home_door_index = binary_search_for_home_door();
+                    // console.log(new_home_door_index)
+                    doorstation(new_home_door_index);
+                }
+                //filter data set and redraw plot
+            }
+
+            function binary_search() {
+                let wa = csv.length;
+                let ac = 0;
+                while (wa - ac > 1) {
+                    let mid = parseInt((ac + wa) / 2);
+                    if (new Date(csv[mid]["date"]).getTime() < nowunix_seconds * 1000) {
+                        ac = mid;
+                    }
+                    else {
+                        wa = mid;
+                    }
+                }
+                let most_new = ac;
+                wa = csv.length;
+                ac = 0;
+                while (wa - ac > 1) {
+                    let mid = parseInt((ac + wa) / 2);
+                    if (new Date(csv[mid]["date"]).getTime() < preunix_seconds * 1000) {
+                        ac = mid;
+                    }
+                    else {
+                        wa = mid;
+                    }
+                }
+                let most_old = ac;
+                return [most_old, most_new];
+            }
+
+            function binary_search_for_home_door() {
+                let wa = doorlocation.length;
+                let ac = 0;
+                while (wa - ac > 1) {
+                    let mid = parseInt((ac + wa) / 2);
+                    if (new Date(doorlocation[mid]["date"]).getTime() < nowunix_seconds * 1000) {
+                        ac = mid;
+                    }
+                    else {
+                        wa = mid;
+                    }
+                }
+                let most_new = ac;
+                // console.log(most_new)
+                return most_new;
+            }
+            let placelist = [];
+            function update_draw(line, place, tweets, date, i) {
+                if (place.indexOf("〜") != -1) {
+                    let station1 = place.slice(0, place.indexOf("〜"));
+                    let station2 = place.slice(place.indexOf("〜") + 1, place.length)
+                    update_draw(line, station1, tweets, date, i);
+                    update_draw(line, station2, tweets, date, i);
+                }
+                else {
+                    if (dict[line] == undefined) {
+                        return;
+                    }
+                    placelist.push([place, line, date]);
+                    if (placelist.length > 40) {
+                        placelist.shift();
+                    }
+                    let info_sentence = "";
+                    placelist.forEach(e => {
+                        let tmp_sentence = `<a href=${csv[i]["url"]} target="_blank">`;
+                        let tmp_sentence2 = `${e[2]}`
+                        tmp_sentence2 += ` ${e[1]}`
+                        tmp_sentence2 += ` ${e[0]}`;
+                        const MAX_LENGTH = 30 //文字数上限
+                        if (tmp_sentence2.length >= MAX_LENGTH) {
+                            tmp_sentence2 = tmp_sentence2.substr(0, MAX_LENGTH) + '...'
+                        }
+                        tmp_sentence += tmp_sentence2;
+                        tmp_sentence += "</a><br>"
+                        info_sentence += tmp_sentence;
+                    })
+                    information_of_accident.html(`${info_sentence} ${i} out of 14896 accidents is displayed`)
+                    dict[line].forEach((line) => {
+                        d3.json(line.substr(3)).then(
+                            function (d) {
+                                map.selectAll("path2")
+                                    .data(d.features.filter(d => (d.properties.name == place.slice(0, -1))))
+                                    .join("circle")
+                                    .attr("cx", d => { return projection(d.geometry.coordinates)[0]; })
+                                    .attr("cy", d => { return projection(d.geometry.coordinates)[1]; })
+                                    .attr("r", 0)
+                                    .attr("stroke", "none")
+                                    .attr("fill", "#8C000E")
+                                    .attr("opacity", 0.8)
+                                    .transition()
+                                    .duration(500)
+                                    .attr("r", Math.max(Math.log(tweets) * 3 / expansion, 0.1))
+                                    .transition()
+                                    .delay(100)
+                                    .duration(1000)
+                                    .attr("r", 0)
+                            }
+                        )
+                    })
+                }
+            }
+
+            function doorstation(new_home_door_index) {
+                // map.selectAll(".door").remove();
+                if (now_door_index < new_home_door_index) {
+                    for (let index = now_door_index + 1; index <= new_home_door_index; index++) {
+                        var coordinates = [doorlocation[index]["longitude"], doorlocation[index]["latitude"]];
+                        map.append("circle")
+                            .attr("cx", projection(coordinates)[0])
+                            .attr("cy", projection(coordinates)[1])
+                            .attr("id", `home_door_${index}`)
+                            .attr("class", "doorstation")
+                            .attr("opacity", 1)
+                            .attr("stroke", "#006699")
+                            .attr("stroke-width", Math.min(0.03, 1 / (Math.log(expansion + 1) * 5)))
+                            .attr("fill", "none")
+                            .attr("r", 0)
+                            .transition()
+                            .duration(1000)
+                            .attr("r", () => { return 1 / Math.log(expansion + 1) })
+                            .duration(1000)
+                            .attr("r", Math.min(0.5, 1 / (Math.log(expansion + 1) * 5)))
+
+                    }
+                } else {
+                    for (let index = now_door_index; index > new_home_door_index; index--) {
+                        map.select(`#home_door_${index}`).remove();
+                    }
+                }
+                now_door_index = new_home_door_index;
+            }
+            setTimeout(() => {
+                helpshow()
+            }, 300)
+        })
+    </script>
+    <div class="play_parameter">
+        <div>
+            <button id="play-button">Play</button>
+        </div>
+        <div>
+            <input type="number" id="speed">x speed
+        </div>
+    </div>
+</body>
+
+</html>
