@@ -1024,10 +1024,10 @@
 
             var doorgraph = svg.append("g")
                 .attr("class", "doorgraph")
-                .attr("transform", "translate(50, 600)")
+                .attr("transform", "translate(70, 600)")
                 .attr("opacity", 0.5);
 
-            var graphwidth = width - 10;
+            var graphwidth = width - 100;
             var graphheight = 200;
 
             const xscale = d3.scaleTime()
@@ -1049,6 +1049,14 @@
                 .attr("class", "yaxis")
                 .attr("transform", "translate(0, 0)")
                 .call(yaxis);
+            doorgraph.append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", -40)
+                .attr("x", -10)
+                .attr("fill", "white")
+                .attr("font-size", "12px")
+                .style("text-anchor", "end")
+                .text("Number of Platform Doors"); 
 
             var alldoor = doordata.filter(function (d) {
                 return (new Date(d.date)) < (new Date(nowunix_seconds * 1000));
