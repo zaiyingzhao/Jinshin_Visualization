@@ -671,15 +671,11 @@
         var map = svg.append('g')
             .attr('id', 'map')
             .attr('transform', 'translate(' + 0 + ',' + 0 + ')')
-        // .on("click", clicked)
+            .on("click", clicked)
 
         function clicked(event, d) {
-            var zoomCenter = d3.pointer(event)
-            var zoom = 150
-            svg.selectAll("#map")
-                .transition()
-                .duration(1000)
-                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + zoom + ")translate(" + -zoomCenter[0] + "," + -zoomCenter[1] + ")");
+            console.log("clicked");
+            d3.select("#maintooltip").style("visibility", "hidden");
         }
 
         let projection = d3.geoMercator()
