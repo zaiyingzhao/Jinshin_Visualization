@@ -830,7 +830,7 @@
                 expansion = d.transform.k;
                 d3.selectAll(".jinshin_station").attr("r", (d) => {
                     if (d.properties.accidents !== "NULL") {
-                        return d.properties.accidents / Math.log(expansion + 1);
+                        return d.properties.accidents / Math.log(expansion + 1) * 0.2;
                     } else {
                         return 0;
                     }
@@ -868,7 +868,7 @@
                 d3.selectAll(".jinshin_station").transition()
                     .duration(1000).attr("r", (d) => {
                         if (d.properties.accidents !== "NULL") {
-                            return d.properties.accidents / Math.log(expansion + 1);
+                            return d.properties.accidents / Math.log(expansion + 1) * 0.2;
                         } else {
                             return 0;
                         }
@@ -893,7 +893,7 @@
                 expansion = 34.01266157947373;
                 d3.selectAll(".jinshin_station").attr("r", (d) => {
                     if (d.properties.accidents !== "NULL") {
-                        return d.properties.accidents / Math.log(expansion + 1);
+                        return d.properties.accidents / Math.log(expansion + 1) * 0.2;
                     } else {
                         return 0;
                     }
