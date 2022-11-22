@@ -970,13 +970,14 @@
 
             const start_unixTime = 1262271600; //2010/01/01
             const end_unixTime = 1668006000; //2022/11/10
+            var dateformat = d3.timeFormat("%Y/%m/%d %H:%M:%S");
             let nowunix_seconds = start_unixTime;
             let step_time = 60 * 60 * 24;
             let preunix_seconds = nowunix_seconds;
 
             var date = svg.append("text")
-                .text(`${new Date(nowunix_seconds * 1000)}`)
-                .attr("x", 600)
+                .text(dateformat(new Date(nowunix_seconds * 1000)))
+                .attr("x", 810)
                 .attr("y", 830)
                 .attr("font-family", "Arial, Helvetica, sans-serif")
                 .attr("fill", "#ECEFF7");
@@ -1107,7 +1108,7 @@
                     handle.attr("cx", now_position);
                     preunix_seconds = nowunix_seconds;
                     nowunix_seconds = (end_unixTime - start_unixTime) / (width - 10 - 10) * (now_position - 10) + start_unixTime;
-                    date.text(`${new Date(nowunix_seconds * 1000)}`);
+                    date.text(dateformat(new Date(nowunix_seconds * 1000)));
                     let viewer = binary_search();
                     let count = 0;
                     let line_limit = document.getElementById('line_select');
@@ -1206,7 +1207,7 @@
                         tmp_sentence += "</a><br>"
                         info_sentence += tmp_sentence;
                     })
-                    information_of_accident.html(`${info_sentence} 14896件中${i}件目を表示しました`)
+                    information_of_accident.html(`${info_sentence} ${i} out of 14896 accidents is displayed`)
                     dict[line].forEach((line) => {
                         d3.json(line).then(
                             function (d) {
@@ -1271,7 +1272,7 @@
             <button id="play-button">Play</button>
         </div>
         <div>
-            <input type="number" id="speed">倍速
+            <input type="number" id="speed">x speed
         </div>
     </div>
 </body>
