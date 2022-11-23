@@ -222,6 +222,10 @@
         background: #3c4042;
         margin: 5px;
     }
+
+    .accident_url:hover {
+        opacity: 0.8;
+    }
 </style>
 
 <body>
@@ -800,7 +804,7 @@
                                 + "路線名: " + csv[rightindex]["line"] + "<br>"
                                 + "被害状況: " + injury + "<br>"
                                 + "関連ツイート数:" + csv[rightindex]["tweets"] + "<br>"
-                                + `<a href=${url}>さらに詳細へ</a>`
+                                + `<a class="accident_url" href=${url} target="_blank">さらに詳細へ</a>`
                             )
                         }
                         else {
@@ -837,7 +841,7 @@
                                     + "路線名: " + csv[rightindex]["line"] + "<br>"
                                     + "被害状況: " + injury + "<br>"
                                     + "関連ツイート数:" + csv[rightindex]["tweets"] + "<br>"
-                                    + `<a href=${url}>さらに詳細へ</a>` + "<br>"
+                                    + `<a class="accident_url" href=${url} target="_blank">さらに詳細へ</a>` + "<br>"
                             }
                             tooltip.html(text)
                         }
