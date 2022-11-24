@@ -140,13 +140,6 @@
         margin: 10px;
     }
 
-    select {
-        background: #cfcedb;
-        border-radius: 5px;
-        position: relative;
-        z-index: 1;
-    }
-
     select::after {
         position: absolute;
         content: '';
@@ -668,7 +661,8 @@
         svg.append("rect")
             .attr("width", "100%")
             .attr("height", "100%")
-            .attr("fill", "#0A0C0D");
+            .attr("fill", "#0A0C0D")
+            .on("click", clicked);
 
         let information_of_accident = container.append("div")
             .attr("class", "info")
@@ -681,7 +675,6 @@
             .on("click", clicked)
 
         function clicked(event, d) {
-            console.log("clicked");
             d3.select("#maintooltip").style("visibility", "hidden");
         }
 
