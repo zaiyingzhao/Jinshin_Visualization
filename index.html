@@ -1006,8 +1006,8 @@
                 .attr("class", "slider");
 
             slider.append("line")
-                .attr("x1", 10)
-                .attr("x2", width - 10)
+                .attr("x1", 30)
+                .attr("x2", width - 50)
                 .attr("y1", height - 50)
                 .attr("y2", height - 50)
                 .attr("stroke", "grey")
@@ -1018,13 +1018,13 @@
                 .call(d3.drag()
                     .on("start", function () { })
                     .on("drag", function (event, d) {
-                        currentValue = event.sourceEvent.clientX - 460;
+                        currentValue = event.sourceEvent.clientX - 440;
                         update(currentValue);
                     }));
 
             var handle = slider.insert("circle", ".track-overlay")
                 .attr("fill", "#ECEFF7")
-                .attr("cx", 10)
+                .attr("cx", 30)
                 .attr("cy", height - 50)
                 .attr("r", 7);
             let interval = 100;
@@ -1120,14 +1120,14 @@
                 })
             doorstation(binary_search_for_home_door())
             function now_to_value(now_seconds) {
-                return (now_seconds - start_unixTime) * (width - 20) / (end_unixTime - start_unixTime) + 10;
+                return (now_seconds - start_unixTime) * (width - 80) / (end_unixTime - start_unixTime) + 30;
             }
             function update(now_position) {
                 // update position and text of label according to slider scale
-                if (now_position >= 10 && now_position <= width - 10) {
+                if (now_position >= 30 && now_position <= width - 50) {
                     handle.attr("cx", now_position);
                     preunix_seconds = nowunix_seconds;
-                    nowunix_seconds = (end_unixTime - start_unixTime) / (width - 10 - 10) * (now_position - 10) + start_unixTime;
+                    nowunix_seconds = (end_unixTime - start_unixTime) / (width - 30 - 50) * (now_position - 30) + start_unixTime;
                     date.text(dateformat(new Date(nowunix_seconds * 1000)));
                     let viewer = binary_search();
                     let count = 0;
