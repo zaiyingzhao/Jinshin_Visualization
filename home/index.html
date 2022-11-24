@@ -97,6 +97,7 @@
 
     .second-hand {
         stroke-width: 3;
+
     }
 
     .minute-hand {
@@ -142,7 +143,7 @@
         font-size: 14px;
         margin: 10px;
     }
-    
+
     .accident_url:hover {
         opacity: 0.8
     }
@@ -675,11 +676,15 @@
         var map = svg.append('g')
             .attr('id', 'map')
             .attr('transform', 'translate(' + 0 + ',' + 0 + ')')
-            .on("click", clicked)
+        // .on("click", clicked)
 
         function clicked(event, d) {
-            console.log("clicked");
-            d3.select("#maintooltip").style("visibility", "hidden");
+            var zoomCenter = d3.pointer(event)
+            var zoom = 150
+            svg.selectAll("#map")
+                .transition()
+                .duration(1000)
+                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + zoom + ")translate(" + -zoomCenter[0] + "," + -zoomCenter[1] + ")");
         }
 
         let projection = d3.geoMercator()
@@ -767,7 +772,6 @@
                     .attr("stroke-width", 0)
                     .attr("fill", "#D0D3D8")
                     .on("mouseover", function (d, i) {
-                        // ここで人身事故情報を表示できるようにする
                         if (i.properties.accidents == "NULL") {
                             if (i.properties.door == "NULL") {
                                 tooltip.style("left", d.layerX + "px").style("top", d.clientY + "px").style("visibility", "visible").html(i.properties.name + "<br>" + "事故回数: " + 0 + "回" + "<br>" + "ホームドア未設置")
@@ -779,9 +783,7 @@
                         else if (i.properties.accidents == 1) {
                             index = (i.properties.index).slice(1, -1) - 0
                             rightindex = csv.length - index - 1
-                            // console.log(i.properties.railname, csv[csv.length - index - 1]["line"])
                             url = csv[rightindex]["url"]
-                            // "injury"に情報がない場合があるので場合分け
                             if (csv[rightindex]["injury"] == "") {
                                 injury = "情報なし"
                             }
@@ -826,7 +828,6 @@
                                 }
                                 rightindex = csv.length - index - 1
                                 url = csv[rightindex]["url"]
-                                // "injury"に情報がない場合があるので場合分け
                                 if (csv[rightindex]["injury"] == "") {
                                     injury = "情報なし"
                                 }
@@ -846,7 +847,6 @@
                     .on("mouseout", function () {
                     })
                     .on("click", function (d, i) {
-                        // クリックすると点滅（サイズがズームに対応できていない）
                         d3.select(this)
                             .transition()
                             .duration(500)
