@@ -655,16 +655,16 @@
         var height = 900;
         var scale = 1500;
         let expansion = 34.01266157947373;
-        let maindiv = container.append("div").attr("class", "main");
+        let maindiv = container.append("div").attr("class", "main").attr("id", "main-div");
         var svg = maindiv.append("svg")
-        .attr("class", "main")
-        .attr("width", width)
-        .attr("height", height);
+            .attr("class", "main")
+            .attr("width", width)
+            .attr("height", height);
         svg.append("rect")
-        .attr("width", "100%")
-        .attr("height", "100%")
-        .attr("fill", "#0A0C0D")
-        .on("click", clicked);
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .attr("fill", "#0A0C0D")
+            .on("click", clicked);
         let play_div = maindiv.append("div").attr("class", "play_parameter");
         play_div.append("button").attr("id", "play-button").text("Play");
         // play_div.append("input").attr("type", "number").attr("id", "speed")
@@ -1018,7 +1018,11 @@
                 .call(d3.drag()
                     .on("start", function () { })
                     .on("drag", function (event, d) {
-                        currentValue = event.sourceEvent.clientX - 440;
+                        let target = document.getElementById("main-div");
+                        let clientRect = target.getBoundingClientRect();
+                        let x = clientRect.left;
+                        console.log(x);
+                        currentValue = event.sourceEvent.clientX - x;
                         update(currentValue);
                     }));
 
