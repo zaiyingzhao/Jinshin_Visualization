@@ -73,6 +73,7 @@
 
     .container {
         display: flex;
+        flex-wrap: wrap;
     }
 
     .parameter {
@@ -650,19 +651,25 @@
         linename_option();
 
         var colorScale = d3.scaleOrdinal(d3.schemeSet1);
-        var width = 1000;
+        var width = 950;
         var height = 900;
         var scale = 1500;
         let expansion = 34.01266157947373;
-        var svg = container.append("svg")
-            .attr("class", "main")
-            .attr("width", width)
-            .attr("height", height);
+        let maindiv = container.append("div").attr("class", "main");
+        var svg = maindiv.append("svg")
+        .attr("class", "main")
+        .attr("width", width)
+        .attr("height", height);
         svg.append("rect")
-            .attr("width", "100%")
-            .attr("height", "100%")
-            .attr("fill", "#0A0C0D")
-            .on("click", clicked);
+        .attr("width", "100%")
+        .attr("height", "100%")
+        .attr("fill", "#0A0C0D")
+        .on("click", clicked);
+        let play_div = maindiv.append("div").attr("class", "play_parameter");
+        play_div.append("button").attr("id", "play-button").text("Play");
+        // play_div.append("input").attr("type", "number").attr("id", "speed")
+        play_div.append("div").html('<input type="number" id="speed">x speed');
+        // play_div.appeend("text").text("x speed");
 
         let information_of_accident = container.append("div")
             .attr("class", "info")
@@ -974,7 +981,7 @@
                     svg.selectAll("#map")
                         .transition()
                         .duration(3500)
-                        .attr("transform", "translate(-20716.3278606015,-14163.157008715993) scale(34.01266157947373)");
+                        .attr("transform", "translate(-21653.836252300374,-15443.97858521801) scale(37.08640936428493)");
                 }
                 legend.selectAll("rect").transition().delay(0).duration(1000).attr("height", 210).transition().delay(9000).duration(1000).attr("height", 0)
                 legend.select(".light-mode-recommend").transition().delay(0).duration(1000).attr("height", 30).transition().delay(9000).duration(1000).attr("height", 0)
@@ -1350,14 +1357,14 @@
             helpshow(1);
         })
     </script>
-    <div class="play_parameter">
+    <!-- <div class="play_parameter">
         <div>
             <button id="play-button">Play</button>
         </div>
         <div>
             <input type="number" id="speed">x speed
         </div>
-    </div>
+    </div> -->
 </body>
 
 </html>
