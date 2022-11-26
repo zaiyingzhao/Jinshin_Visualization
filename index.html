@@ -48,6 +48,7 @@
     }
 
     .info {
+        padding-top: 15px;
         width: 400px;
         height: 880px;
         line-height: 25px;
@@ -223,7 +224,7 @@
 </style>
 
 <body>
-    <div class="parameter">
+    <!-- <div class="parameter">
         <div>
             <select id="line_select">
             </select>
@@ -238,7 +239,7 @@
         <div id="light-mode">
             <button id="light-mode-button">light-mode</button>
         </div>
-    </div>
+    </div> -->
     <script type="text/javascript">
         let container = d3.select("body").append("div").attr("class", "container");
 
@@ -648,7 +649,7 @@
             })
         }
 
-        linename_option();
+
 
         var colorScale = d3.scaleOrdinal(d3.schemeSet1);
         var width = 950;
@@ -656,6 +657,22 @@
         var scale = 1500;
         let expansion = 34.01266157947373;
         let maindiv = container.append("div").attr("class", "main").attr("id", "main-div");
+        let parameter_div = maindiv.append("div").attr("class", "parameter");
+        parameter_div.html('<div>\
+                                <select id="line_select">\
+                                </select>\
+                            </div>\
+                            <input type="datetime-local" id="selected_date">\
+                            <div id="reset">\
+                                <button id="reset-button">reset zoom</button>\
+                            </div>\
+                            <div id="help">\
+                                <button id="help-button">help</button>\
+                            </div>\
+                            <div id="light-mode">\
+                                <button id="light-mode-button">light-mode</button>\
+                            </div>')
+        linename_option();
         var svg = maindiv.append("svg")
             .attr("class", "main")
             .attr("width", width)
@@ -1015,13 +1032,20 @@
                 .attr("stroke-linecap", "round")
                 .attr("pointer-events", "stroke")
                 .attr("cursor", "crosshair")
+                .on("click", (e, i) => {
+                    console.log(e, i);
+                    let target = document.getElementById("main-div");
+                    let clientRect = target.getBoundingClientRect();
+                    let x = clientRect.left;
+                    currentValue = event.clientX - x;
+                    update(currentValue);
+                })
                 .call(d3.drag()
                     .on("start", function () { })
                     .on("drag", function (event, d) {
                         let target = document.getElementById("main-div");
                         let clientRect = target.getBoundingClientRect();
                         let x = clientRect.left;
-                        console.log(x);
                         currentValue = event.sourceEvent.clientX - x;
                         update(currentValue);
                     }));
